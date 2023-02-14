@@ -1,7 +1,3 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 using AuthService.Application.Dtos;
 using AuthService.Application.Interfaces;
 using AuthService.Domain.Enums;
