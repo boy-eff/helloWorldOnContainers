@@ -5,6 +5,7 @@ using AuthService.Domain.Entities;
 using AuthService.Domain.Enums;
 using Mapster;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.EntityFrameworkCore;
 
 namespace AuthService.Application.Services
 {
@@ -35,24 +36,28 @@ namespace AuthService.Application.Services
             return result;
         }
 
-        public Task<ServiceResult<int>> DeleteUserAsync(int id)
+        public async Task<ServiceResult<AppUserDto>> GetUserByIdAsync(int id)
         {
-            throw new NotImplementedException();
+            var result = new ServiceResult<AppUserDto>();
+            var user = await _userManager.FindByIdAsync(id.ToString());
+            if (user is null)
+            {
+                var error = new ServiceError(ServiceErrorStatusCode.NotFound, "User not found");
+                result.Errors.Add(error);
+                return result;
+            }
+            var userDto = user.Adapt<AppUserDto>();
+            result.Value = userDto;
+            return result;
         }
 
-        public Task<ServiceResult<AppUserDto>> GetUserByIdAsync(int id)
+        public async Task<ServiceResult<List<AppUserDto>>> GetUsersAsync()
         {
-            throw new NotImplementedException();
-        }
-
-        public Task<ServiceResult<List<AppUserDto>>> GetUsersAsync(AppUserDto appUserDto)
-        {
-            throw new NotImplementedException();
-        }
-
-        public Task<ServiceResult<int>> UpdateUserAsync(AppUserDto appUserDto)
-        {
-            throw new NotImplementedException();
+            var result = new ServiceResult<List<AppUserDto>>();
+            var users = await _userManager.Users.ToListAsync();
+            var usersDto = users.Adapt<List<AppUserDto>>();
+            result.Value = usersDto;
+            return result;
         }
     }
 }

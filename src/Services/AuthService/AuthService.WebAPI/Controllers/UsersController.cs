@@ -4,6 +4,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using AuthService.Application.Dtos;
 using AuthService.Application.Interfaces;
+using AuthService.Domain.Enums;
 using Microsoft.AspNetCore.Mvc;
 
 namespace AuthService.WebAPI.Controllers
@@ -26,6 +27,29 @@ namespace AuthService.WebAPI.Controllers
             if (!serviceResult.Succeeded)
             {
                 return BadRequest(serviceResult.Errors[0].Message);
+            }
+            return Ok(serviceResult.Value);
+        }
+
+        [HttpGet]
+        public async Task<IActionResult> GetUsersAsync()
+        {
+            var serviceResult = await _userService.GetUsersAsync();
+            if (!serviceResult.Succeeded)
+            {
+                return BadRequest(serviceResult.Errors[0].Message);
+            }
+            return Ok(serviceResult.Value);
+        }
+
+        [HttpGet("{id}")]
+        public async Task<IActionResult> GetUserByIdAsync(int id)
+        {
+            var serviceResult = await _userService.GetUserByIdAsync(id);
+            if (!serviceResult.Succeeded)
+            {
+                if (serviceResult.Errors[0].StatusCode == ServiceErrorStatusCode.NotFound)
+                return NotFound(serviceResult.Errors[0].Message);
             }
             return Ok(serviceResult.Value);
         }
