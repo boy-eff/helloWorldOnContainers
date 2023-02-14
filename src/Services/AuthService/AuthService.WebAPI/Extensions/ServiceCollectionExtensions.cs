@@ -1,8 +1,6 @@
-using System;
-using System.Collections.Generic;
 using System.Diagnostics;
-using System.Linq;
-using System.Threading.Tasks;
+using AuthService.Application.Interfaces;
+using AuthService.Application.Services;
 using AuthService.Domain.Data.Entities;
 using AuthService.Infrastructure.Data;
 using AuthService.WebAPI.IdentityServer4;
@@ -13,6 +11,11 @@ namespace AuthService.WebAPI.Extensions
 {
     public static class ServiceCollectionExtensions
     {
+        public static void AddScopedServices(this IServiceCollection services) 
+        {
+            services.AddScoped<IUserService, UserService>();
+        }
+
         public static void ConfigureDatabaseConnection(this IServiceCollection services, string? connectionString) 
         {
             if (connectionString is null) 
@@ -27,7 +30,7 @@ namespace AuthService.WebAPI.Extensions
 
         public static void ConfigureIdentity(this IServiceCollection services)
         {
-            services.AddIdentity<AppUser, IdentityRole>(options =>
+            services.AddIdentity<AppUser, IdentityRole<int>>(options =>
             {
                 options.Password.RequireDigit = false;
                 options.Password.RequireLowercase = false;
