@@ -1,4 +1,3 @@
-using AuthService.Infrastructure.Data;
 using AuthService.WebAPI.Extensions;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
@@ -28,8 +27,8 @@ if (app.Environment.IsDevelopment())
 app.UseAuthentication();
 app.UseAuthorization();
 app.UseIdentityServer();
-
-
 app.MapControllers();
+
+app.ApplyMigrations();
 
 app.Run();
