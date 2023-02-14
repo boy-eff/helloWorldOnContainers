@@ -11,7 +11,7 @@ namespace AuthService.Application.Services
 {
     public class UserService : IUserService
     {
-        private UserManager<AppUser> _userManager;
+        private readonly UserManager<AppUser> _userManager;
 
         public UserService(UserManager<AppUser> userManager)
         {
