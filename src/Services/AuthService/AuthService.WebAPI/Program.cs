@@ -1,4 +1,3 @@
-using System.Reflection;
 using AuthService.WebAPI.Extensions;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 

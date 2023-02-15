@@ -1,8 +1,7 @@
-namespace AuthService.Application.Dtos
+namespace AuthService.Application.Dtos;
+
+public class AppUserDto
 {
-    public class AppUserDto
-    {
-        public int Id { get; set; }
-        public string UserName { get; set; }
-    }
+    public int Id { get; set; }
+    public string UserName { get; set; }
 }

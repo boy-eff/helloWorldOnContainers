@@ -1,9 +1,8 @@
 using Microsoft.AspNetCore.Identity;
 
-namespace AuthService.Domain.Data.Entities
+namespace AuthService.Domain.Entities;
+
+public class AppUser : IdentityUser<int>
 {
-    public class AppUser : IdentityUser<int>
-    {
         
-    }
 }

@@ -1,8 +1,7 @@
-namespace AuthService.Application.Dtos
+namespace AuthService.Application.Dtos;
+
+public class AppUserRegisterDto
 {
-    public class AppUserRegisterDto
-    {
-        public string UserName { get; set; }
-        public string Password { get; set; }
-    }
+    public string UserName { get; set; }
+    public string Password { get; set; }
 }

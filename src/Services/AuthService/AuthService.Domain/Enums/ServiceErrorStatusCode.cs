@@ -1,9 +1,8 @@
-namespace AuthService.Domain.Enums
+namespace AuthService.Domain.Enums;
+
+public enum ServiceErrorStatusCode
 {
-    public enum ServiceErrorStatusCode
-    {
-        WrongAction = 1,
-        NotFound = 2,
-        ForbiddenAction = 4
-    }
+    WrongAction = 1,
+    NotFound = 2,
+    ForbiddenAction = 4
 }
