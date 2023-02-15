@@ -19,43 +19,52 @@ public class UserService : IUserService
 
     public async Task<ServiceResult<int>> AddUserAsync(AppUserRegisterDto appUserDto)
     {
-        var result = new ServiceResult<int>();
+        var errors = new List<ServiceError>();
         var appUser = appUserDto.Adapt<AppUser>();
 
         var identityResult = await _userManager.CreateAsync(appUser, appUserDto.Password);
 
         if(!identityResult.Succeeded)
         {
-            result.Errors.Add(
+            errors.Add(
                 new ServiceError(ServiceErrorStatusCode.WrongAction,
                     identityResult.Errors.ToList()[0].Description)
             );
         }
-        result.Value = appUser.Id;
-        return result;
+
+        return new ServiceResult<int>()
+        {
+            Errors = errors
+        };
     }
 
     public async Task<ServiceResult<AppUserDto>> GetUserByIdAsync(int id)
     {
-        var result = new ServiceResult<AppUserDto>();
+        var errors = new List<ServiceError>();
         var user = await _userManager.FindByIdAsync(id.ToString());
         if (user is null)
         {
             var error = new ServiceError(ServiceErrorStatusCode.NotFound, "User not found");
-            result.Errors.Add(error);
-            return result;
+            errors.Add(error);
+            return new ServiceResult<AppUserDto>()
+            {
+                Errors = errors
+            };
         }
         var userDto = user.Adapt<AppUserDto>();
-        result.Value = userDto;
-        return result;
+        return new ServiceResult<AppUserDto>()
+        {
+            Value = userDto
+        };
     }
 
     public async Task<ServiceResult<List<AppUserDto>>> GetUsersAsync()
     {
-        var result = new ServiceResult<List<AppUserDto>>();
         var users = await _userManager.Users.ToListAsync();
         var usersDto = users.Adapt<List<AppUserDto>>();
-        result.Value = usersDto;
-        return result;
+        return new ServiceResult<List<AppUserDto>>()
+        {
+            Value = usersDto
+        };
     }
 }
