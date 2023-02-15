@@ -1,21 +1,19 @@
+using AuthService.Application.Interfaces;
+using AuthService.Application.Services;
+using AuthService.Infrastructure.Extensions;
 using AuthService.WebAPI.Extensions;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 
 var builder = WebApplication.CreateBuilder(args);
-var connectionString = builder.Configuration.GetConnectionString("Default");
+var config = builder.Configuration;
 
-builder.Services.AddScopedServices();
+builder.Services.AddScoped<IUserService, UserService>();
 builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
-builder.Services.AddSwaggerGen(options =>
-{
-    var xmlFilePath = builder.Configuration["XmlFilePath"];
-    options.IncludeXmlComments(xmlFilePath);
-});
-builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
-    .AddJwtBearer();
+builder.Services.ConfigureSwagger(config);
+builder.Services.ConfigureAuthentication();
 builder.Services.AddAuthorization();
-builder.Services.ConfigureDatabaseConnection(connectionString);
+builder.Services.ConfigureDatabaseConnection(config);
 builder.Services.ConfigureIdentity();
 builder.Services.ConfigureIdentityServer();
 
