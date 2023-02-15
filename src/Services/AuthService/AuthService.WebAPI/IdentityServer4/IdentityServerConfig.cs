@@ -2,14 +2,14 @@ using IdentityServer4.Models;
 
 namespace AuthService.WebAPI.IdentityServer4
 {
-    public class IdentityServerConfig
+    public static class IdentityServerConfig
     {
-        private const string _wordsApiScopeName = "words";
+        private const string WordsApiScopeName = "words";
 
         public static IEnumerable<ApiScope> ApiScopes =>
             new List<ApiScope>
             {
-                new ApiScope(_wordsApiScopeName)
+                new ApiScope(WordsApiScopeName)
             };
 
         public static IEnumerable<IdentityResource> IdentityResources =>
@@ -21,7 +21,6 @@ namespace AuthService.WebAPI.IdentityServer4
         public static IEnumerable<Client> Clients =>
             new List<Client>
             {
-                //TO-DO
                 new Client
                 {
                     ClientId = "client",
