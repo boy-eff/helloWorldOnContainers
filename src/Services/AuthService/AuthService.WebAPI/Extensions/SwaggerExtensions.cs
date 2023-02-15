@@ -1,4 +1,6 @@
-﻿namespace AuthService.WebAPI.Extensions;
+﻿using System.Reflection;
+
+namespace AuthService.WebAPI.Extensions;
 
 public static class SwaggerExtensions
 {
@@ -6,8 +8,9 @@ public static class SwaggerExtensions
     {
         services.AddSwaggerGen(options =>
         {
-            var xmlFilePath = config["XmlFilePath"];
-            options.IncludeXmlComments(xmlFilePath);
+            var xmlFile = $"{Assembly.GetEntryAssembly().GetName().Name}.xml";
+            var xmlPath = Path.Combine(AppContext.BaseDirectory, xmlFile);
+            options.IncludeXmlComments(xmlPath);
         });
     }
 }

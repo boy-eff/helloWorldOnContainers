@@ -1,0 +1,27 @@
+version: '3.4'
+
+services:
+  postgres:
+    container_name: Postgres
+    image: postgres:latest
+    ports:
+      - 5432:5432
+    environment:
+      - POSTGRES_USER=username
+      - POSTGRES_PASSWORD=password
+      - POSTGRES_DB=auth
+    restart: unless-stopped
+
+  authservice:
+    container_name: AuthService
+    build:
+      context: "."
+      dockerfile: /Services/AuthService/AuthService.WebAPI/Dockerfile
+    depends_on:
+      - postgres
+    ports: 
+      - 8001:80
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Docker
+    restart: unless-stopped
+    
