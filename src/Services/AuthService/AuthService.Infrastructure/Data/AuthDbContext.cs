@@ -14,5 +14,56 @@ public class AuthDbContext: IdentityDbContext<AppUser, IdentityRole<int>, int>
     protected override void OnModelCreating(ModelBuilder builder)
     {
         base.OnModelCreating(builder);
+        SeedRoles(builder);
+        SeedUsers(builder);
+        SeedUserRoles(builder);
+    }
+
+    private static void SeedRoles(ModelBuilder builder)
+    {
+        builder.Entity<IdentityRole<int>>().HasData(new List<IdentityRole<int>>()
+        {
+            new IdentityRole<int>()
+            {
+                Id = 1,
+                Name = "User",
+                NormalizedName = "USER"
+            },
+            new IdentityRole<int>()
+            {
+                Id = 2,
+                Name = "Moderator",
+                NormalizedName = "MODERATOR"
+            },
+            new IdentityRole<int>()
+            {
+                Id = 3,
+                Name = "SuperAdmin",
+                NormalizedName = "SUPERADMIN"
+            }
+        });
+    }
+
+    private static void SeedUsers(ModelBuilder builder)
+    {
+        var hasher = new PasswordHasher<AppUser>();
+        var admin = new AppUser()
+        {
+            Id = 1,
+            UserName = "admin",
+            NormalizedEmail = "ADMIN",
+        };
+        hasher.HashPassword(admin, "admin");
+        builder.Entity<AppUser>().HasData(admin);
+    }
+
+    private static void SeedUserRoles(ModelBuilder builder)
+    {
+        builder.Entity<IdentityUserRole<int>>().HasData(
+            new IdentityUserRole<int>()
+            {
+                RoleId = 3,
+                UserId = 1
+            });
     }
 }
