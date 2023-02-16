@@ -12,10 +12,10 @@ COPY ["Services/Identity/Identity.Infrastructure/Identity.Infrastructure.csproj"
 RUN dotnet restore "Identity.WebAPI/Identity.WebAPI.csproj"
 COPY ./Services/Identity/ .
 WORKDIR "/src/Identity.WebAPI"
-RUN dotnet build "Identity.WebAPI.csproj" -c Release -o /app/build
+RUN dotnet build "Identity.WebAPI.csproj" -c Debug -o /app/build
 
 FROM build AS publish
-RUN dotnet publish "Identity.WebAPI.csproj" -c Release -o /app/publish
+RUN dotnet publish "Identity.WebAPI.csproj" -c Debug -o /app/publish
 
 FROM base AS final
 WORKDIR /app

@@ -7,13 +7,9 @@
     <DockerDefaultTargetOS>Linux</DockerDefaultTargetOS>
   </PropertyGroup>
 
-  <PropertyGroup Condition=" '$(Configuration)' != 'Production' ">
-    <DocumentationFile>bin\Debug\AuthService.WebAPI.xml</DocumentationFile>
-    <NoWarn>1701;1702;IL2121;1591</NoWarn>
-  </PropertyGroup>
-
   <PropertyGroup Condition=" '$(Configuration)' == 'Debug' ">
     <DocumentationFile>bin\Debug\Identity.WebAPI.xml</DocumentationFile>
+    <NoWarn>1701;1702;IL2121;1591</NoWarn>
   </PropertyGroup>
 
   <ItemGroup>
