@@ -12,11 +12,11 @@ services:
       - POSTGRES_DB=auth
     restart: unless-stopped
 
-  authservice:
-    container_name: AuthService
+  identity:
+    container_name: Identity
     build:
       context: "."
-      dockerfile: /Services/AuthService/AuthService.WebAPI/Dockerfile
+      dockerfile: /Services/Identity/Identity.WebAPI/Dockerfile
     depends_on:
       - postgres
     ports: 

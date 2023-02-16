@@ -1,6 +1,6 @@
 ﻿using System.Reflection;
 
-namespace AuthService.WebAPI.Extensions;
+namespace Identity.WebAPI.Extensions;
 
 public static class SwaggerExtensions
 {

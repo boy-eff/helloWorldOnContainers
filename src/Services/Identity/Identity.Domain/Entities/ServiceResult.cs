@@ -1,4 +1,4 @@
-namespace AuthService.Domain.Entities;
+namespace Identity.Domain.Entities;
 
 public class ServiceResult<T>
 {

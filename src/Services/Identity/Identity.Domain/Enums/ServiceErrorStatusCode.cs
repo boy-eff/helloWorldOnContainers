@@ -1,4 +1,4 @@
-namespace AuthService.Domain.Enums;
+namespace Identity.Domain.Enums;
 
 public enum ServiceErrorStatusCode
 {

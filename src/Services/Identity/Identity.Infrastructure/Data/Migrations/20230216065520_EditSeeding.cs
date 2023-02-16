@@ -2,7 +2,7 @@
 
 #nullable disable
 
-namespace AuthService.Infrastructure.Data.Migrations
+namespace Identity.Infrastructure.Data.Migrations
 {
     /// <inheritdoc />
     public partial class EditSeeding : Migration

@@ -1,6 +1,6 @@
-using AuthService.Domain.Enums;
+using Identity.Domain.Enums;
 
-namespace AuthService.Domain.Entities;
+namespace Identity.Domain.Entities;
 
 public class ServiceError
 {

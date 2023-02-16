@@ -1,7 +1,7 @@
-using AuthService.Application.Dtos;
-using AuthService.Domain.Entities;
+using Identity.Application.Dtos;
+using Identity.Domain.Entities;
 
-namespace AuthService.Application.Interfaces;
+namespace Identity.Application.Interfaces;
 
 public interface IUserService
 {

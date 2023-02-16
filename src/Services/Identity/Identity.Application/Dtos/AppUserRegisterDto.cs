@@ -1,4 +1,4 @@
-namespace AuthService.Application.Dtos;
+namespace Identity.Application.Dtos;
 
 public class AppUserRegisterDto
 {

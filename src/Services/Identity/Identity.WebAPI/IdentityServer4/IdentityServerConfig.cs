@@ -1,9 +1,6 @@
-using System.Security.Claims;
-using IdentityModel;
-using IdentityServer4;
 using IdentityServer4.Models;
 
-namespace AuthService.WebAPI.IdentityServer4;
+namespace Identity.WebAPI.IdentityServer4;
 
 public static class IdentityServerConfig
 {

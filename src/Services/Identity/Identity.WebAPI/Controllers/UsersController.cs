@@ -1,9 +1,9 @@
-using AuthService.Application.Dtos;
-using AuthService.Application.Interfaces;
-using AuthService.Domain.Enums;
+using Identity.Application.Dtos;
+using Identity.Application.Interfaces;
+using Identity.Domain.Enums;
 using Microsoft.AspNetCore.Mvc;
 
-namespace AuthService.WebAPI.Controllers;
+namespace Identity.WebAPI.Controllers;
 
 [ApiController]
 [Route("api/[controller]")]
