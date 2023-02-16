@@ -11,13 +11,14 @@ public static class IdentityExtensions
     public static void ConfigureIdentity(this IServiceCollection services)
     {
         services.AddIdentity<AppUser, IdentityRole<int>>(options =>
-        {
-            options.Password.RequireDigit = false;
-            options.Password.RequireLowercase = false;
-            options.Password.RequireUppercase = false;
-            options.Password.RequireNonAlphanumeric = false;
-            options.Password.RequiredLength = 8;
-        }).AddEntityFrameworkStores<AuthDbContext>();
+            {
+                options.Password.RequireDigit = false;
+                options.Password.RequireLowercase = false;
+                options.Password.RequireUppercase = false;
+                options.Password.RequireNonAlphanumeric = false;
+                options.Password.RequiredLength = 8;
+            }).AddEntityFrameworkStores<AuthDbContext>()
+            .AddRoles<IdentityRole<int>>();
     }
 
     public static void ConfigureIdentityServer(this IServiceCollection services) 
@@ -26,7 +27,8 @@ public static class IdentityExtensions
             .AddDeveloperSigningCredential()
             .AddAspNetIdentity<AppUser>()
             .AddInMemoryApiScopes(IdentityServerConfig.ApiScopes)
-            .AddInMemoryClients(IdentityServerConfig.Clients);
+            .AddInMemoryClients(IdentityServerConfig.Clients)
+            .AddProfileService<ProfileService>();
     }
     
     public static void ConfigureAuthentication(this IServiceCollection services) 

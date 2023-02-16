@@ -1,3 +1,6 @@
+using System.Security.Claims;
+using IdentityModel;
+using IdentityServer4;
 using IdentityServer4.Models;
 
 namespace AuthService.WebAPI.IdentityServer4;
@@ -11,11 +14,11 @@ public static class IdentityServerConfig
         {
             new ApiScope(WordsApiScopeName)
         };
-
+    
     public static IEnumerable<IdentityResource> IdentityResources =>
         new IdentityResource[] {
             new IdentityResources.OpenId(),
-            new IdentityResources.Profile(),
+            new IdentityResources.Profile()
         };
 
     public static IEnumerable<Client> Clients =>

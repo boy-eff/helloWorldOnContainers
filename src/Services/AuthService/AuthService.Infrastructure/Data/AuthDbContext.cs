@@ -50,10 +50,11 @@ public class AuthDbContext: IdentityDbContext<AppUser, IdentityRole<int>, int>
         var admin = new AppUser()
         {
             Id = 1,
-            UserName = "admin",
-            NormalizedEmail = "ADMIN",
+            UserName = "superadmin",
+            NormalizedUserName = "SUPERADMIN",
+            SecurityStamp = Guid.NewGuid().ToString(),
+            PasswordHash = hasher.HashPassword(null, "superadmin")
         };
-        hasher.HashPassword(admin, "admin");
         builder.Entity<AppUser>().HasData(admin);
     }
 
