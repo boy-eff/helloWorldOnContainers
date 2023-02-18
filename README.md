@@ -7,7 +7,7 @@
 * Competition.
 
 ### Use cases:
-* `All roles` authenticates using login and password credentials,
+* `All roles` authenticate using login and password credentials,
 * `User` creates and browses collections of words,
 * `User` adds favourite words from collections to dictionary,
 * `User` competes in words learning with another one in real time,
