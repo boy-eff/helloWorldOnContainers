@@ -51,7 +51,7 @@ public class UserService : IUserService
             {
                 Errors = new List<ServiceError>
                 {
-                    new ServiceError(ServiceErrorStatusCode.NotFound, "User not found")
+                    new ServiceError(ServiceErrorStatusCode.NotFound, "User is not found")
                 }
             };
         }
