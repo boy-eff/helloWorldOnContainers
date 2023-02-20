@@ -1,3 +1,5 @@
+using Words.BusinessAccess.Contracts;
+using Words.BusinessAccess.Services;
 using Words.DataAccess;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -9,6 +11,13 @@ builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 builder.Services.AddDbContext<WordsDbContext>();
+builder.Services.AddScoped<ICollectionService, CollectionService>();
+builder.Services.AddAuthentication("Bearer")
+    .AddIdentityServerAuthentication(options =>
+    {
+        options.Authority = builder.Configuration["IdentityServer:IssuerUri"];
+        options.RequireHttpsMetadata = false;
+    });
 
 var app = builder.Build();
 
@@ -19,8 +28,7 @@ if (app.Environment.IsDevelopment())
     app.UseSwaggerUI();
 }
 
-app.UseHttpsRedirection();
-
+app.UseAuthentication();
 app.UseAuthorization();
 
 app.MapControllers();
