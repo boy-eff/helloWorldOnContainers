@@ -22,6 +22,22 @@ namespace Words.DataAccess.Migrations
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
 
+            modelBuilder.Entity("Words.DataAccess.Models.User", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<int>("EnglishLevel")
+                        .HasColumnType("int");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("User");
+                });
+
             modelBuilder.Entity("Words.DataAccess.Models.Word", b =>
                 {
                     b.Property<int>("Id")
@@ -42,6 +58,8 @@ namespace Words.DataAccess.Migrations
 
                     b.HasKey("Id");
 
+                    b.HasIndex("WordCollectionId");
+
                     b.ToTable("Words");
                 });
 
@@ -56,18 +74,30 @@ namespace Words.DataAccess.Migrations
                     b.Property<DateTimeOffset>("CreatedAt")
                         .HasColumnType("datetimeoffset");
 
+                    b.Property<int>("EnglishLevel")
+                        .HasColumnType("int");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<int>("UserId")
                         .HasColumnType("int");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("UserId");
 
                     b.ToTable("Collections");
                 });
 
             modelBuilder.Entity("Words.DataAccess.Models.WordCollectionRate", b =>
                 {
-                    b.Property<int>("UserId")
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
                         .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
                     b.Property<int>("CollectionId")
                         .HasColumnType("int");
@@ -78,7 +108,14 @@ namespace Words.DataAccess.Migrations
                     b.Property<int>("Rate")
                         .HasColumnType("int");
 
-                    b.HasKey("UserId", "CollectionId");
+                    b.Property<int>("UserId")
+                        .HasColumnType("int");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("CollectionId");
+
+                    b.HasIndex("UserId");
 
                     b.ToTable("WordCollectionRates");
                 });
@@ -100,7 +137,75 @@ namespace Words.DataAccess.Migrations
 
                     b.HasKey("Id");
 
+                    b.HasIndex("WordId");
+
                     b.ToTable("WordTranslations");
+                });
+
+            modelBuilder.Entity("Words.DataAccess.Models.Word", b =>
+                {
+                    b.HasOne("Words.DataAccess.Models.WordCollection", "WordCollection")
+                        .WithMany("Words")
+                        .HasForeignKey("WordCollectionId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("WordCollection");
+                });
+
+            modelBuilder.Entity("Words.DataAccess.Models.WordCollection", b =>
+                {
+                    b.HasOne("Words.DataAccess.Models.User", "User")
+                        .WithMany("Collections")
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("User");
+                });
+
+            modelBuilder.Entity("Words.DataAccess.Models.WordCollectionRate", b =>
+                {
+                    b.HasOne("Words.DataAccess.Models.WordCollection", "Collection")
+                        .WithMany("Rates")
+                        .HasForeignKey("CollectionId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("Words.DataAccess.Models.User", "User")
+                        .WithMany("CollectionRates")
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.Navigation("Collection");
+
+                    b.Navigation("User");
+                });
+
+            modelBuilder.Entity("Words.DataAccess.Models.WordTranslation", b =>
+                {
+                    b.HasOne("Words.DataAccess.Models.Word", "Word")
+                        .WithMany()
+                        .HasForeignKey("WordId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Word");
+                });
+
+            modelBuilder.Entity("Words.DataAccess.Models.User", b =>
+                {
+                    b.Navigation("CollectionRates");
+
+                    b.Navigation("Collections");
+                });
+
+            modelBuilder.Entity("Words.DataAccess.Models.WordCollection", b =>
+                {
+                    b.Navigation("Rates");
+
+                    b.Navigation("Words");
                 });
 #pragma warning restore 612, 618
         }

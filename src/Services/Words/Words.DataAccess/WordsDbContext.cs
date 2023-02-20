@@ -27,6 +27,8 @@ public class WordsDbContext : DbContext
         base.OnModelCreating(modelBuilder);
 
         modelBuilder.Entity<WordCollectionRate>()
-            .HasKey(x => new { x.UserId, x.CollectionId });
+            .HasOne<User>(x => x.User)
+            .WithMany(x => x.CollectionRates)
+            .OnDelete(DeleteBehavior.Restrict);
     }
 }
