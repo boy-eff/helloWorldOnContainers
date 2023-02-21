@@ -12,5 +12,5 @@ public class WordCollection
     public User User { get; set; }
 
     public List<Word> Words { get; set; }
-    public List<WordCollectionRate> Rates { get; set; }
+    public List<WordCollectionRating> Ratings { get; set; }
 }

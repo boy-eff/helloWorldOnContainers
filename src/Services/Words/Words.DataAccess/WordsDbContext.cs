@@ -17,7 +17,7 @@ public class WordsDbContext : DbContext
     public DbSet<UserWord> UserWords { get; set; }
     public DbSet<WordTranslation> WordTranslations { get; set; }
     public DbSet<WordCollection> Collections { get; set; }
-    public DbSet<WordCollectionRate> WordCollectionRates { get; set; }
+    public DbSet<WordCollectionRating> WordCollectionRatings { get; set; }
 
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
     {
@@ -28,9 +28,9 @@ public class WordsDbContext : DbContext
     {
         base.OnModelCreating(modelBuilder);
 
-        modelBuilder.Entity<WordCollectionRate>()
+        modelBuilder.Entity<WordCollectionRating>()
             .HasOne<User>(x => x.User)
-            .WithMany(x => x.CollectionRates)
+            .WithMany(x => x.CollectionRatings)
             .OnDelete(DeleteBehavior.Restrict);
 
         modelBuilder.Entity<UserWord>()

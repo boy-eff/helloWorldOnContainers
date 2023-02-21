@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using Words.BusinessAccess.Contracts;
 using Words.BusinessAccess.Dtos;
 
@@ -6,6 +7,7 @@ namespace Words.WebAPI.Controllers;
 
 [ApiController]
 [Route("[controller]")]
+[Authorize]
 public class WordCollectionController : ControllerBase
 {
     private readonly ICollectionService _collectionService;

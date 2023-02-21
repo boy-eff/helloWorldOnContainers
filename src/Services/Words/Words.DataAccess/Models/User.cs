@@ -9,6 +9,6 @@ public class User
     public DateTimeOffset CreatedAt { get; set; } = DateTimeOffset.Now;
 
     public List<WordCollection> Collections { get; set; }
-    public List<WordCollectionRate> CollectionRates { get; set; }
+    public List<WordCollectionRating> CollectionRatings { get; set; }
     public List<UserWord> DictionaryWords { get; set; }
 }
