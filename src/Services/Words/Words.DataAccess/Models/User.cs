@@ -10,4 +10,5 @@ public class User
 
     public List<WordCollection> Collections { get; set; }
     public List<WordCollectionRate> CollectionRates { get; set; }
+    public List<UserWord> DictionaryWords { get; set; }
 }

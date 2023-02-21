@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Words.DataAccess;
 
@@ -11,9 +12,11 @@ using Words.DataAccess;
 namespace Words.DataAccess.Migrations
 {
     [DbContext(typeof(WordsDbContext))]
-    partial class WordsDbContextModelSnapshot : ModelSnapshot
+    [Migration("20230221100040_AddDictionary")]
+    partial class AddDictionary
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
