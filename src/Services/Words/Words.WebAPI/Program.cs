@@ -1,6 +1,8 @@
+using Microsoft.IdentityModel.Logging;
 using Words.BusinessAccess.Contracts;
 using Words.BusinessAccess.Services;
 using Words.DataAccess;
+using Words.WebAPI.Extensions;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -12,12 +14,8 @@ builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 builder.Services.AddDbContext<WordsDbContext>();
 builder.Services.AddScoped<ICollectionService, CollectionService>();
-builder.Services.AddAuthentication("Bearer")
-    .AddIdentityServerAuthentication(options =>
-    {
-        options.Authority = builder.Configuration["IdentityServer:IssuerUri"];
-        options.RequireHttpsMetadata = false;
-    });
+builder.Services.AddTransient(s => s.GetService<HttpContext>().User);
+builder.Services.ConfigureAuthentication(builder.Configuration);
 
 var app = builder.Build();
 
