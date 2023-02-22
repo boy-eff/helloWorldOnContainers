@@ -7,7 +7,7 @@ namespace Words.WebAPI.Controllers;
 
 [ApiController]
 [Route("api/[controller]")]
-[Authorize]
+//[Authorize]
 public class WordCollectionController : ControllerBase
 {
     private readonly IWordCollectionService _collectionService;
