@@ -6,7 +6,7 @@ using Words.BusinessAccess.Dtos;
 namespace Words.WebAPI.Controllers;
 
 [ApiController]
-[Route("[controller]")]
+[Route("api/[controller]")]
 [Authorize]
 public class WordCollectionController : ControllerBase
 {
