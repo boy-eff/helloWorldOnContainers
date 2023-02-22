@@ -1,4 +1,3 @@
-using Shared.Extensions;
 using Words.BusinessAccess.Contracts;
 using Words.BusinessAccess.Services;
 using Words.DataAccess;
@@ -11,7 +10,7 @@ builder.Services.AddEndpointsApiExplorer();
 builder.Services.ConfigureSwagger(builder.Configuration);
 builder.Services.AddDbContext<WordsDbContext>();
 builder.Services.AddScoped<IWordCollectionService, WordCollectionService>();
-builder.Services.AddTransient(s => s.GetService<HttpContext>().User);
+builder.Services.AddTransient(s => s?.GetService<HttpContext>()?.User);
 builder.Services.ConfigureAuthentication(builder.Configuration);
 
 var app = builder.Build();
