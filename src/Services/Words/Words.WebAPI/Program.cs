@@ -10,7 +10,7 @@ builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.ConfigureSwagger(builder.Configuration);
 builder.Services.AddDbContext<WordsDbContext>();
-builder.Services.AddScoped<ICollectionService, CollectionService>();
+builder.Services.AddScoped<IWordCollectionService, WordCollectionService>();
 builder.Services.AddTransient(s => s.GetService<HttpContext>().User);
 builder.Services.ConfigureAuthentication(builder.Configuration);
 

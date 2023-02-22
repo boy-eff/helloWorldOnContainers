@@ -9,31 +9,31 @@ using Words.DataAccess.Models;
 
 namespace Words.BusinessAccess.Services;
 
-public class CollectionService : ICollectionService
+public class WordCollectionService : IWordCollectionService
 {
     private readonly WordsDbContext _context;
     private readonly ClaimsPrincipal _user;
 
-    public CollectionService(WordsDbContext context, ClaimsPrincipal user)
+    public WordCollectionService(WordsDbContext context, ClaimsPrincipal user)
     {
         _context = context;
         _user = user;
     }
 
-    public async Task<List<WordCollectionDto>> GetAsync()
+    public async Task<IEnumerable<WordCollectionDto>> GetAsync()
     {
-        var collections = await _context.Collections
+        var wordCollections = await _context.Collections
             .Include(x => x.Words)
             .ThenInclude(x => x.Translations)
             .ToListAsync();
-        return collections.Adapt<List<WordCollectionDto>>();
+        return wordCollections.Adapt<List<WordCollectionDto>>();
     }
-
-    public async Task<List<WordCollectionDto>> GetByUserIdAsync(int userId)
+    
+    public async Task<IEnumerable<WordCollectionDto>> GetByUserIdAsync(int userId)
     {
-        var collections = await _context.Collections
+        var wordCollections = await _context.Collections
             .Where(x => x.UserId == userId).ToListAsync();
-        return collections.Adapt<List<WordCollectionDto>>();
+        return wordCollections.Adapt<List<WordCollectionDto>>();
     }
 
     public async Task<int> InsertAsync(WordCollectionCreateDto wordCollectionCreateDto)
@@ -61,18 +61,18 @@ public class CollectionService : ICollectionService
             return 0;
         }
         
-        var existingCollection = await _context.Collections
+        var existingWordCollection = await _context.Collections
             .FirstOrDefaultAsync(x => x.Id == wordCollectionDto.Id && x.UserId == userId);
         
-        if (existingCollection is null)
+        if (existingWordCollection is null)
         {
             return 0;
         }
         
-        var collection = wordCollectionDto.Adapt(existingCollection);
-        _context.Collections.Update(collection);
+        var wordCollection = wordCollectionDto.Adapt(existingWordCollection);
+        _context.Collections.Update(wordCollection);
         await _context.SaveChangesAsync();
-        return collection.Id;
+        return wordCollection.Id;
     }
 
     public async Task<int> DeleteAsync(int id)
@@ -83,14 +83,14 @@ public class CollectionService : ICollectionService
         {
             return 0;
         }
-        var collection = await _context.Collections.FirstOrDefaultAsync(x => x.Id == id && x.UserId == userId);
+        var wordCollection = await _context.Collections.FirstOrDefaultAsync(x => x.Id == id && x.UserId == userId);
         
-        if (collection is null)
+        if (wordCollection is null)
         {
             return 0;
         }
 
-        _context.Collections.Remove(collection);
+        _context.Collections.Remove(wordCollection);
         await _context.SaveChangesAsync();
         return id;
     }
