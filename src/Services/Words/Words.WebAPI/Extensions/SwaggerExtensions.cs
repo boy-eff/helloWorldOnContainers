@@ -13,15 +13,17 @@ public static class SwaggerExtensions
             var xmlFile = $"{Assembly.GetEntryAssembly().GetName().Name}.xml";
             var xmlPath = Path.Combine(AppContext.BaseDirectory, xmlFile);
             options.IncludeXmlComments(xmlPath);
-            
-            options.AddSecurityDefinition(name: IdentityServerAuthenticationDefaults.AuthenticationScheme, securityScheme: new OpenApiSecurityScheme
+
+            options.AddSecurityDefinition("oauth2", new OpenApiSecurityScheme
             {
-                Name = "Authorization",
-                Description = "Enter the Bearer Authorization string as following: `Bearer Generated-JWT-Token`",
-                In = ParameterLocation.Header,
-                Type = SecuritySchemeType.Http,
-                BearerFormat = "JWT",
-                Scheme = IdentityServerAuthenticationDefaults.AuthenticationScheme
+                Type = SecuritySchemeType.OAuth2,
+                Flows = new OpenApiOAuthFlows
+                {
+                    Password = new OpenApiOAuthFlow()
+                    {
+                        TokenUrl = new Uri("https://localhost:8001/connect/token")
+                    }
+                }
             });
 
             options.AddSecurityRequirement(new OpenApiSecurityRequirement
@@ -40,6 +42,6 @@ public static class SwaggerExtensions
                     new List<string>()
                 }
             });
-        });
+        }); 
     }
 }
