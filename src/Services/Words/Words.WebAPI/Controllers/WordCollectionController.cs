@@ -17,35 +17,75 @@ public class WordCollectionController : ControllerBase
         _collectionService = collectionService;
     }
 
+    /// <summary>
+    /// Get all collections
+    /// </summary>
+    /// <response code="200">Returns all collections</response>
     [HttpGet]
-    public async Task<IActionResult> GetAsync()
+    [ProducesResponseType(StatusCodes.Status200OK)]
+    public async Task<ActionResult<List<WordCollectionDto>>> GetAsync()
     {
-        var collections =  await _collectionService.GetAsync();
-        return Ok(collections);
+        var wordCollections =  await _collectionService.GetAsync();
+        return Ok(wordCollections);
     }
 
+    /// <summary>
+    /// Add new collection
+    /// </summary>
+    /// <remarks>
+    /// Sample value of message
+    /// 
+    ///     POST /api/wordcollection
+    ///     {
+    ///         "name": "collectionName",
+    ///         "englishLevel": 1,
+    ///         "words": [
+    ///             {
+    ///                 "value": "word value in Russian",
+    ///                 "translations": [
+    ///                     {
+    ///                         "translation": "all possible word translations in English"
+    ///                     }
+    ///                 ]
+    ///             }
+    ///         ]
+    ///     }
+    ///     
+    /// </remarks>
+    /// <response code="200">Returns the newly created collection</response>
     [HttpPost]
-    public async Task<IActionResult> InsertAsync([FromBody] WordCollectionCreateDto wordCollectionCreateDto)
+    [ProducesResponseType(StatusCodes.Status200OK)]
+    public async Task<ActionResult<int>> InsertAsync([FromBody] WordCollectionCreateDto wordCollectionCreateDto)
     {
-        var id = await _collectionService.InsertAsync(wordCollectionCreateDto);
-        return Ok(id);
+        var wordCollectionId = await _collectionService.InsertAsync(wordCollectionCreateDto);
+        return Ok(wordCollectionId);
     }
 
+    /// <summary>
+    /// Update collection
+    /// </summary>
+    /// <response code="200">Returns updated collection id</response>
     [HttpPut]
-    public async Task<IActionResult> UpdateAsync([FromBody] WordCollectionDto wordCollectionDto)
+    [ProducesResponseType(StatusCodes.Status200OK)]
+    public async Task<ActionResult<int>> UpdateAsync([FromBody] WordCollectionDto wordCollectionDto)
     {
-        var id = await _collectionService.UpdateAsync(wordCollectionDto);
-        return Ok(id);
+        var updatedWordCollectionId = await _collectionService.UpdateAsync(wordCollectionDto);
+        return Ok(updatedWordCollectionId);
     }
 
+    /// <summary>
+    /// Delete collection
+    /// </summary>
+    /// <response code="200">Returns deleted collection id</response>
+    /// <response code="404">If collection is not found</response>
     [HttpDelete("{id:int}")]
-    public async Task<IActionResult> DeleteAsync(int id)
+    public async Task<ActionResult<int>> DeleteAsync(int id)
     {
-        var deletedId = await _collectionService.DeleteAsync(id);
-        if (deletedId == 0)
+        var deletedWordCollectionId = await _collectionService.DeleteAsync(id);
+        if (deletedWordCollectionId == 0)
         {
             return NotFound("Collection is not found");
         }
-        return Ok(deletedId);
+        return Ok(deletedWordCollectionId);
     }
 }

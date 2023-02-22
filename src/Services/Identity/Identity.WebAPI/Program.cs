@@ -2,6 +2,7 @@ using Identity.Application.Interfaces;
 using Identity.Application.Services;
 using Identity.Infrastructure.Extensions;
 using Identity.WebAPI.Extensions;
+using Shared.Extensions;
 
 var builder = WebApplication.CreateBuilder(args);
 var config = builder.Configuration;
