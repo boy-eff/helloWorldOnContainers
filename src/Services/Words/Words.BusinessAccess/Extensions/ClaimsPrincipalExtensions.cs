@@ -10,7 +10,7 @@ public static class ClaimsPrincipalExtensions
         {
             throw new ArgumentNullException(nameof(principal));
         }
-        var claim = principal.FindFirst(ClaimTypes.NameIdentifier);
+        var claim = principal.FindFirst(x => x.Type.Equals("sub"));
         return claim != null ? int.Parse(claim.Value) : 0;
     }
 }

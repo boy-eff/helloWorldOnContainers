@@ -1,4 +1,5 @@
-﻿using IdentityServer4.AccessTokenValidation;
+﻿using System.Security.Claims;
+using IdentityServer4.AccessTokenValidation;
 
 namespace Words.WebAPI.Extensions;
 
@@ -11,6 +12,8 @@ public static class AuthenticationExtensions
             {
                 options.Authority = config["IdentityServer:IssuerUri"];
                 options.RequireHttpsMetadata = false;
+                options.NameClaimType = ClaimTypes.Name;
+                options.RoleClaimType = ClaimTypes.Role;
             });
     }
 }
