@@ -1,8 +1,10 @@
-﻿using Microsoft.AspNetCore.Authorization;
+﻿using MediatR;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Words.BusinessAccess.Contracts;
 using Words.BusinessAccess.Dtos;
-using Words.BusinessAccess.Extensions;
+using Words.BusinessAccess.Features.Collections.Commands;
+using Words.BusinessAccess.Features.Collections.Queries;
 
 namespace Words.WebAPI.Controllers;
 
@@ -11,11 +13,11 @@ namespace Words.WebAPI.Controllers;
 [Authorize]
 public class WordCollectionController : ControllerBase
 {
-    private readonly IWordCollectionService _collectionService;
+    private readonly IMediator _mediator;
 
-    public WordCollectionController(IWordCollectionService collectionService)
+    public WordCollectionController(IWordCollectionService collectionService, IMediator mediator)
     {
-        _collectionService = collectionService;
+        _mediator = mediator;
     }
 
     /// <summary>
@@ -28,8 +30,9 @@ public class WordCollectionController : ControllerBase
     [ProducesResponseType(StatusCodes.Status401Unauthorized)]
     public async Task<ActionResult<List<WordCollectionDto>>> GetAsync()
     {
-        var wordCollections =  await _collectionService.GetAsync();
-        return Ok(wordCollections);
+        var query = new GetWordCollectionsQuery();
+        var result = await _mediator.Send(query);
+        return Ok(result);
     }
 
     /// <summary>
@@ -62,9 +65,9 @@ public class WordCollectionController : ControllerBase
     [ProducesResponseType(StatusCodes.Status401Unauthorized)]
     public async Task<ActionResult<int>> InsertAsync([FromBody] WordCollectionCreateDto wordCollectionCreateDto)
     {
-        var wordCollectionId = await _collectionService.InsertAsync(wordCollectionCreateDto);
-        var userId = User.GetUserId();
-        return Ok(wordCollectionId);
+        var query = new AddWordCollectionCommand(wordCollectionCreateDto);
+        var result = await _mediator.Send(query);
+        return Ok(result);
     }
 
     /// <summary>
@@ -77,8 +80,9 @@ public class WordCollectionController : ControllerBase
     [ProducesResponseType(StatusCodes.Status401Unauthorized)]
     public async Task<ActionResult<int>> UpdateAsync([FromBody] WordCollectionDto wordCollectionDto)
     {
-        var updatedWordCollectionId = await _collectionService.UpdateAsync(wordCollectionDto);
-        return Ok(updatedWordCollectionId);
+        var query = new UpdateWordCollectionCommand(wordCollectionDto);
+        var result = await _mediator.Send(query);
+        return Ok(result);
     }
 
     /// <summary>
@@ -93,11 +97,8 @@ public class WordCollectionController : ControllerBase
     [ProducesResponseType(StatusCodes.Status401Unauthorized)]
     public async Task<ActionResult<int>> DeleteAsync(int id)
     {
-        var deletedWordCollectionId = await _collectionService.DeleteAsync(id);
-        if (deletedWordCollectionId == 0)
-        {
-            return NotFound("Collection is not found");
-        }
-        return Ok(deletedWordCollectionId);
+        var query = new DeleteWordCollectionCommand(id);
+        var result = await _mediator.Send(query);
+        return Ok(result);
     }
 }

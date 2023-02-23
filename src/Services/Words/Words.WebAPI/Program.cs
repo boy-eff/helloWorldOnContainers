@@ -1,3 +1,4 @@
+using System.Reflection;
 using Words.BusinessAccess.Contracts;
 using Words.BusinessAccess.Services;
 using Words.DataAccess;
@@ -13,6 +14,7 @@ builder.Services.AddDbContext<WordsDbContext>();
 builder.Services.AddScoped<IWordCollectionService, WordCollectionService>();
 builder.Services.AddHttpContextAccessor();
 builder.Services.ConfigureAuthentication(builder.Configuration);
+builder.Services.AddMediatR(x => x.RegisterServicesFromAssemblies(AppDomain.CurrentDomain.GetAssemblies()));
 
 var app = builder.Build();
 app.UseMiddleware<ExceptionMiddleware>();
