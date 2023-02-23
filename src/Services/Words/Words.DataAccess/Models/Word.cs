@@ -7,6 +7,6 @@ public class Word
     
     public int WordCollectionId { get; set; }
     public WordCollection WordCollection { get; set; }
-    public List<WordTranslation> Translations { get; set; }
-    public List<UserWord> UserDictionaries { get; set; }
+    public ICollection<WordTranslation> Translations { get; set; }
+    public ICollection<UserWord> UserDictionaries { get; set; }
 }

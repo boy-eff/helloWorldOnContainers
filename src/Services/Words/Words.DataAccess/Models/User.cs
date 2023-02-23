@@ -8,7 +8,7 @@ public class User
     public EnglishLevel EnglishLevel { get; set; }
     public DateTimeOffset CreatedAt { get; set; } = DateTimeOffset.Now;
 
-    public List<WordCollection> Collections { get; set; }
-    public List<WordCollectionRating> CollectionRatings { get; set; }
-    public List<UserWord> DictionaryWords { get; set; }
+    public ICollection<WordCollection> Collections { get; set; }
+    public ICollection<WordCollectionRating> CollectionRatings { get; set; }
+    public ICollection<UserWord> DictionaryWords { get; set; }
 }

@@ -11,6 +11,6 @@ public class WordCollection
     public int UserId { get; set; }
     public User User { get; set; }
 
-    public List<Word> Words { get; set; }
-    public List<WordCollectionRating> Ratings { get; set; }
+    public ICollection<Word> Words { get; set; }
+    public ICollection<WordCollectionRating> Ratings { get; set; }
 }

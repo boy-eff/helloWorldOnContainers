@@ -2,12 +2,13 @@
 using Microsoft.AspNetCore.Mvc;
 using Words.BusinessAccess.Contracts;
 using Words.BusinessAccess.Dtos;
+using Words.BusinessAccess.Extensions;
 
 namespace Words.WebAPI.Controllers;
 
 [ApiController]
 [Route("api/[controller]")]
-//[Authorize]
+[Authorize]
 public class WordCollectionController : ControllerBase
 {
     private readonly IWordCollectionService _collectionService;
@@ -62,6 +63,7 @@ public class WordCollectionController : ControllerBase
     public async Task<ActionResult<int>> InsertAsync([FromBody] WordCollectionCreateDto wordCollectionCreateDto)
     {
         var wordCollectionId = await _collectionService.InsertAsync(wordCollectionCreateDto);
+        var userId = User.GetUserId();
         return Ok(wordCollectionId);
     }
 
