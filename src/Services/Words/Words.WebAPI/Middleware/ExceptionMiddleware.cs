@@ -1,4 +1,7 @@
 ﻿using System.Net;
+using FluentValidation;
+using Microsoft.IdentityModel.Tokens;
+using Words.BusinessAccess.Exceptions;
 using Words.WebAPI.Models;
 
 namespace Words.WebAPI.Middleware;
@@ -20,6 +23,10 @@ public class ExceptionMiddleware
         {
             await _next(httpContext);
         }
+        catch (AuthorizationException ex)
+        {
+            await HandleExceptionAsync(httpContext, ex);
+        }
         catch(Exception ex)
         {
             _logger.LogError($"Something went wrong {ex}");
@@ -30,11 +37,34 @@ public class ExceptionMiddleware
     private async Task HandleExceptionAsync(HttpContext context, Exception exception)
     {
         context.Response.ContentType = "application/json";
-        context.Response.StatusCode = (int)HttpStatusCode.InternalServerError;
-        await context.Response.WriteAsync(new ErrorDetails()
+        switch (exception)
         {
-            StatusCode = context.Response.StatusCode,
-            Message = "Internal Server Error"
-        }.ToString());
+            case AuthorizationException:
+            {
+                context.Response.StatusCode = (int)HttpStatusCode.Forbidden;
+                await context.Response.WriteAsJsonAsync(exception.Message.IsNullOrEmpty() ? "Access denied" : exception.Message);
+                break;
+            }
+            case NotFoundException:
+            {
+                context.Response.StatusCode = (int)HttpStatusCode.NotFound;
+                await context.Response.WriteAsJsonAsync(exception.Message.IsNullOrEmpty() ? "Not found" : exception.Message);
+                break;
+            }
+            case ValidationException:
+            {
+                context.Response.StatusCode = (int)HttpStatusCode.BadRequest;
+                await context.Response.WriteAsJsonAsync(exception.Message.IsNullOrEmpty()
+                    ? "Something went wrong"
+                    : exception.Message);
+                break;
+            };
+            default:
+            {
+                context.Response.StatusCode = (int)HttpStatusCode.InternalServerError;
+                break;
+            }
+
+        }
     }
 }

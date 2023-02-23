@@ -1,6 +1,7 @@
 ﻿using MediatR;
 using Microsoft.AspNetCore.Http;
 using Microsoft.EntityFrameworkCore;
+using Words.BusinessAccess.Exceptions;
 using Words.BusinessAccess.Extensions;
 using Words.DataAccess;
 
@@ -23,14 +24,14 @@ public class DeleteWordCollectionCommandHandler : IRequestHandler<DeleteWordColl
 
         if (userId is null or 0)
         {
-            return null;
+            throw new AuthorizationException();
         }
         var wordCollection = await _dbContext.Collections.FirstOrDefaultAsync(x => x.Id == request.WordCollectionId 
             && x.UserId == userId, cancellationToken: cancellationToken);
         
         if (wordCollection is null)
         {
-            return 0;
+            throw new NotFoundException($"Collection with id {request.WordCollectionId} is not found");
         }
 
         _dbContext.Collections.Remove(wordCollection);

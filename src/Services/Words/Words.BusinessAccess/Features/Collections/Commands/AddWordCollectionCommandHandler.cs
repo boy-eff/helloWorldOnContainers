@@ -1,7 +1,9 @@
-﻿using Mapster;
+﻿using FluentValidation;
+using Mapster;
 using MediatR;
 using Microsoft.AspNetCore.Http;
 using Words.BusinessAccess.Dtos;
+using Words.BusinessAccess.Exceptions;
 using Words.BusinessAccess.Extensions;
 using Words.DataAccess;
 using Words.DataAccess.Models;
@@ -12,21 +14,24 @@ public class AddWordCollectionCommandHandler : IRequestHandler<AddWordCollection
 {
     private readonly WordsDbContext _dbContext;
     private readonly IHttpContextAccessor _httpContextAccessor;
+    private readonly IValidator<WordCollectionCreateDto> _validator;
 
-    public AddWordCollectionCommandHandler(WordsDbContext dbContext, IHttpContextAccessor httpContextAccessor)
+    public AddWordCollectionCommandHandler(WordsDbContext dbContext, IHttpContextAccessor httpContextAccessor, IValidator<WordCollectionCreateDto> validator)
     {
         _dbContext = dbContext;
         _httpContextAccessor = httpContextAccessor;
+        _validator = validator;
     }
 
     public async Task<WordCollectionDto> Handle(AddWordCollectionCommand request, CancellationToken cancellationToken)
     {
+        await _validator.ValidateAndThrowAsync(request.WordCollectionCreateDto, cancellationToken: cancellationToken);
         var wordCollection = request.WordCollectionCreateDto.Adapt<WordCollection>();
         var userId = _httpContextAccessor?.HttpContext?.User.GetUserId();
         
         if (userId is null or 0)
         {
-            return null;
+            throw new AuthorizationException();
         }
 
         wordCollection.UserId = userId.Value;

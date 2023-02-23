@@ -5,6 +5,7 @@ namespace Words.DataAccess.Models;
 public class User
 {
     public int Id { get; set; }
+    public string UserName { get; set; }
     public EnglishLevel EnglishLevel { get; set; }
     public DateTimeOffset CreatedAt { get; set; } = DateTimeOffset.Now;
 

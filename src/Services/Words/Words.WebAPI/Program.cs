@@ -1,6 +1,6 @@
-using System.Reflection;
-using Words.BusinessAccess.Contracts;
-using Words.BusinessAccess.Services;
+using FluentValidation;
+using Words.BusinessAccess.Features.Collections.Queries;
+using Words.BusinessAccess.Validators;
 using Words.DataAccess;
 using Words.WebAPI.Extensions;
 using Words.WebAPI.Middleware;
@@ -11,11 +11,10 @@ builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.ConfigureSwagger(builder.Configuration);
 builder.Services.AddDbContext<WordsDbContext>();
-builder.Services.AddScoped<IWordCollectionService, WordCollectionService>();
 builder.Services.AddHttpContextAccessor();
 builder.Services.ConfigureAuthentication(builder.Configuration);
-builder.Services.AddMediatR(x => x.RegisterServicesFromAssemblies(AppDomain.CurrentDomain.GetAssemblies()));
-
+builder.Services.AddValidatorsFromAssemblyContaining<WordCollectionCreateDtoValidator>();
+builder.Services.AddMediatR(x => x.RegisterServicesFromAssembly(typeof(GetWordCollectionsQuery).Assembly));
 var app = builder.Build();
 app.UseMiddleware<ExceptionMiddleware>();
 

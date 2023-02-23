@@ -10,12 +10,12 @@ namespace Words.WebAPI.Controllers;
 
 [ApiController]
 [Route("api/[controller]")]
-[Authorize]
+//[Authorize]
 public class WordCollectionController : ControllerBase
 {
     private readonly IMediator _mediator;
 
-    public WordCollectionController(IWordCollectionService collectionService, IMediator mediator)
+    public WordCollectionController(IMediator mediator)
     {
         _mediator = mediator;
     }

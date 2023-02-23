@@ -1,8 +1,10 @@
-﻿using Mapster;
+﻿using FluentValidation;
+using Mapster;
 using MediatR;
 using Microsoft.AspNetCore.Http;
 using Microsoft.EntityFrameworkCore;
 using Words.BusinessAccess.Dtos;
+using Words.BusinessAccess.Exceptions;
 using Words.BusinessAccess.Extensions;
 using Words.DataAccess;
 
@@ -12,28 +14,33 @@ public class UpdateWordCollectionCommandHandler : IRequestHandler<UpdateWordColl
 {
     private readonly IHttpContextAccessor _httpContextAccessor;
     private readonly WordsDbContext _dbContext;
+    private readonly IValidator<WordCollectionDto> _validator;
 
-    public UpdateWordCollectionCommandHandler(IHttpContextAccessor httpContextAccessor, WordsDbContext dbContext)
+    public UpdateWordCollectionCommandHandler(IHttpContextAccessor httpContextAccessor,
+        WordsDbContext dbContext, IValidator<WordCollectionDto> validator)
     {
         _httpContextAccessor = httpContextAccessor;
         _dbContext = dbContext;
+        _validator = validator;
     }
 
     public async Task<WordCollectionDto> Handle(UpdateWordCollectionCommand request, CancellationToken cancellationToken)
     {
+        await _validator.ValidateAndThrowAsync(request.WordCollectionDto, cancellationToken: cancellationToken);
         var userId = _httpContextAccessor?.HttpContext?.User.GetUserId();
         
         if (userId is null)
         {
-            return null;
+            throw new AuthorizationException();
         }
         
         var existingWordCollection = await _dbContext.Collections
-            .FirstOrDefaultAsync(x => x.Id == request.WordCollectionDto.Id && x.UserId == userId, cancellationToken: cancellationToken);
+            .FirstOrDefaultAsync(x => x.Id == request.WordCollectionDto.Id && x.UserId == userId,
+                cancellationToken: cancellationToken);
         
         if (existingWordCollection is null)
         {
-            return null;
+            throw new NotFoundException($"Collection with id {request.WordCollectionDto.Id} is not found");
         }
         
         var wordCollection = request.WordCollectionDto.Adapt(existingWordCollection);
