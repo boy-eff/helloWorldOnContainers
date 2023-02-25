@@ -5,7 +5,7 @@ using Words.BusinessAccess.Exceptions;
 using Words.BusinessAccess.Extensions;
 using Words.DataAccess;
 
-namespace Words.BusinessAccess.Features.Collections.Commands;
+namespace Words.BusinessAccess.Features.Collections.Commands.Delete;
 
 public class DeleteWordCollectionCommandHandler : IRequestHandler<DeleteWordCollectionCommand, int?>
 {
@@ -22,10 +22,6 @@ public class DeleteWordCollectionCommandHandler : IRequestHandler<DeleteWordColl
     {
         var userId = _httpContextAccessor?.HttpContext?.User.GetUserId();
 
-        if (userId is null or 0)
-        {
-            throw new AuthorizationException();
-        }
         var wordCollection = await _dbContext.Collections.FirstOrDefaultAsync(x => x.Id == request.WordCollectionId 
             && x.UserId == userId, cancellationToken: cancellationToken);
         

@@ -1,9 +1,6 @@
 ﻿using System.Reflection;
-using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.DependencyInjection;
-using Microsoft.OpenApi.Models;
 
-namespace Shared.Extensions;
+namespace Identity.WebAPI.Extensions;
 
 public static class SwaggerExtensions
 {

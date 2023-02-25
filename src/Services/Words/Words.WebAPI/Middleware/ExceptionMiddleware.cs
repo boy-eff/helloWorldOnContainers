@@ -42,19 +42,19 @@ public class ExceptionMiddleware
             case AuthorizationException:
             {
                 context.Response.StatusCode = (int)HttpStatusCode.Forbidden;
-                await context.Response.WriteAsJsonAsync(exception.Message.IsNullOrEmpty() ? "Access denied" : exception.Message);
+                await context.Response.WriteAsync(exception.Message.IsNullOrEmpty() ? "Access denied" : exception.Message);
                 break;
             }
             case NotFoundException:
             {
                 context.Response.StatusCode = (int)HttpStatusCode.NotFound;
-                await context.Response.WriteAsJsonAsync(exception.Message.IsNullOrEmpty() ? "Not found" : exception.Message);
+                await context.Response.WriteAsync(exception.Message.IsNullOrEmpty() ? "Not found" : exception.Message);
                 break;
             }
             case ValidationException:
             {
                 context.Response.StatusCode = (int)HttpStatusCode.BadRequest;
-                await context.Response.WriteAsJsonAsync(exception.Message.IsNullOrEmpty()
+                await context.Response.WriteAsync(exception.Message.IsNullOrEmpty()
                     ? "Something went wrong"
                     : exception.Message);
                 break;

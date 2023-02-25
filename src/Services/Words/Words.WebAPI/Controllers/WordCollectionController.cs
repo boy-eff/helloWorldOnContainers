@@ -1,20 +1,23 @@
 ﻿using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Words.BusinessAccess.Contracts;
 using Words.BusinessAccess.Dtos;
 using Words.BusinessAccess.Features.Collections.Commands;
+using Words.BusinessAccess.Features.Collections.Commands.Add;
+using Words.BusinessAccess.Features.Collections.Commands.Delete;
+using Words.BusinessAccess.Features.Collections.Commands.Update;
 using Words.BusinessAccess.Features.Collections.Queries;
+using Words.BusinessAccess.Features.Collections.Queries.Get;
 
 namespace Words.WebAPI.Controllers;
 
 [ApiController]
 [Route("api/[controller]")]
-//[Authorize]
+[Authorize]
 public class WordCollectionController : ControllerBase
 {
     private readonly IMediator _mediator;
-
+    
     public WordCollectionController(IMediator mediator)
     {
         _mediator = mediator;

@@ -4,7 +4,7 @@ using Microsoft.EntityFrameworkCore;
 using Words.BusinessAccess.Dtos;
 using Words.DataAccess;
 
-namespace Words.BusinessAccess.Features.Collections.Queries;
+namespace Words.BusinessAccess.Features.Collections.Queries.Get;
 
 public class GetWordCollectionsQueryHandler : IRequestHandler<GetWordCollectionsQuery, IEnumerable<WordCollectionDto>>
 {

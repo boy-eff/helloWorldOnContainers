@@ -2,7 +2,7 @@
 using Words.BusinessAccess.Dtos;
 using Words.DataAccess.Helpers;
 
-namespace Words.BusinessAccess.Validators;
+namespace Words.BusinessAccess.ModelValidators;
 
 public class WordCollectionCreateDtoValidator : AbstractValidator<WordCollectionCreateDto>
 {
@@ -17,5 +17,7 @@ public class WordCollectionCreateDtoValidator : AbstractValidator<WordCollection
         RuleFor(x => x.EnglishLevel)
             .IsInEnum()
             .WithMessage("Invalid english level");
+        RuleForEach(x => x.Words)
+            .SetValidator(new WordCreateDtoValidator());
     }
 }

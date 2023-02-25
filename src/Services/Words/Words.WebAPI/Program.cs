@@ -1,6 +1,9 @@
 using FluentValidation;
+using MediatR;
 using Words.BusinessAccess.Features.Collections.Queries;
-using Words.BusinessAccess.Validators;
+using Words.BusinessAccess.Features.Collections.Queries.Get;
+using Words.BusinessAccess.MediatR;
+using Words.BusinessAccess.ModelValidators;
 using Words.DataAccess;
 using Words.WebAPI.Extensions;
 using Words.WebAPI.Middleware;
@@ -14,7 +17,9 @@ builder.Services.AddDbContext<WordsDbContext>();
 builder.Services.AddHttpContextAccessor();
 builder.Services.ConfigureAuthentication(builder.Configuration);
 builder.Services.AddValidatorsFromAssemblyContaining<WordCollectionCreateDtoValidator>();
-builder.Services.AddMediatR(x => x.RegisterServicesFromAssembly(typeof(GetWordCollectionsQuery).Assembly));
+builder.Services.AddMediatR(x => x.RegisterServicesFromAssembly(typeof(GetWordCollectionsQuery).Assembly))
+    .AddScoped(typeof(IPipelineBehavior<,>), typeof(AuthorizationBehaviour<,>))
+    .AddScoped(typeof(IPipelineBehavior<,>), typeof(ValidationBehaviour<,>));
 var app = builder.Build();
 app.UseMiddleware<ExceptionMiddleware>();
 

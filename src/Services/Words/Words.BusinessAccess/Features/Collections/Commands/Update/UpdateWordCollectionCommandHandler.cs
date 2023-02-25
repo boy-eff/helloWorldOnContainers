@@ -8,7 +8,7 @@ using Words.BusinessAccess.Exceptions;
 using Words.BusinessAccess.Extensions;
 using Words.DataAccess;
 
-namespace Words.BusinessAccess.Features.Collections.Commands;
+namespace Words.BusinessAccess.Features.Collections.Commands.Update;
 
 public class UpdateWordCollectionCommandHandler : IRequestHandler<UpdateWordCollectionCommand, WordCollectionDto>
 {
@@ -26,21 +26,15 @@ public class UpdateWordCollectionCommandHandler : IRequestHandler<UpdateWordColl
 
     public async Task<WordCollectionDto> Handle(UpdateWordCollectionCommand request, CancellationToken cancellationToken)
     {
-        await _validator.ValidateAndThrowAsync(request.WordCollectionDto, cancellationToken: cancellationToken);
         var userId = _httpContextAccessor?.HttpContext?.User.GetUserId();
-        
-        if (userId is null)
-        {
-            throw new AuthorizationException();
-        }
-        
+
         var existingWordCollection = await _dbContext.Collections
             .FirstOrDefaultAsync(x => x.Id == request.WordCollectionDto.Id && x.UserId == userId,
                 cancellationToken: cancellationToken);
         
         if (existingWordCollection is null)
         {
-            throw new NotFoundException($"Collection with id {request.WordCollectionDto.Id} is not found");
+            throw new NotFoundException($"Collection with id {request.WordCollectionDto.Id} is not found for user {userId}");
         }
         
         var wordCollection = request.WordCollectionDto.Adapt(existingWordCollection);
