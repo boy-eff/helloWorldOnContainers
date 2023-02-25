@@ -22,6 +22,15 @@ services:
       - MSSQL_SA_PASSWORD=Passw0rd
     restart: unless-stopped
 
+  logMonitor:
+    container_name: Seq
+    image: datalust/seq:latest
+    environment:
+      - ACCEPT_EULA=Y
+    ports:
+      - 5341:80
+    restart: unless-stopped
+
   identity:
     container_name: Identity
     build:
@@ -29,6 +38,7 @@ services:
       dockerfile: /Services/Identity/Identity.WebAPI/Dockerfile
     depends_on:
       - postgres
+      - logMonitor
     ports: 
       - 8001:80
     environment:
@@ -42,6 +52,7 @@ services:
       dockerfile: /Services/Words/Words.WebAPI/Dockerfile
     depends_on:
       - sqlserver
+      - logMonitor
     ports: 
      - 9001:80
     environment:
