@@ -5,16 +5,19 @@ namespace Words.BusinessAccess.MediatR;
 
 public class ValidationBehaviour<TRequest, TResponse> : IPipelineBehavior<TRequest, TResponse>
 {
-    private readonly IValidator<TRequest> _validator;
+    private readonly IEnumerable<IValidator<TRequest>> _validators;
 
-    public ValidationBehaviour(IValidator<TRequest> validator)
+    public ValidationBehaviour(IEnumerable<IValidator<TRequest>> validators)
     {
-        _validator = validator;
+        _validators = validators;
     }
 
     public async Task<TResponse> Handle(TRequest request, RequestHandlerDelegate<TResponse> next, CancellationToken cancellationToken)
     {
-        await _validator.ValidateAndThrowAsync(request, cancellationToken: cancellationToken);
+        foreach (var validator in _validators)
+        {
+            await validator.ValidateAndThrowAsync(request, cancellationToken: cancellationToken);
+        }
         return await next();
     }
 }

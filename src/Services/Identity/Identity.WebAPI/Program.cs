@@ -15,7 +15,7 @@ builder.Services.ConfigureAuthentication();
 builder.Services.AddAuthorization();
 builder.Services.ConfigureDatabaseConnection(config);
 builder.Services.ConfigureIdentity();
-builder.Services.ConfigureIdentityServer();
+builder.Services.ConfigureIdentityServer(config);
 builder.Services.ConfigureCors(env);
 
 var app = builder.Build();

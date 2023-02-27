@@ -1,4 +1,5 @@
 ﻿using Serilog;
+using Serilog.Events;
 
 namespace Words.WebAPI.Extensions;
 
@@ -12,7 +13,7 @@ public static class LoggerExtensions
         
         if (builder.Environment.EnvironmentName == "Docker")
         {
-            loggerConfiguration.WriteTo.Seq(builder.Configuration["Logging:SeqApi"]);
+            loggerConfiguration.WriteTo.Seq(builder.Configuration["Logging:SeqApi"], LogEventLevel.Information);
         }
 
         var logger = loggerConfiguration.CreateLogger();

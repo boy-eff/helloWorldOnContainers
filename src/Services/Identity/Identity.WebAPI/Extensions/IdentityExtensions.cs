@@ -21,9 +21,12 @@ public static class IdentityExtensions
             .AddRoles<IdentityRole<int>>();
     }
 
-    public static void ConfigureIdentityServer(this IServiceCollection services) 
+    public static void ConfigureIdentityServer(this IServiceCollection services, ConfigurationManager config) 
     {
-        services.AddIdentityServer()
+        services.AddIdentityServer(options =>
+            {
+                options.IssuerUri = config["IdentityServerSettings:IssuerUri"];
+            })
             .AddDeveloperSigningCredential()
             .AddAspNetIdentity<AppUser>()
             .AddInMemoryApiScopes(IdentityServerConfig.ApiScopes)

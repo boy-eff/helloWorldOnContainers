@@ -4,6 +4,7 @@ using Words.BusinessAccess.Features.Collections.Queries.Get;
 using Words.BusinessAccess.MediatR;
 using Words.BusinessAccess.ModelValidators;
 using Words.DataAccess;
+using Words.DataAccess.Extensions;
 using Words.WebAPI.Extensions;
 using Words.WebAPI.Middleware;
 
@@ -31,5 +32,7 @@ app.UseAuthentication();
 app.UseAuthorization();
 
 app.MapControllers();
+
+app.ApplyMigrations();
 
 app.Run();

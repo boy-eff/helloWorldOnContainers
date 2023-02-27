@@ -10,6 +10,7 @@ public static class MediatRExtensions
     {
         services.AddMediatR(x => x.RegisterServicesFromAssembly(typeof(GetWordCollectionsQuery).Assembly))
             .AddScoped(typeof(IPipelineBehavior<,>), typeof(AuthorizationBehaviour<,>))
-            .AddScoped(typeof(IPipelineBehavior<,>), typeof(ValidationBehaviour<,>));
+            .AddScoped(typeof(IPipelineBehavior<,>), typeof(ValidationBehaviour<,>))
+            .AddScoped(typeof(IPipelineBehavior<,>), typeof(LoggingBehaviour<,>));
     }
 }
