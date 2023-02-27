@@ -11,6 +11,25 @@ services:
       - POSTGRES_PASSWORD=password
       - POSTGRES_DB=auth
     restart: unless-stopped
+  
+  sqlserver: 
+    container_name: SqlServer
+    image: mcr.microsoft.com/mssql/server:2022-latest
+    ports:
+      - 1433:1433
+    environment:
+      - ACCEPT_EULA=Y
+      - MSSQL_SA_PASSWORD=Passw0rd
+    restart: unless-stopped
+
+  logMonitor:
+    container_name: Seq
+    image: datalust/seq:latest
+    environment:
+      - ACCEPT_EULA=Y
+    ports:
+      - 5341:80
+    restart: unless-stopped
 
   identity:
     container_name: Identity
@@ -19,9 +38,23 @@ services:
       dockerfile: /Services/Identity/Identity.WebAPI/Dockerfile
     depends_on:
       - postgres
+      - logMonitor
     ports: 
       - 8001:80
     environment:
       - ASPNETCORE_ENVIRONMENT=Docker
     restart: unless-stopped
-    
+
+  words:
+    container_name: Words
+    build:
+      context: "."
+      dockerfile: /Services/Words/Words.WebAPI/Dockerfile
+    depends_on:
+      - sqlserver
+      - logMonitor
+    ports: 
+     - 9001:80
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Docker
+    restart: unless-stopped

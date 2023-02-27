@@ -5,6 +5,7 @@ using Identity.WebAPI.Extensions;
 
 var builder = WebApplication.CreateBuilder(args);
 var config = builder.Configuration;
+var env = builder.Environment;
 
 builder.Services.AddScoped<IUserService, UserService>();
 builder.Services.AddControllers();
@@ -14,7 +15,8 @@ builder.Services.ConfigureAuthentication();
 builder.Services.AddAuthorization();
 builder.Services.ConfigureDatabaseConnection(config);
 builder.Services.ConfigureIdentity();
-builder.Services.ConfigureIdentityServer();
+builder.Services.ConfigureIdentityServer(config);
+builder.Services.ConfigureCors(env);
 
 var app = builder.Build();
 
