@@ -8,6 +8,7 @@
       <PackageReference Include="Mapster" Version="7.4.0-pre05" />
       <PackageReference Include="MediatR" Version="12.0.0" />
       <PackageReference Include="Microsoft.AspNetCore.Http.Abstractions" Version="2.2.0" />
+      <PackageReference Include="Quartz" Version="3.6.2" />
       <PackageReference Include="Serilog.Sinks.Console" Version="4.1.1-dev-00907" />
       <PackageReference Include="Serilog.Sinks.Seq" Version="5.2.3-dev-00262" />
     </ItemGroup>

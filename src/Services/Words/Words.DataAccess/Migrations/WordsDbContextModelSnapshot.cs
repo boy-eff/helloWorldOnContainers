@@ -36,6 +36,9 @@ namespace Words.DataAccess.Migrations
                     b.Property<int>("EnglishLevel")
                         .HasColumnType("int");
 
+                    b.Property<string>("UserName")
+                        .HasColumnType("nvarchar(max)");
+
                     b.HasKey("Id");
 
                     b.ToTable("Users");
@@ -65,7 +68,6 @@ namespace Words.DataAccess.Migrations
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
                     b.Property<string>("Value")
-                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<int>("WordCollectionId")
@@ -89,12 +91,17 @@ namespace Words.DataAccess.Migrations
                     b.Property<DateTimeOffset>("CreatedAt")
                         .HasColumnType("datetimeoffset");
 
+                    b.Property<int>("DailyViews")
+                        .HasColumnType("int");
+
                     b.Property<int>("EnglishLevel")
                         .HasColumnType("int");
 
                     b.Property<string>("Name")
-                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("TotalViews")
+                        .HasColumnType("int");
 
                     b.Property<int>("UserId")
                         .HasColumnType("int");
@@ -106,7 +113,7 @@ namespace Words.DataAccess.Migrations
                     b.ToTable("Collections");
                 });
 
-            modelBuilder.Entity("Words.DataAccess.Models.WordCollectionRate", b =>
+            modelBuilder.Entity("Words.DataAccess.Models.WordCollectionRating", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -120,7 +127,7 @@ namespace Words.DataAccess.Migrations
                     b.Property<DateTimeOffset>("CreatedAt")
                         .HasColumnType("datetimeoffset");
 
-                    b.Property<int>("Rate")
+                    b.Property<int>("Rating")
                         .HasColumnType("int");
 
                     b.Property<int>("UserId")
@@ -132,7 +139,7 @@ namespace Words.DataAccess.Migrations
 
                     b.HasIndex("UserId");
 
-                    b.ToTable("WordCollectionRates");
+                    b.ToTable("WordCollectionRatings");
                 });
 
             modelBuilder.Entity("Words.DataAccess.Models.WordTranslation", b =>
@@ -144,7 +151,6 @@ namespace Words.DataAccess.Migrations
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
                     b.Property<string>("Translation")
-                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<int>("WordId")
@@ -198,16 +204,16 @@ namespace Words.DataAccess.Migrations
                     b.Navigation("User");
                 });
 
-            modelBuilder.Entity("Words.DataAccess.Models.WordCollectionRate", b =>
+            modelBuilder.Entity("Words.DataAccess.Models.WordCollectionRating", b =>
                 {
                     b.HasOne("Words.DataAccess.Models.WordCollection", "Collection")
-                        .WithMany("Rates")
+                        .WithMany("Ratings")
                         .HasForeignKey("CollectionId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.HasOne("Words.DataAccess.Models.User", "User")
-                        .WithMany("CollectionRates")
+                        .WithMany("CollectionRatings")
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
@@ -230,7 +236,7 @@ namespace Words.DataAccess.Migrations
 
             modelBuilder.Entity("Words.DataAccess.Models.User", b =>
                 {
-                    b.Navigation("CollectionRates");
+                    b.Navigation("CollectionRatings");
 
                     b.Navigation("Collections");
 
@@ -246,7 +252,7 @@ namespace Words.DataAccess.Migrations
 
             modelBuilder.Entity("Words.DataAccess.Models.WordCollection", b =>
                 {
-                    b.Navigation("Rates");
+                    b.Navigation("Ratings");
 
                     b.Navigation("Words");
                 });
