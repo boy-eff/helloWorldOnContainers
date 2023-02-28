@@ -34,7 +34,24 @@ public class WordCollectionController : ControllerBase
     public async Task<ActionResult<List<WordCollectionDto>>> GetAsync()
     {
         var query = new GetWordCollectionsQuery();
-        var result = await _mediator.Send(query);
+        var result = await _mediator.Send(query, CancellationToken.None);
+        return Ok(result);
+    }
+    
+    /// <summary>
+    /// Get collection by id
+    /// </summary>
+    /// <response code="200">Returns a collection</response>
+    /// <response code="401">If user is not authenticated</response>
+    /// <response code="404">If collection is not found</response>
+    [HttpGet("{id:int}")]
+    [ProducesResponseType(StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+    [ProducesResponseType(StatusCodes.Status404NotFound)]
+    public async Task<ActionResult<WordCollectionDto>> GetByIdAsync(int id)
+    {
+        var query = new GetWordCollectionsQuery();
+        var result = await _mediator.Send(query, CancellationToken.None);
         return Ok(result);
     }
 
