@@ -31,7 +31,7 @@ public class GetWordCollectionByIdQueryHandler : IRequestHandler<GetWordCollecti
             throw new NotFoundException("Collection is not found");
         }
         
-        _viewsCounterService.Increment(collection.Id);
+        _viewsCounterService.IncrementViewsInCollection(collection.Id);
 
         return collection.Adapt<WordCollectionDto>();
     }

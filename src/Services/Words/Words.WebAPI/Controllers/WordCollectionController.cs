@@ -8,6 +8,7 @@ using Words.BusinessAccess.Features.Collections.Commands.Delete;
 using Words.BusinessAccess.Features.Collections.Commands.Update;
 using Words.BusinessAccess.Features.Collections.Queries;
 using Words.BusinessAccess.Features.Collections.Queries.Get;
+using Words.BusinessAccess.Features.Collections.Queries.GetById;
 
 namespace Words.WebAPI.Controllers;
 
@@ -50,7 +51,7 @@ public class WordCollectionController : ControllerBase
     [ProducesResponseType(StatusCodes.Status404NotFound)]
     public async Task<ActionResult<WordCollectionDto>> GetByIdAsync(int id)
     {
-        var query = new GetWordCollectionsQuery();
+        var query = new GetWordCollectionByIdQuery(id);
         var result = await _mediator.Send(query, CancellationToken.None);
         return Ok(result);
     }

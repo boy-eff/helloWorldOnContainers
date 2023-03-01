@@ -8,7 +8,7 @@ public class ViewsCounterService : IViewsCounterService
 {
     private readonly ConcurrentDictionary<int, int> _viewsByCollectionId = new();
 
-    public void Increment(int collectionId, int count = 1)
+    public void IncrementViewsInCollection(int collectionId, int count = 1)
     {
         lock (_viewsByCollectionId)
         {

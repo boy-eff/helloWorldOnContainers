@@ -22,7 +22,6 @@ public class UpdateViewsJob : IJob
 
     public async Task Execute(IJobExecutionContext context)
     {
-        _viewsCounterService.Increment(1);
         var views = _viewsCounterService.GetViewsAndFlush();
         var wordCollections = _dbContext.Collections.Where(x => views.Keys.Contains(x.Id));
         _logger.LogInformation("Start updating views of word collections");
