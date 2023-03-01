@@ -1,5 +1,4 @@
 using FluentValidation;
-using Quartz;
 using Words.BusinessAccess.Contracts;
 using Words.BusinessAccess.ModelValidators;
 using Words.BusinessAccess.Services;
