@@ -1,6 +1,14 @@
 version: '3.4'
 
 services:
+  rabbitmq:
+    container_name: RabbitMQ
+    image: rabbitmq:3-management-alpine
+    ports:
+      - 5672:5672
+      - 15672:15672
+    restart: unless-stopped
+
   postgres:
     container_name: Postgres
     image: postgres:latest
@@ -39,6 +47,7 @@ services:
     depends_on:
       - postgres
       - logMonitor
+      - rabbitmq
     ports: 
       - 8001:80
     environment:
@@ -53,6 +62,7 @@ services:
     depends_on:
       - sqlserver
       - logMonitor
+      - rabbitmq
     ports: 
      - 9001:80
     environment:
