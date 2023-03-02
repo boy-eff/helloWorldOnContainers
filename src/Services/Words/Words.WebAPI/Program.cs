@@ -1,8 +1,7 @@
 using FluentValidation;
-using MediatR;
-using Words.BusinessAccess.Features.Collections.Queries.Get;
-using Words.BusinessAccess.MediatR;
+using Words.BusinessAccess.Contracts;
 using Words.BusinessAccess.ModelValidators;
+using Words.BusinessAccess.Services;
 using Words.DataAccess;
 using Words.DataAccess.Extensions;
 using Words.WebAPI.Extensions;
@@ -19,6 +18,9 @@ builder.Services.ConfigureAuthentication(builder.Configuration);
 builder.Services.AddValidatorsFromAssemblyContaining<WordCollectionRequestDtoValidator>();
 builder.Services.ConfigureMediatR();
 builder.ConfigureLogger();
+builder.Services.AddSingleton<IViewsCounterService, ViewsCounterService>();
+builder.Services.AddSingleton<IDailyWordCollectionService, DailyWordCollectionService>();
+builder.Services.ConfigureQuartz(builder.Configuration);
 var app = builder.Build();
 app.UseMiddleware<ExceptionMiddleware>();
 
@@ -36,3 +38,5 @@ app.MapControllers();
 app.ApplyMigrations();
 
 app.Run();
+
+public partial class Program { }

@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Words.DataAccess;
 
@@ -11,9 +12,11 @@ using Words.DataAccess;
 namespace Words.DataAccess.Migrations
 {
     [DbContext(typeof(WordsDbContext))]
-    partial class WordsDbContextModelSnapshot : ModelSnapshot
+    [Migration("20230228103615_AddViewsToCollections")]
+    partial class AddViewsToCollections
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -31,15 +34,13 @@ namespace Words.DataAccess.Migrations
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
                     b.Property<DateTimeOffset>("CreatedAt")
-                        .HasPrecision(2)
-                        .HasColumnType("datetimeoffset(2)");
+                        .HasColumnType("datetimeoffset");
 
                     b.Property<int>("EnglishLevel")
                         .HasColumnType("int");
 
                     b.Property<string>("UserName")
-                        .HasMaxLength(50)
-                        .HasColumnType("nvarchar(50)");
+                        .HasColumnType("nvarchar(max)");
 
                     b.HasKey("Id");
 
@@ -70,9 +71,7 @@ namespace Words.DataAccess.Migrations
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
                     b.Property<string>("Value")
-                        .IsRequired()
-                        .HasMaxLength(50)
-                        .HasColumnType("nvarchar(50)");
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<int>("WordCollectionId")
                         .HasColumnType("int");
@@ -93,8 +92,7 @@ namespace Words.DataAccess.Migrations
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
                     b.Property<DateTimeOffset>("CreatedAt")
-                        .HasPrecision(2)
-                        .HasColumnType("datetimeoffset(2)");
+                        .HasColumnType("datetimeoffset");
 
                     b.Property<int>("DailyViews")
                         .HasColumnType("int");
@@ -103,9 +101,7 @@ namespace Words.DataAccess.Migrations
                         .HasColumnType("int");
 
                     b.Property<string>("Name")
-                        .IsRequired()
-                        .HasMaxLength(50)
-                        .HasColumnType("nvarchar(50)");
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<int>("TotalViews")
                         .HasColumnType("int");
@@ -132,8 +128,7 @@ namespace Words.DataAccess.Migrations
                         .HasColumnType("int");
 
                     b.Property<DateTimeOffset>("CreatedAt")
-                        .HasPrecision(2)
-                        .HasColumnType("datetimeoffset(2)");
+                        .HasColumnType("datetimeoffset");
 
                     b.Property<int>("Rating")
                         .HasColumnType("int");
@@ -159,9 +154,7 @@ namespace Words.DataAccess.Migrations
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
                     b.Property<string>("Translation")
-                        .IsRequired()
-                        .HasMaxLength(50)
-                        .HasColumnType("nvarchar(50)");
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<int>("WordId")
                         .HasColumnType("int");
