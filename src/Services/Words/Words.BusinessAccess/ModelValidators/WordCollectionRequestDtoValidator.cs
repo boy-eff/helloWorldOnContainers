@@ -1,12 +1,13 @@
 ﻿using FluentValidation;
 using Words.BusinessAccess.Dtos;
+using Words.BusinessAccess.Dtos.WordCollection;
 using Words.DataAccess.Helpers;
 
 namespace Words.BusinessAccess.ModelValidators;
 
-public class WordCollectionCreateDtoValidator : AbstractValidator<WordCollectionCreateDto>
+public class WordCollectionRequestDtoValidator : AbstractValidator<WordCollectionRequestDto>
 {
-    public WordCollectionCreateDtoValidator()
+    public WordCollectionRequestDtoValidator()
     {
         const int nameMinLength = WordCollectionConstraints.NameMinLength;
         const int nameMaxLength = WordCollectionConstraints.NameMaxLength;

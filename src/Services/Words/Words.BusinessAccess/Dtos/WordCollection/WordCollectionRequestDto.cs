@@ -1,12 +1,10 @@
 ﻿using Shared.Enums;
-using Words.DataAccess.Models;
 
-namespace Words.BusinessAccess.Dtos;
+namespace Words.BusinessAccess.Dtos.WordCollection;
 
-public class WordCollectionCreateDto
+public class WordCollectionRequestDto
 {
     public string Name { get; set; }
     public EnglishLevel EnglishLevel { get; set; }
-    
     public List<WordCreateDto> Words { get; set; }
 }
