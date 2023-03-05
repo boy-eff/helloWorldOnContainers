@@ -1,3 +1,4 @@
+using Identity.Application.Interfaces;
 using Identity.Domain.Entities;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
@@ -5,10 +6,11 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Identity.Infrastructure.Data;
 
-public class AuthDbContext: IdentityDbContext<AppUser, IdentityRole<int>, int>
+public class AuthDbContext: IdentityDbContext<AppUser, IdentityRole<int>, int>, IAuthDbContext
 {
     public AuthDbContext(DbContextOptions options) : base(options)
     {
+        
     }
 
     protected override void OnModelCreating(ModelBuilder builder)
@@ -66,5 +68,10 @@ public class AuthDbContext: IdentityDbContext<AppUser, IdentityRole<int>, int>
                 RoleId = 3,
                 UserId = 1
             });
+    }
+    
+    public async Task<int> SaveChangesAsync()
+    {
+        return await this.SaveChangesAsync();
     }
 }
