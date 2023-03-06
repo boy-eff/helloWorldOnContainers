@@ -1,6 +1,6 @@
-﻿namespace Words.BusinessAccess.Dtos;
+﻿namespace Words.BusinessAccess.Dtos.CollectionRating;
 
-public class CollectionRatingDto
+public class CollectionRatingResponseDto
 {
     public int Id { get; set; }
     public int CollectionId { get; set; }

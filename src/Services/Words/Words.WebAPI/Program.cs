@@ -15,7 +15,7 @@ builder.Services.ConfigureSwagger(builder.Configuration);
 builder.Services.AddDbContext<WordsDbContext>();
 builder.Services.AddHttpContextAccessor();
 builder.Services.ConfigureAuthentication(builder.Configuration);
-builder.Services.AddValidatorsFromAssemblyContaining<WordCollectionCreateDtoValidator>();
+builder.Services.AddValidatorsFromAssemblyContaining<WordCollectionRequestDtoValidator>();
 builder.Services.ConfigureMediatR();
 builder.ConfigureLogger();
 builder.Services.AddSingleton<IViewsCounterService, ViewsCounterService>();

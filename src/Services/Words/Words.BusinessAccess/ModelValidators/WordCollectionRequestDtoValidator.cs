@@ -1,17 +1,16 @@
 ﻿using FluentValidation;
 using Words.BusinessAccess.Dtos;
+using Words.BusinessAccess.Dtos.WordCollection;
 using Words.DataAccess.Helpers;
 
 namespace Words.BusinessAccess.ModelValidators;
 
-public class WordCollectionDtoValidator : AbstractValidator<WordCollectionDto>
+public class WordCollectionRequestDtoValidator : AbstractValidator<WordCollectionRequestDto>
 {
-    public WordCollectionDtoValidator()
+    public WordCollectionRequestDtoValidator()
     {
         const int nameMinLength = WordCollectionConstraints.NameMinLength;
         const int nameMaxLength = WordCollectionConstraints.NameMaxLength;
-        RuleFor(x => x.Id)
-            .NotEqual(0);
         RuleFor(x => x.Name)
             .MinimumLength(nameMinLength)
             .MaximumLength(nameMaxLength)
@@ -19,6 +18,7 @@ public class WordCollectionDtoValidator : AbstractValidator<WordCollectionDto>
         RuleFor(x => x.EnglishLevel)
             .IsInEnum()
             .WithMessage("Invalid english level");
-        RuleFor(x => x.Words);
+        RuleForEach(x => x.Words)
+            .SetValidator(new WordCreateDtoValidator());
     }
 }
