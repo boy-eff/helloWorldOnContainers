@@ -57,7 +57,7 @@ public class UserService : IUserService
             {
                 throw new ConfigurationException("RabbitMQ connection retry time limit is invalid");
             }
-            cancellationTokenSource.CancelAfter(TimeSpan.FromSeconds(1));
+            cancellationTokenSource.CancelAfter(TimeSpan.FromSeconds(cancellationTime));
             
             await _bus.Publish<UserCreatedMessage>(message, cancellationTokenSource.Token);
             await transaction.CommitAsync();
