@@ -16,10 +16,10 @@ public class UserService : IUserService
     private readonly UserManager<AppUser> _userManager;
     private readonly IBus _bus;
     private readonly IAuthDbContext _authDbContext;
-    private readonly ConfigurationManager _config;
+    private readonly IConfiguration _config;
 
     public UserService(UserManager<AppUser> userManager, IBus bus, IAuthDbContext authDbContext,
-        ConfigurationManager config)
+        IConfiguration config)
     {
         _userManager = userManager;
         _bus = bus;
