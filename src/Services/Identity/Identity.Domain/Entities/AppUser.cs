@@ -5,5 +5,5 @@ namespace Identity.Domain.Entities;
 
 public class AppUser : IdentityUser<int>
 {
-    public EnglishLevel EnglishLevel { get; set; }
+    
 }

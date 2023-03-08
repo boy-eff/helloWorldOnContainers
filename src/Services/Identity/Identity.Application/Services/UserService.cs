@@ -14,28 +14,24 @@ namespace Identity.Application.Services;
 public class UserService : IUserService
 {
     private readonly UserManager<AppUser> _userManager;
-    private readonly IBus _bus;
+    private readonly IPublishEndpoint _publishEndpoint;
     private readonly IAuthDbContext _authDbContext;
-    private readonly IConfiguration _config;
 
-    public UserService(UserManager<AppUser> userManager, IBus bus, IAuthDbContext authDbContext,
-        IConfiguration config)
+    public UserService(UserManager<AppUser> userManager, IPublishEndpoint publishEndpoint, IAuthDbContext authDbContext)
     {
         _userManager = userManager;
-        _bus = bus;
+        _publishEndpoint = publishEndpoint;
         _authDbContext = authDbContext;
-        _config = config;
     }
 
     public async Task<ServiceResult<int>> AddUserAsync(AppUserRegisterDto appUserDto)
     {
         var appUser = appUserDto.Adapt<AppUser>();
-
+        
         await using var transaction = await _authDbContext.Database.BeginTransactionAsync();
         try
         {
             var identityResult = await _userManager.CreateAsync(appUser, appUserDto.Password);
-
             if (!identityResult.Succeeded)
             {
                 return new ServiceResult<int>()
@@ -49,29 +45,24 @@ public class UserService : IUserService
                 };
             }
 
-            var message = appUser.Adapt<UserCreatedMessage>();
-            
-            using var cancellationTokenSource = new CancellationTokenSource();
-            var cancellationTime = int.Parse(_config["RabbitMQ:ConnectionRetryTimeInSeconds"]);
-            if (cancellationTime == 0)
-            {
-                throw new ConfigurationException("RabbitMQ connection retry time limit is invalid");
-            }
-            cancellationTokenSource.CancelAfter(TimeSpan.FromSeconds(cancellationTime));
-            
-            await _bus.Publish<UserCreatedMessage>(message, cancellationTokenSource.Token);
+            var message = appUserDto.Adapt<UserCreatedMessage>();
+
+            await _publishEndpoint.Publish(message);
+
+            await _authDbContext.SaveChangesAsync();
+
             await transaction.CommitAsync();
+
+            return new ServiceResult<int>()
+            {
+                Value = appUser.Id
+            };
         }
-        catch (Exception ex)
+        catch
         {
             await transaction.RollbackAsync();
             throw;
         }
-
-        return new ServiceResult<int>()
-        {
-            Value = appUser.Id
-        };
     }
 
     public async Task<ServiceResult<AppUserDto>> GetUserByIdAsync(int id)

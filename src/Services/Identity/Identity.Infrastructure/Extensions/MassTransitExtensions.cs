@@ -1,4 +1,5 @@
 ﻿using System.Reflection;
+using Identity.Infrastructure.Data;
 using MassTransit;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -17,6 +18,15 @@ public static class MassTransitExtensions
             var username = config["RabbitMQ:Username"];
             var password = config["RabbitMQ:Password"];
 
+            x.AddEntityFrameworkOutbox<AuthDbContext>(o =>
+            {
+                o.UsePostgres();
+                
+                o.QueryDelay = TimeSpan.FromSeconds(1);
+                
+                o.UseBusOutbox();
+            });
+
             x.AddConsumers(assembly);
 
             x.UsingRabbitMq((context, cfg) => {
@@ -24,8 +34,9 @@ public static class MassTransitExtensions
                     h.Username(username);
                     h.Password(password);
                 });
-
+                
                 cfg.ConfigureEndpoints(context);
+                cfg.AutoStart = true;
             });
         });
     }

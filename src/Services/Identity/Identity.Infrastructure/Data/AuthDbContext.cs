@@ -1,5 +1,6 @@
 using Identity.Application.Interfaces;
 using Identity.Domain.Entities;
+using MassTransit;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
@@ -16,6 +17,11 @@ public class AuthDbContext: IdentityDbContext<AppUser, IdentityRole<int>, int>, 
     protected override void OnModelCreating(ModelBuilder builder)
     {
         base.OnModelCreating(builder);
+        
+        builder.AddInboxStateEntity();
+        builder.AddOutboxMessageEntity();
+        builder.AddOutboxStateEntity();
+        
         SeedRoles(builder);
         SeedUsers(builder);
         SeedUserRoles(builder);
@@ -69,9 +75,9 @@ public class AuthDbContext: IdentityDbContext<AppUser, IdentityRole<int>, int>, 
                 UserId = 1
             });
     }
-    
+
     public async Task<int> SaveChangesAsync()
     {
-        return await this.SaveChangesAsync();
+        return await base.SaveChangesAsync();
     }
 }

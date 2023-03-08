@@ -3,6 +3,7 @@ using System;
 using Identity.Infrastructure.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
@@ -11,9 +12,11 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace Identity.Infrastructure.Data.Migrations
 {
     [DbContext(typeof(AuthDbContext))]
-    partial class AuthDbContextModelSnapshot : ModelSnapshot
+    [Migration("20230307091107_AddOutbox")]
+    partial class AddOutbox
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -43,6 +46,9 @@ namespace Identity.Infrastructure.Data.Migrations
 
                     b.Property<bool>("EmailConfirmed")
                         .HasColumnType("boolean");
+
+                    b.Property<int>("EnglishLevel")
+                        .HasColumnType("integer");
 
                     b.Property<bool>("LockoutEnabled")
                         .HasColumnType("boolean");
@@ -93,13 +99,14 @@ namespace Identity.Infrastructure.Data.Migrations
                         {
                             Id = 1,
                             AccessFailedCount = 0,
-                            ConcurrencyStamp = "76d42689-fbb9-4f56-8439-5b33b4f5c0c7",
+                            ConcurrencyStamp = "46c24903-348b-486d-a0ef-3b4fb570de39",
                             EmailConfirmed = false,
+                            EnglishLevel = 0,
                             LockoutEnabled = false,
                             NormalizedUserName = "SUPERADMIN",
-                            PasswordHash = "AQAAAAIAAYagAAAAEDcURaxnY1SCg/aS8c0XKgtSnpxvb5zXQ/ocVxLK1+1JQ4mw/MpKEHmmm5VvBneIuw==",
+                            PasswordHash = "AQAAAAIAAYagAAAAEMkyQZ2mSpHNU0igWYFsX5ZO6yiVmGt5GQ7Zw/YS9QxRLMpeTopsQDWVKUN3kEMDIw==",
                             PhoneNumberConfirmed = false,
-                            SecurityStamp = "4da2fd4a-c88e-4462-a46a-cf64a1488fba",
+                            SecurityStamp = "9913a21d-4467-444a-998e-55335bdbb836",
                             TwoFactorEnabled = false,
                             UserName = "superadmin"
                         });
