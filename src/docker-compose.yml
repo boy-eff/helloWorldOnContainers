@@ -1,6 +1,13 @@
 version: '3.4'
+name: "helloWorldOnContainers"
 
 services:
+  redis:
+    container_name: Redis
+    image: redis:latest
+    ports: 
+     - 6379:6379
+    restart: unless-stopped
   rabbitmq:
     container_name: RabbitMQ
     image: rabbitmq:3-management-alpine
@@ -48,6 +55,7 @@ services:
       - postgres
       - logMonitor
       - rabbitmq
+      - redis
     ports: 
       - 8001:80
     environment:
@@ -63,6 +71,7 @@ services:
       - sqlserver
       - logMonitor
       - rabbitmq
+      - redis
     ports: 
      - 9001:80
     environment:
