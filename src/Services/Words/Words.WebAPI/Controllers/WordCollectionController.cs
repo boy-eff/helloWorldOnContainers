@@ -3,11 +3,11 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Words.BusinessAccess.Dtos;
 using Words.BusinessAccess.Dtos.WordCollection;
-using Words.BusinessAccess.Features.Collections.Commands.Add;
-using Words.BusinessAccess.Features.Collections.Commands.Delete;
-using Words.BusinessAccess.Features.Collections.Commands.Update;
-using Words.BusinessAccess.Features.Collections.Queries.Get;
-using Words.BusinessAccess.Features.Collections.Queries.GetById;
+using Words.BusinessAccess.MediatR.Features.Collections.Commands.Add;
+using Words.BusinessAccess.MediatR.Features.Collections.Commands.Delete;
+using Words.BusinessAccess.MediatR.Features.Collections.Commands.Update;
+using Words.BusinessAccess.MediatR.Features.Collections.Queries.Get;
+using Words.BusinessAccess.MediatR.Features.Collections.Queries.GetById;
 
 namespace Words.WebAPI.Controllers;
 

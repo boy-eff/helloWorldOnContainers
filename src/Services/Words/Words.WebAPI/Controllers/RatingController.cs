@@ -2,11 +2,11 @@
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Words.BusinessAccess.Dtos.CollectionRating;
-using Words.BusinessAccess.Features.Ratings.Commands.Add;
-using Words.BusinessAccess.Features.Ratings.Commands.Delete;
-using Words.BusinessAccess.Features.Ratings.Commands.Update;
-using Words.BusinessAccess.Features.Ratings.Queries.GetByCollectionId;
-using Words.BusinessAccess.Features.Ratings.Queries.GetById;
+using Words.BusinessAccess.MediatR.Features.Ratings.Commands.Add;
+using Words.BusinessAccess.MediatR.Features.Ratings.Commands.Delete;
+using Words.BusinessAccess.MediatR.Features.Ratings.Commands.Update;
+using Words.BusinessAccess.MediatR.Features.Ratings.Queries.GetByCollectionId;
+using Words.BusinessAccess.MediatR.Features.Ratings.Queries.GetById;
 
 namespace Words.WebAPI.Controllers;
 
