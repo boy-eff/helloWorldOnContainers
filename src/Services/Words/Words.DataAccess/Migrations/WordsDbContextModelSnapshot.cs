@@ -25,10 +25,7 @@ namespace Words.DataAccess.Migrations
             modelBuilder.Entity("Words.DataAccess.Models.User", b =>
                 {
                     b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
                         .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
                     b.Property<DateTimeOffset>("CreatedAt")
                         .HasPrecision(2)

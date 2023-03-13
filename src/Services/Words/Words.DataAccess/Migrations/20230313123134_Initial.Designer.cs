@@ -12,7 +12,7 @@ using Words.DataAccess;
 namespace Words.DataAccess.Migrations
 {
     [DbContext(typeof(WordsDbContext))]
-    [Migration("20230220103947_Initial")]
+    [Migration("20230313123134_Initial")]
     partial class Initial
     {
         /// <inheritdoc />
@@ -28,17 +28,37 @@ namespace Words.DataAccess.Migrations
             modelBuilder.Entity("Words.DataAccess.Models.User", b =>
                 {
                     b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
                         .HasColumnType("int");
 
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+                    b.Property<DateTimeOffset>("CreatedAt")
+                        .HasPrecision(2)
+                        .HasColumnType("datetimeoffset(2)");
 
                     b.Property<int>("EnglishLevel")
                         .HasColumnType("int");
 
+                    b.Property<string>("UserName")
+                        .HasMaxLength(50)
+                        .HasColumnType("nvarchar(50)");
+
                     b.HasKey("Id");
 
-                    b.ToTable("User");
+                    b.ToTable("Users");
+                });
+
+            modelBuilder.Entity("Words.DataAccess.Models.UserWord", b =>
+                {
+                    b.Property<int>("UserId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("WordId")
+                        .HasColumnType("int");
+
+                    b.HasKey("UserId", "WordId");
+
+                    b.HasIndex("WordId");
+
+                    b.ToTable("UserWords");
                 });
 
             modelBuilder.Entity("Words.DataAccess.Models.Word", b =>
@@ -49,12 +69,10 @@ namespace Words.DataAccess.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
-                    b.Property<DateTimeOffset>("CreatedAt")
-                        .HasColumnType("datetimeoffset");
-
                     b.Property<string>("Value")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .HasMaxLength(50)
+                        .HasColumnType("nvarchar(50)");
 
                     b.Property<int>("WordCollectionId")
                         .HasColumnType("int");
@@ -75,14 +93,22 @@ namespace Words.DataAccess.Migrations
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
                     b.Property<DateTimeOffset>("CreatedAt")
-                        .HasColumnType("datetimeoffset");
+                        .HasPrecision(2)
+                        .HasColumnType("datetimeoffset(2)");
+
+                    b.Property<int>("DailyViews")
+                        .HasColumnType("int");
 
                     b.Property<int>("EnglishLevel")
                         .HasColumnType("int");
 
                     b.Property<string>("Name")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .HasMaxLength(50)
+                        .HasColumnType("nvarchar(50)");
+
+                    b.Property<int>("TotalViews")
+                        .HasColumnType("int");
 
                     b.Property<int>("UserId")
                         .HasColumnType("int");
@@ -94,7 +120,7 @@ namespace Words.DataAccess.Migrations
                     b.ToTable("Collections");
                 });
 
-            modelBuilder.Entity("Words.DataAccess.Models.WordCollectionRate", b =>
+            modelBuilder.Entity("Words.DataAccess.Models.WordCollectionRating", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -106,9 +132,10 @@ namespace Words.DataAccess.Migrations
                         .HasColumnType("int");
 
                     b.Property<DateTimeOffset>("CreatedAt")
-                        .HasColumnType("datetimeoffset");
+                        .HasPrecision(2)
+                        .HasColumnType("datetimeoffset(2)");
 
-                    b.Property<int>("Rate")
+                    b.Property<int>("Rating")
                         .HasColumnType("int");
 
                     b.Property<int>("UserId")
@@ -120,7 +147,7 @@ namespace Words.DataAccess.Migrations
 
                     b.HasIndex("UserId");
 
-                    b.ToTable("WordCollectionRates");
+                    b.ToTable("WordCollectionRatings");
                 });
 
             modelBuilder.Entity("Words.DataAccess.Models.WordTranslation", b =>
@@ -133,7 +160,8 @@ namespace Words.DataAccess.Migrations
 
                     b.Property<string>("Translation")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .HasMaxLength(50)
+                        .HasColumnType("nvarchar(50)");
 
                     b.Property<int>("WordId")
                         .HasColumnType("int");
@@ -143,6 +171,25 @@ namespace Words.DataAccess.Migrations
                     b.HasIndex("WordId");
 
                     b.ToTable("WordTranslations");
+                });
+
+            modelBuilder.Entity("Words.DataAccess.Models.UserWord", b =>
+                {
+                    b.HasOne("Words.DataAccess.Models.User", "User")
+                        .WithMany("DictionaryWords")
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.HasOne("Words.DataAccess.Models.Word", "Word")
+                        .WithMany("UserDictionaries")
+                        .HasForeignKey("WordId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("User");
+
+                    b.Navigation("Word");
                 });
 
             modelBuilder.Entity("Words.DataAccess.Models.Word", b =>
@@ -167,16 +214,16 @@ namespace Words.DataAccess.Migrations
                     b.Navigation("User");
                 });
 
-            modelBuilder.Entity("Words.DataAccess.Models.WordCollectionRate", b =>
+            modelBuilder.Entity("Words.DataAccess.Models.WordCollectionRating", b =>
                 {
                     b.HasOne("Words.DataAccess.Models.WordCollection", "Collection")
-                        .WithMany("Rates")
+                        .WithMany("Ratings")
                         .HasForeignKey("CollectionId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.HasOne("Words.DataAccess.Models.User", "User")
-                        .WithMany("CollectionRates")
+                        .WithMany("CollectionRatings")
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
@@ -189,7 +236,7 @@ namespace Words.DataAccess.Migrations
             modelBuilder.Entity("Words.DataAccess.Models.WordTranslation", b =>
                 {
                     b.HasOne("Words.DataAccess.Models.Word", "Word")
-                        .WithMany()
+                        .WithMany("Translations")
                         .HasForeignKey("WordId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
@@ -199,14 +246,23 @@ namespace Words.DataAccess.Migrations
 
             modelBuilder.Entity("Words.DataAccess.Models.User", b =>
                 {
-                    b.Navigation("CollectionRates");
+                    b.Navigation("CollectionRatings");
 
                     b.Navigation("Collections");
+
+                    b.Navigation("DictionaryWords");
+                });
+
+            modelBuilder.Entity("Words.DataAccess.Models.Word", b =>
+                {
+                    b.Navigation("Translations");
+
+                    b.Navigation("UserDictionaries");
                 });
 
             modelBuilder.Entity("Words.DataAccess.Models.WordCollection", b =>
                 {
-                    b.Navigation("Rates");
+                    b.Navigation("Ratings");
 
                     b.Navigation("Words");
                 });

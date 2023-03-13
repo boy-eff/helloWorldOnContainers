@@ -3,12 +3,13 @@ using MediatR;
 using Microsoft.EntityFrameworkCore;
 using Words.BusinessAccess.Contracts;
 using Words.BusinessAccess.Dtos;
+using Words.BusinessAccess.Dtos.WordCollection;
 using Words.BusinessAccess.Exceptions;
 using Words.DataAccess;
 
 namespace Words.BusinessAccess.Features.Collections.Queries.GetById;
 
-public class GetWordCollectionByIdQueryHandler : IRequestHandler<GetWordCollectionByIdQuery, WordCollectionDto>
+public class GetWordCollectionByIdQueryHandler : IRequestHandler<GetWordCollectionByIdQuery, WordCollectionResponseDto>
 {
     private readonly WordsDbContext _dbContext;
     private readonly IViewsCounterService _viewsCounterService;
@@ -19,7 +20,7 @@ public class GetWordCollectionByIdQueryHandler : IRequestHandler<GetWordCollecti
         _viewsCounterService = viewsCounterService;
     }
 
-    public async Task<WordCollectionDto> Handle(GetWordCollectionByIdQuery request, CancellationToken cancellationToken)
+    public async Task<WordCollectionResponseDto> Handle(GetWordCollectionByIdQuery request, CancellationToken cancellationToken)
     {
         var collection = await _dbContext.Collections
             .Include(x => x.Words)
@@ -33,6 +34,6 @@ public class GetWordCollectionByIdQueryHandler : IRequestHandler<GetWordCollecti
         
         _viewsCounterService.IncrementViewsInCollection(collection.Id);
 
-        return collection.Adapt<WordCollectionDto>();
+        return collection.Adapt<WordCollectionResponseDto>();
     }
 }

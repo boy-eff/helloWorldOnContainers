@@ -1,9 +1,11 @@
-﻿using Shared.Enums;
+﻿using System.ComponentModel.DataAnnotations.Schema;
+using Shared.Enums;
 
 namespace Words.DataAccess.Models;
 
 public class User
 {
+    [DatabaseGenerated(DatabaseGeneratedOption.None)]
     public int Id { get; set; }
     public string UserName { get; set; }
     public EnglishLevel EnglishLevel { get; set; }

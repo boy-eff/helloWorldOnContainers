@@ -48,7 +48,7 @@ public class WordCollectionController : ControllerBase
     [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status401Unauthorized)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
-    public async Task<ActionResult<WordCollectionDto>> GetByIdAsync(int id)
+    public async Task<ActionResult<WordCollectionResponseDto>> GetByIdAsync(int id)
     {
         var query = new GetWordCollectionByIdQuery(id);
         var result = await _mediator.Send(query, CancellationToken.None);
