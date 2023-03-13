@@ -14,7 +14,5 @@ public class AchievementConfiguration : IEntityTypeConfiguration<Achievement>
 
         builder.HasMany(x => x.UsersAchievements)
             .WithOne(x => x.Achievement);
-
-        builder.HasData(SeedData.Achievements);
     }
 }
