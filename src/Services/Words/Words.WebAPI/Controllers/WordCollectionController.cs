@@ -2,11 +2,10 @@
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Words.BusinessAccess.Dtos;
-using Words.BusinessAccess.Features.Collections.Commands;
+using Words.BusinessAccess.Dtos.WordCollection;
 using Words.BusinessAccess.Features.Collections.Commands.Add;
 using Words.BusinessAccess.Features.Collections.Commands.Delete;
 using Words.BusinessAccess.Features.Collections.Commands.Update;
-using Words.BusinessAccess.Features.Collections.Queries;
 using Words.BusinessAccess.Features.Collections.Queries.Get;
 using Words.BusinessAccess.Features.Collections.Queries.GetById;
 
@@ -32,7 +31,7 @@ public class WordCollectionController : ControllerBase
     [HttpGet]
     [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status401Unauthorized)]
-    public async Task<ActionResult<List<WordCollectionDto>>> GetAsync()
+    public async Task<ActionResult<List<WordCollectionResponseDto>>> GetAsync()
     {
         var query = new GetWordCollectionsQuery();
         var result = await _mediator.Send(query, CancellationToken.None);
@@ -84,10 +83,10 @@ public class WordCollectionController : ControllerBase
     [HttpPost]
     [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status401Unauthorized)]
-    public async Task<ActionResult<int>> InsertAsync([FromBody] WordCollectionCreateDto wordCollectionCreateDto)
+    public async Task<ActionResult<int>> InsertAsync([FromBody] WordCollectionRequestDto wordCollectionCreateDto)
     {
-        var query = new AddWordCollectionCommand(wordCollectionCreateDto);
-        var result = await _mediator.Send(query);
+        var command = new AddWordCollectionCommand(wordCollectionCreateDto);
+        var result = await _mediator.Send(command);
         return Ok(result);
     }
 
@@ -96,13 +95,15 @@ public class WordCollectionController : ControllerBase
     /// </summary>
     /// <response code="200">Returns updated collection id</response>
     /// <response code="401">If user is not authenticated</response>
-    [HttpPut]
+    /// <response code="404">If collection is not found</response>
+    [HttpPut("{id:int}")]
     [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status401Unauthorized)]
-    public async Task<ActionResult<int>> UpdateAsync([FromBody] WordCollectionDto wordCollectionDto)
+    [ProducesResponseType(StatusCodes.Status404NotFound)]
+    public async Task<ActionResult<int>> UpdateAsync(int id,[FromBody] WordCollectionRequestDto wordCollectionDto)
     {
-        var query = new UpdateWordCollectionCommand(wordCollectionDto);
-        var result = await _mediator.Send(query);
+        var command = new UpdateWordCollectionCommand(id, wordCollectionDto);
+        var result = await _mediator.Send(command);
         return Ok(result);
     }
 
@@ -118,8 +119,8 @@ public class WordCollectionController : ControllerBase
     [ProducesResponseType(StatusCodes.Status401Unauthorized)]
     public async Task<ActionResult<int>> DeleteAsync(int id)
     {
-        var query = new DeleteWordCollectionCommand(id);
-        var result = await _mediator.Send(query);
+        var command = new DeleteWordCollectionCommand(id);
+        var result = await _mediator.Send(command);
         return Ok(result);
     }
 }

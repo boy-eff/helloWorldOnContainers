@@ -42,26 +42,35 @@ public class ExceptionMiddleware
             case AuthorizationException:
             {
                 context.Response.StatusCode = (int)HttpStatusCode.Forbidden;
-                await context.Response.WriteAsync(exception.Message.IsNullOrEmpty() ? "Access denied" : exception.Message);
+                var message = exception.Message.IsNullOrEmpty() ? "Access denied" : exception.Message;
+                await context.Response.WriteAsync(message);
                 break;
             }
             case NotFoundException:
             {
                 context.Response.StatusCode = (int)HttpStatusCode.NotFound;
-                await context.Response.WriteAsync(exception.Message.IsNullOrEmpty() ? "Not found" : exception.Message);
+                var message = exception.Message.IsNullOrEmpty() ? "Not found" : exception.Message;
+                await context.Response.WriteAsync(message);
                 break;
             }
             case ValidationException:
             {
                 context.Response.StatusCode = (int)HttpStatusCode.BadRequest;
-                await context.Response.WriteAsync(exception.Message.IsNullOrEmpty()
-                    ? "Something went wrong"
-                    : exception.Message);
+                var message = exception.Message.IsNullOrEmpty() ? "Validation error" : exception.Message;
+                await context.Response.WriteAsync(message);
                 break;
-            };
+            }
+            case WrongActionException:
+            {
+                context.Response.StatusCode = (int)HttpStatusCode.BadRequest;
+                var message = exception.Message.IsNullOrEmpty() ? "Wrong Action" : exception.Message;
+                await context.Response.WriteAsync(message);
+                break;
+            }
             default:
             {
                 context.Response.StatusCode = (int)HttpStatusCode.InternalServerError;
+                await context.Response.WriteAsync("Internal server error");
                 break;
             }
 

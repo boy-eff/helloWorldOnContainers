@@ -1,4 +1,4 @@
-﻿namespace Words.BusinessAccess.Dtos;
+﻿namespace Words.BusinessAccess.Dtos.CollectionRating;
 
 public class CollectionRatingCreateDto
 {

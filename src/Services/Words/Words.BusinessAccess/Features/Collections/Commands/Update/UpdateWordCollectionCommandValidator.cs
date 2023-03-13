@@ -8,6 +8,6 @@ public class UpdateWordCollectionCommandValidator : AbstractValidator<UpdateWord
     public UpdateWordCollectionCommandValidator()
     {
         RuleFor(x => x.WordCollectionDto)
-            .SetValidator(new WordCollectionDtoValidator());
+            .SetValidator(new WordCollectionRequestDtoValidator());
     }
 }
