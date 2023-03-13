@@ -1,6 +1,7 @@
 ﻿using System.Reflection;
 using Achievements.Application.MassTransit.Consumers;
 using MassTransit;
+using Shared.Messages;
 
 namespace Achievements.WebAPI.Extensions;
 
@@ -26,7 +27,11 @@ public static class MassTransitExtensions
                     h.Password(password);
                 });
 
-                cfg.ConfigureEndpoints(context);
+                cfg.ReceiveEndpoint(config["RabbitMQ:ReceiveEndpoints:UserCreated"], x =>
+                {
+                    x.Bind<UserCreatedMessage>();
+                    x.ConfigureConsumer<UserCreatedMessageConsumer>(context);
+                });
             });
         });
     }

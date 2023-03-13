@@ -36,7 +36,6 @@ public static class MassTransitExtensions
                 });
                 
                 cfg.ConfigureEndpoints(context);
-                cfg.AutoStart = true;
             });
         });
     }

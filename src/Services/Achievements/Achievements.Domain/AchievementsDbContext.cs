@@ -32,8 +32,6 @@ public class AchievementsDbContext : DbContext
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         base.OnModelCreating(modelBuilder);
-        modelBuilder.Entity<AchievementLevel>().HasData(SeedData.Achievements.Select(x => x.UsersAchievements));
-        modelBuilder.Entity<Achievement>().HasData(SeedData.Achievements);
         modelBuilder.ApplyConfigurationsFromAssembly(Assembly.GetExecutingAssembly());
     }
 }
