@@ -52,6 +52,63 @@ public static class SeedData
             },
         }
     };
+
+    public static Achievement ElderAchievement { get; set; } = new()
+    {
+        Id = 2,
+        Name = "Elder",
+        Levels = new List<AchievementLevel>()
+        {
+            new AchievementLevel()
+            {
+                Experience = 1000,
+                Reward = 500,
+                Level = 1,
+                AchievementId = 2,
+                PointsToAchieve = 1
+            },
+            new AchievementLevel()
+            {
+                Experience = 1000,
+                Reward = 500,
+                Level = 2,
+                AchievementId = 2,
+                PointsToAchieve = 2
+            },
+            new AchievementLevel()
+            {
+                Experience = 1000,
+                Reward = 500,
+                Level = 3,
+                AchievementId = 2,
+                PointsToAchieve = 3
+            },
+            new AchievementLevel()
+            {
+                Experience = 1000,
+                Reward = 500,
+                Level = 4,
+                AchievementId = 2,
+                PointsToAchieve = 4
+            },
+            new AchievementLevel()
+            {
+                Experience = 1000,
+                Reward = 500,
+                Level = 5,
+                AchievementId = 2,
+                PointsToAchieve = 5
+            },
+            new AchievementLevel()
+            {
+                Experience = 100000,
+                Reward = 50000,
+                Level = 6,
+                AchievementId = 2,
+                PointsToAchieve = 10
+            },
+        }
+    };
     public static IEnumerable<Achievement> Achievements { get; } = new List<Achievement>()
     {
         CollectorAchievement
