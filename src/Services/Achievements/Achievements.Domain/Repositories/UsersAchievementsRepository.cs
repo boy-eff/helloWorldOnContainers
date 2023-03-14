@@ -1,5 +1,6 @@
 ﻿using Achievements.Domain.Contracts;
 using Achievements.Domain.Models;
+using Microsoft.EntityFrameworkCore;
 
 namespace Achievements.Domain.Repositories;
 
@@ -12,13 +13,25 @@ public class UsersAchievementsRepository : IUsersAchievementsRepository
         _dbContext = dbContext;
     }
 
-    public async Task<UsersAchievements> GetAsync(int userId, int achievementId)
+    public async Task<UsersAchievements?> GetAsync(int userId, int achievementId)
     {
         return await _dbContext.UsersAchievements.FindAsync(userId, achievementId);
+    }
+
+    public async Task<UsersAchievements?> GetWithUserAsync(int userId, int achievementId)
+    {
+        return await _dbContext.UsersAchievements
+            .Include(x => x.User)
+            .FirstOrDefaultAsync(x => x.UserId == userId && x.AchievementId == achievementId);
     }
 
     public async Task AddAsync(UsersAchievements usersAchievements)
     {
         await _dbContext.UsersAchievements.AddAsync(usersAchievements);
+    }
+
+    public void Update(UsersAchievements usersAchievement)
+    {
+        _dbContext.UsersAchievements.Update(usersAchievement);
     }
 }
