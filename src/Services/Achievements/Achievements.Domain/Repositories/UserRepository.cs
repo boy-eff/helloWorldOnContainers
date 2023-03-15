@@ -28,14 +28,9 @@ public class UserRepository : IUserRepository
     public async Task<User> GetUserWithAchievementById(int userId, int achievementId)
     {
         return await _dbContext.Users
-            .Include(u => u.UsersAchievements.Where(ua => ua.AchievementId == achievementId))
-            .ThenInclude(ua => ua.Achievement)
+            ?.Include(u => u.UsersAchievements.Where(ua => ua.AchievementId == achievementId))
+            ?.ThenInclude(ua => ua.Achievement)
             .FirstOrDefaultAsync(x => x.Id == userId);
-    }
-
-    public Task<IEnumerable<User>> GetUserWithAchievementsById()
-    {
-        throw new NotImplementedException();
     }
 
     public async Task AddAsync(User user)
