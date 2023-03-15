@@ -5,5 +5,5 @@ namespace Words.BusinessAccess.Contracts;
 
 public interface IWordCollectionTestGenerator
 {
-    Task<IEnumerable<WordCollectionTest>> GenerateTestsFromCollection(int wordCollectionId, int answerOptionsCount);
+    Task<ICollection<WordCollectionTest>> GenerateTestsFromCollection(int wordCollectionId, int answerOptionsCount);
 }

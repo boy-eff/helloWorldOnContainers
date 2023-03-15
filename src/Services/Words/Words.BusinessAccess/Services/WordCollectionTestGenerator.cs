@@ -17,7 +17,7 @@ public class WordCollectionTestGenerator : IWordCollectionTestGenerator
         _dbContext = dbContext;
     }
 
-    public async Task<IEnumerable<WordCollectionTest>> GenerateTestsFromCollection(int wordCollectionId, int answerOptionsCount)
+    public async Task<ICollection<WordCollectionTest>> GenerateTestsFromCollection(int wordCollectionId, int answerOptionsCount)
     {
         var wordCollection = await _dbContext.Collections
             .AsNoTracking()
