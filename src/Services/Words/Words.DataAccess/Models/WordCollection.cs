@@ -15,4 +15,5 @@ public class WordCollection
 
     public IList<Word> Words { get; set; }
     public ICollection<WordCollectionRating> Ratings { get; set; }
+    public ICollection<WordCollectionTestPassInformation> Tests { get; set; }
 }

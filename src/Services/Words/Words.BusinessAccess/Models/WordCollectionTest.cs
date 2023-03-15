@@ -6,5 +6,4 @@ public class WordCollectionTest
 {
     public Word Word { get; set; }
     public IList<AnswerOption> AnswerOptions { get; set; }
-    public int CorrectAnswerId { get; set; }
 }
