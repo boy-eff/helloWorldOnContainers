@@ -36,7 +36,7 @@
       ],
       "UpstreamPathTemplate": "/words/{everything}",
       "UpstreamHttpMethod": [ "Post", "Get", "Put", "Delete" ],
-      "Priority": 1,
+      "Priority": 0,
       "SwaggerKey": "words"
     },
     {
@@ -45,7 +45,7 @@
       "DownstreamHostAndPorts": [
         {
           "Host": "localhost",
-          "Port": 9001
+          "Port": 80
         }
       ],
       "UpstreamPathTemplate": "/words/collectionhub/{everything}",
