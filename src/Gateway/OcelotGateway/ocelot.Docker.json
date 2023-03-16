@@ -1,0 +1,43 @@
+﻿{
+  "Routes": [
+    {
+      "DownstreamPathTemplate": "/{everything}",
+      "DownstreamScheme": "http",
+      "DownstreamHostAndPorts": [
+        {
+          "Host": "achievements",
+          "Port": 80
+        }
+      ],
+      "UpstreamPathTemplate": "/achievements/{everything}",
+      "UpstreamHttpMethod": [ "Get" ]
+    },
+    {
+      "DownstreamPathTemplate": "/{everything}",
+      "DownstreamScheme": "http",
+      "DownstreamHostAndPorts": [
+        {
+          "Host": "identity",
+          "Port": 80
+        }
+      ],
+      "UpstreamPathTemplate": "/identity/{everything}",
+      "UpstreamHttpMethod": [ "Post", "Get" ]
+    },
+    {
+      "DownstreamPathTemplate": "/{everything}",
+      "DownstreamScheme": "http",
+      "DownstreamHostAndPorts": [
+        {
+          "Host": "words",
+          "Port": 80
+        }
+      ],
+      "UpstreamPathTemplate": "/words/{everything}",
+      "UpstreamHttpMethod": [ "Post", "Get", "Put", "Delete" ]
+    }
+  ],
+  "GlobalConfiguration": {
+    "BaseUrl": "https://localhost:5001"
+  }
+}

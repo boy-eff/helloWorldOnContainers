@@ -1,0 +1,67 @@
+﻿{
+  "Routes": [
+    {
+      "DownstreamPathTemplate": "/{everything}",
+      "DownstreamScheme": "http",
+      "DownstreamHostAndPorts": [
+        {
+          "Host": "localhost",
+          "Port": 7001
+        }
+      ],
+      "UpstreamPathTemplate": "/achievements/{everything}",
+      "UpstreamHttpMethod": [ "Get" ]
+    },
+    {
+      "DownstreamPathTemplate": "/{everything}",
+      "DownstreamScheme": "http",
+      "DownstreamHostAndPorts": [
+        {
+          "Host": "localhost",
+          "Port": 8001
+        }
+      ],
+      "UpstreamPathTemplate": "/identity/{everything}",
+      "UpstreamHttpMethod": [ "Post", "Get" ],
+      "SwaggerKey": "identity"
+    },
+    {
+      "DownstreamPathTemplate": "/{everything}",
+      "DownstreamScheme": "http",
+      "DownstreamHostAndPorts": [
+        {
+          "Host": "localhost",
+          "Port": 9001
+        }
+      ],
+      "UpstreamPathTemplate": "/words/{everything}",
+      "UpstreamHttpMethod": [ "Post", "Get", "Put", "Delete" ],
+      "SwaggerKey": "words"
+    }
+  ],
+  "SwaggerEndPoints": [
+    {
+      "Key": "identity",
+      "Config": [
+        {
+          "Name": "Identity API",
+          "Version": "v1",
+          "Url": "http://localhost:8001/swagger/v1/swagger.json"
+        }
+      ]
+    },
+    {
+      "Key": "words",
+      "Config": [
+        {
+          "Name": "Words API",
+          "Version": "v1",
+          "Url": "http://localhost:9001/swagger/v1/swagger.json"
+        }
+      ]
+    }
+  ],
+  "GlobalConfiguration": {
+    "BaseUrl": "https://localhost:5001"
+  }
+}
