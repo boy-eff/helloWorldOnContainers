@@ -7,7 +7,7 @@ FROM mcr.microsoft.com/dotnet/sdk:7.0 AS build
 WORKDIR /src
 COPY ["Gateway/OcelotGateway/OcelotGateway.csproj", "OcelotGateway/"]
 RUN dotnet restore "OcelotGateway/OcelotGateway.csproj"
-COPY . .
+COPY ./Gateway/OcelotGateway/ ./OcelotGateway
 WORKDIR "/src/OcelotGateway"
 RUN dotnet build "OcelotGateway.csproj" -c Release -o /app/build
 

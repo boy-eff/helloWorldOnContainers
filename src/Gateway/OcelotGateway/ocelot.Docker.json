@@ -22,7 +22,8 @@
         }
       ],
       "UpstreamPathTemplate": "/identity/{everything}",
-      "UpstreamHttpMethod": [ "Post", "Get" ]
+      "UpstreamHttpMethod": [ "Post", "Get" ],
+      "SwaggerKey": "identity"
     },
     {
       "DownstreamPathTemplate": "/{everything}",
@@ -34,10 +35,33 @@
         }
       ],
       "UpstreamPathTemplate": "/words/{everything}",
-      "UpstreamHttpMethod": [ "Post", "Get", "Put", "Delete" ]
+      "UpstreamHttpMethod": [ "Post", "Get", "Put", "Delete" ],
+      "SwaggerKey": "words"
+    }
+  ],
+  "SwaggerEndPoints": [
+    {
+      "Key": "identity",
+      "Config": [
+        {
+          "Name": "Identity API",
+          "Version": "v1",
+          "Url": "http://identity:80/swagger/v1/swagger.json"
+        }
+      ]
+    },
+    {
+      "Key": "words",
+      "Config": [
+        {
+          "Name": "Words API",
+          "Version": "v1",
+          "Url": "http://words:80/swagger/v1/swagger.json"
+        }
+      ]
     }
   ],
   "GlobalConfiguration": {
-    "BaseUrl": "https://localhost:5001"
+    "BaseUrl": "http://gateway:80"
   }
 }
