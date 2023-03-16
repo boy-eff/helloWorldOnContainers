@@ -21,6 +21,7 @@ app.UseSwaggerForOcelotUI(opt =>
     opt.PathToSwaggerGenerator = app.Configuration["Ocelot:PathToSwaggerGen"];
 });
 
+app.UseWebSockets();
 await app.UseOcelot();
 
 app.Run();
