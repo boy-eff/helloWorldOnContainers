@@ -16,10 +16,4 @@ public static class ListExtensions
             list[n] = value;  
         }  
     }
-
-    public static void FillWithAnswerOptions(this IEnumerable<WordCollectionTest> tests, List<string> possibleTranslations,
-        int answerOptionsCount)
-    {
-        
-    }
 }
