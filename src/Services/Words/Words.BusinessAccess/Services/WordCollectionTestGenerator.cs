@@ -38,8 +38,8 @@ public class WordCollectionTestGenerator : IWordCollectionTestGenerator
                 do
                 {
                     translationIndex = _random.Next(possibleTranslations.Count);
-                } while (usedTranslations.Contains(translationIndex) ||
-                         test.Word.Translations.Select(x => x.Translation).Contains(possibleTranslations[translationIndex]));
+                } while (usedTranslations.Contains(translationIndex) 
+                         || test.Word.Translations.Select(x => x.Translation).Contains(possibleTranslations[translationIndex]));
                 
                 usedTranslations.Add(translationIndex);
                 var answerOption = new AnswerOption() { Value = possibleTranslations[translationIndex] };
