@@ -9,7 +9,7 @@ namespace Words.BusinessAccess.Services;
 
 public class WordCollectionTestGenerator : IWordCollectionTestGenerator
 {
-    private readonly Random _random = new Random();
+    private readonly Random _random = new();
     private readonly WordsDbContext _dbContext;
 
     public WordCollectionTestGenerator(WordsDbContext dbContext)
@@ -52,23 +52,25 @@ public class WordCollectionTestGenerator : IWordCollectionTestGenerator
         return tests;
     }
 
-    private List<string> GeneratePossibleTranslations(WordCollection wordCollection) => wordCollection.Words
-        .SelectMany(x => x.Translations)
-        .Select(x => x.Translation)
-        .ToList();
+    private List<string> GeneratePossibleTranslations(WordCollection wordCollection) 
+        => wordCollection.Words
+            .SelectMany(x => x.Translations)
+            .Select(x => x.Translation)
+            .ToList();
 
-    private ICollection<WordCollectionTest> InitializeTests(WordCollection wordCollection) => wordCollection.Words
-        .OrderBy(word => _random.Next())
-        .Select(word =>
-        {
-            var randomIndex = _random.Next(word.Translations.Count);
-            return new WordCollectionTest()
+    private ICollection<WordCollectionTest> InitializeTests(WordCollection wordCollection) 
+        => wordCollection.Words
+            .OrderBy(word => _random.Next())
+            .Select(word => 
             {
-                Word = word,
-                AnswerOptions = new List<AnswerOption>()
+                var randomIndex = _random.Next(word.Translations.Count);
+                return new WordCollectionTest()
                 {
-                    new AnswerOption() { Value = word.Translations[randomIndex].Translation, IsCorrect = true }
-                }
-            };
-        }).ToList();
+                    Word = word,
+                    AnswerOptions = new List<AnswerOption>()
+                    {
+                        new AnswerOption() { Value = word.Translations[randomIndex].Translation, IsCorrect = true }
+                    }
+                };
+            }).ToList();
 }
