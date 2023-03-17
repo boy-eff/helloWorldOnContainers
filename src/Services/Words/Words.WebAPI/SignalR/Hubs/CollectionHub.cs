@@ -18,6 +18,8 @@ public class CollectionHub : Hub
     private readonly IWordCollectionTestGenerator _testGenerator;
     private readonly WordsDbContext _dbContext;
     private readonly IPublishEndpoint _publishEndpoint;
+    
+    private static string StartRoute = "Start";
 
     public CollectionHub(IConfiguration configuration, IWordCollectionTestGenerator testGenerator, WordsDbContext dbContext, IPublishEndpoint publishEndpoint)
     {
@@ -45,7 +47,7 @@ public class CollectionHub : Hub
         Context.Items.SetTestPassInformation(testPassInformation);
         
         var testDto = enumerator.Current.Adapt<WordCollectionTestQuestionDto>();
-        await Clients.Caller.SendAsync("Start", testDto, tests.Count);
+        await Clients.Caller.SendAsync(StartRoute, testDto, tests.Count);
     }
 
     public async Task<WordCollectionTestQuestionDto> ReceiveAnswerAndSendNextWord(string userAnswer)
