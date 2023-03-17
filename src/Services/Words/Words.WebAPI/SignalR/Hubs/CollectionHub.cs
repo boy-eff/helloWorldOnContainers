@@ -6,6 +6,7 @@ using Shared.Messages;
 using Words.BusinessAccess.Contracts;
 using Words.BusinessAccess.Dtos;
 using Words.BusinessAccess.Extensions;
+using Words.BusinessAccess.Models;
 using Words.DataAccess;
 using Words.DataAccess.Models;
 
@@ -18,8 +19,8 @@ public class CollectionHub : Hub
     private readonly IWordCollectionTestGenerator _testGenerator;
     private readonly WordsDbContext _dbContext;
     private readonly IPublishEndpoint _publishEndpoint;
-    
-    private static string StartRoute = "Start";
+
+    private const string StartRoute = "Start";
 
     public CollectionHub(IConfiguration configuration, IWordCollectionTestGenerator testGenerator, WordsDbContext dbContext, IPublishEndpoint publishEndpoint)
     {
@@ -31,16 +32,15 @@ public class CollectionHub : Hub
 
     public override async Task OnConnectedAsync()
     {
-        var routeParam = _configuration["SignalR:CollectionIdParameterName"];
-        var answerOptionsCount = Convert.ToInt32(_configuration["SignalR:AnswerOptionsCount"]);
-        var collectionId = Convert.ToInt32(this.Context.GetHttpContext().GetRouteValue(routeParam));
+
+        var answerOptionsCount = GetAnswerOptionsCountFromConfiguration();
+        var collectionId = GetCollectionIdFromHttpContext();
         
         Context.Items.SetCollectionId(collectionId);
         
         var tests = await _testGenerator.GenerateTestsFromCollection(collectionId, answerOptionsCount);
-        
-        var enumerator = tests.GetEnumerator();
-        enumerator.MoveNext();
+
+        var enumerator = InitializeEnumerator(tests);
         Context.Items.SetTestEnumerator(enumerator);
 
         var testPassInformation = new WordCollectionTestPassInformation() { UserId = Context.User.GetUserId(), WordCollectionId = collectionId };
@@ -55,16 +55,12 @@ public class CollectionHub : Hub
         var testEnumerator = Context.Items.GetTestEnumerator();
         var collectionId = Context.Items.GetCollectionId();
         var test = testEnumerator.Current;
-        
-        var correctAnswer = test.AnswerOptions.FirstOrDefault(x => x.IsCorrect).Value;
+
+        var correctAnswer = test.GetCorrectAnswerOptionValue();
         var question = new WordCollectionTestQuestion(collectionId, correctAnswer, userAnswer);
         var testPassInformation = Context.Items.GetTestPassInformation();
-        testPassInformation.TotalQuestions++;
-        if (question.IsCorrect)
-        {
-            testPassInformation.CorrectAnswersAmount++;
-        }
-        testPassInformation.Questions.Add(question);
+        
+        testPassInformation.AddAnswerToTestPassInformation(question);
         
         Context.Items.SetTestPassInformation(testPassInformation);
         
@@ -76,9 +72,33 @@ public class CollectionHub : Hub
         }
         
         await _dbContext.WordCollectionTestPassInformation.AddAsync(testPassInformation);
-        var message = testPassInformation.Adapt<WordCollectionTestPassedMessage>();
-        await _publishEndpoint.Publish(message);
+        await PublishTestPassedMessage(testPassInformation);
         await _dbContext.SaveChangesAsync();
         return null;
+    }
+
+    private int GetCollectionIdFromHttpContext()
+    {
+        var routeParam = _configuration["SignalR:CollectionIdParameterName"];
+        var httpContext = Context.GetHttpContext();
+        return Convert.ToInt32(httpContext.GetRouteValue(routeParam));
+    }
+
+    private int GetAnswerOptionsCountFromConfiguration()
+    {
+        return Convert.ToInt32(_configuration["SignalR:AnswerOptionsCount"]);
+    }
+
+    private IEnumerator<WordCollectionTest> InitializeEnumerator(IEnumerable<WordCollectionTest> tests)
+    {
+        var enumerator = tests.GetEnumerator();
+        enumerator.MoveNext();
+        return enumerator;
+    }
+
+    private async Task PublishTestPassedMessage(WordCollectionTestPassInformation testPassInformation)
+    {
+        var message = testPassInformation.Adapt<WordCollectionTestPassedMessage>();
+        await _publishEndpoint.Publish(message);
     }
 }
