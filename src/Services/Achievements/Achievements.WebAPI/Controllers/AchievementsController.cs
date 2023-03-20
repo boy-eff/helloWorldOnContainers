@@ -1,10 +1,12 @@
 ﻿using Achievements.Domain;
 using Achievements.Domain.Models;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Achievements.WebAPI.Controllers;
 
 [ApiController]
+[Authorize]
 [Route("api/achievements")]
 public class AchievementsController: ControllerBase
 {

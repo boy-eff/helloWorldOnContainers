@@ -1,10 +1,12 @@
 ﻿using Achievements.Application.Contracts;
 using Achievements.Application.Dtos;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Achievements.WebAPI.Controllers;
 
 [ApiController]
+[Authorize]
 [Route("api/users")]
 public class UsersController: ControllerBase
 {

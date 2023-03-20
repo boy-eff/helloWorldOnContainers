@@ -2,7 +2,6 @@
 using Achievements.Domain;
 using Achievements.Domain.Contracts;
 using MassTransit;
-using Microsoft.Extensions.Caching.Distributed;
 using Shared.Messages;
 
 namespace Achievements.Application.MassTransit.Consumers;
@@ -11,12 +10,10 @@ public class WordAddedToDictionaryMessageConsumer : IConsumer<WordAddedToDiction
 {
     private readonly IUnitOfWork _unitOfWork;
     private readonly IUsersAchievementsService _usersAchievementsService;
-    private readonly IDistributedCache _distributedCache;
 
-    public WordAddedToDictionaryMessageConsumer(IUnitOfWork unitOfWork, IDistributedCache distributedCache, IUsersAchievementsService usersAchievementsService)
+    public WordAddedToDictionaryMessageConsumer(IUnitOfWork unitOfWork, IUsersAchievementsService usersAchievementsService)
     {
         _unitOfWork = unitOfWork;
-        _distributedCache = distributedCache;
         _usersAchievementsService = usersAchievementsService;
     }
 
