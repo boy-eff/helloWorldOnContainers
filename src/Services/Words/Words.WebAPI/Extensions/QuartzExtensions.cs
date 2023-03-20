@@ -26,12 +26,12 @@ public static class QuartzExtensions
                 .WithIdentity(updateDailyWordCollectionJobName + "Trigger")
                 .WithCronSchedule(config["Quartz:UpdateDailyWordCollectionJob:Schedule"]));
 
-            var checkForGameAnniversaryJobName = nameof(CheckForGameAnniversaryJob);
-            q.AddJob<CheckForGameAnniversaryJob>(opt => opt.WithIdentity(checkForGameAnniversaryJobName));
+            var checkAppAnniversaryJobName = nameof(CheckForAppAnniversaryJob);
+            q.AddJob<CheckForAppAnniversaryJob>(opt => opt.WithIdentity(checkAppAnniversaryJobName));
 
             q.AddTrigger(opts => opts
-                .ForJob(checkForGameAnniversaryJobName)
-                .WithIdentity(checkForGameAnniversaryJobName + "Trigger")
+                .ForJob(checkAppAnniversaryJobName)
+                .WithIdentity(checkAppAnniversaryJobName + "Trigger")
                 .WithCronSchedule(config["Quartz:CheckForGameAnniversaryJob:Schedule"]));
         });
         

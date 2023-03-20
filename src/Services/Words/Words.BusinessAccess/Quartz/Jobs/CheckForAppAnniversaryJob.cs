@@ -2,16 +2,18 @@
 using Microsoft.EntityFrameworkCore;
 using Quartz;
 using Shared.Messages;
+using Words.BusinessAccess.Extensions;
 using Words.DataAccess;
+using Words.DataAccess.Models;
 
 namespace Words.BusinessAccess.Quartz.Jobs;
 
-public class CheckForGameAnniversaryJob : IJob
+public class CheckForAppAnniversaryJob : IJob
 {
     private readonly WordsDbContext _dbContext;
     private readonly IPublishEndpoint _publishEndpoint;
 
-    public CheckForGameAnniversaryJob(WordsDbContext dbContext, IPublishEndpoint publishEndpoint)
+    public CheckForAppAnniversaryJob(WordsDbContext dbContext, IPublishEndpoint publishEndpoint)
     {
         _dbContext = dbContext;
         _publishEndpoint = publishEndpoint;
@@ -20,9 +22,12 @@ public class CheckForGameAnniversaryJob : IJob
     public async Task Execute(IJobExecutionContext context)
     {
         var currentDate = DateTime.Today;
-        var users = await _dbContext.Users
-            .Where(x => x.CreatedAt.Day == currentDate.Day && x.CreatedAt.Month == currentDate.Month)
-            .ToListAsync();
+        var users = new List<User>();
+        
+        AddLeapYearUsers(currentDate, users);
+        
+        users.AddRange(_dbContext.Users
+                .Where(x => x.CreatedAt.Day == currentDate.Day && x.CreatedAt.Month == currentDate.Month)); 
 
         foreach (var user in users)
         {
@@ -39,6 +44,15 @@ public class CheckForGameAnniversaryJob : IJob
                 Years = yearsAmount
             };
             await _publishEndpoint.Publish(message);
+        }
+    }
+
+    private void AddLeapYearUsers(DateTime date, List<User> users)
+    {
+        if (date.IsFirstOfApril())
+        {
+            users.AddRange(_dbContext.Users
+                .Where(x => x.CreatedAt.IsLastOfLeapFebruary()));
         }
     }
 }
