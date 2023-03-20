@@ -46,6 +46,22 @@ services:
       - 5341:80
     restart: unless-stopped
 
+  achievements:
+    container_name: Achievements
+    build:
+      context: "."
+      dockerfile: /Services/Achievements/Achievements.WebAPI/Dockerfile
+    depends_on:
+      - postgres
+      - logMonitor
+      - rabbitmq
+      - redis
+    ports: 
+      - 7001:80
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Docker
+    restart: unless-stopped
+
   identity:
     container_name: Identity
     build:

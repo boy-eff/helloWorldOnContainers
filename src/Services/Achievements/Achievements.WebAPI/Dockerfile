@@ -5,16 +5,20 @@ EXPOSE 443
 
 FROM mcr.microsoft.com/dotnet/sdk:7.0 AS build
 WORKDIR /src
-COPY ["Users.WebAPI/Users.WebAPI.csproj", "Users.WebAPI/"]
-RUN dotnet restore "Users.WebAPI/Users.WebAPI.csproj"
-COPY . .
-WORKDIR "/src/Users.WebAPI"
-RUN dotnet build "Users.WebAPI.csproj" -c Release -o /app/build
+COPY ["Services/Achievements/Achievements.WebAPI/Achievements.WebAPI.csproj", "Services/Achievements/Achievements.WebAPI/"]
+COPY ["Services/Achievements/Achievements.Application/Achievements.Application.csproj", "Services/Achievements/Achievements.Application/"]
+COPY ["Services/Achievements/Achievements.Domain/Achievements.Domain.csproj", "Services/Achievements/Achievements.Domain/"]
+COPY ["Shared/Shared.csproj", "Shared/"]
+RUN dotnet restore "Services/Achievements/Achievements.WebAPI/Achievements.WebAPI.csproj"
+COPY ./Services/Achievements/ ./Services/Achievements/
+COPY ./Shared/ ./Shared
+WORKDIR "/src/Services/Achievements/Achievements.WebAPI"
+RUN dotnet build "Achievements.WebAPI.csproj" -c Debug -o /app/build
 
 FROM build AS publish
-RUN dotnet publish "Users.WebAPI.csproj" -c Release -o /app/publish
+RUN dotnet publish "Achievements.WebAPI.csproj" -c Debug -o /app/publish
 
 FROM base AS final
 WORKDIR /app
 COPY --from=publish /app/publish .
-ENTRYPOINT ["dotnet", "Users.WebAPI.dll"]
+ENTRYPOINT ["dotnet", "Achievements.WebAPI.dll"]
