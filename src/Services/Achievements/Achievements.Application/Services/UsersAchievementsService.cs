@@ -1,7 +1,9 @@
 ﻿using Achievements.Application.Contracts;
+using Achievements.Application.Dtos;
 using Achievements.Application.Extensions;
 using Achievements.Domain.Contracts;
 using Achievements.Domain.Models;
+using Mapster;
 
 namespace Achievements.Application.Services;
 
@@ -31,9 +33,16 @@ public class UsersAchievementsService : IUsersAchievementsService
         await _unitOfWork.SaveChangesAsync();
     }
 
+    public async Task<IEnumerable<UsersAchievementsDto>> GetUserAchievementsByIdAsync(int userId)
+    {
+        var usersAchievements = await _unitOfWork.UsersAchievementsRepository.GetByUserAsync(userId);
+        return usersAchievements.Adapt<IEnumerable<UsersAchievementsDto>>();
+    }
+    
     private void UpdateUsersAchievementsLevel(UsersAchievements usersAchievements, AchievementLevel achievementLevel)
     {
         usersAchievements.CurrentLevel = achievementLevel.Level;
+        usersAchievements.AchieveDate = DateTime.Now;
         _unitOfWork.UsersAchievementsRepository.Update(usersAchievements);
     }
 

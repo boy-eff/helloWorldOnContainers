@@ -16,11 +16,14 @@ builder.Services.AddScoped<IUserRepository, UserRepository>();
 builder.Services.AddScoped<IUsersAchievementsRepository, UsersAchievementsRepository>();
 builder.Services.AddScoped<IAchievementLevelRepository, AchievementLevelRepository>();
 builder.Services.AddScoped<IUsersAchievementsService, UsersAchievementsService>();
+builder.Services.AddControllers();
 
 builder.Services.ConfigureRedis(config);
 builder.Services.ConfigureMassTransit(config);
 
 var app = builder.Build();
+
+app.MapControllers();
 
 var cache = app.Services.GetService<IDistributedCache>();
 await cache.SetAsync<IEnumerable<Achievement>>(nameof(Achievement), SeedData.Achievements);

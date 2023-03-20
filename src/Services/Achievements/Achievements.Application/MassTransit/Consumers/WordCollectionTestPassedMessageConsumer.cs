@@ -19,7 +19,7 @@ public class WordCollectionTestPassedMessageConsumer : IConsumer<WordCollectionT
 
     public async Task Consume(ConsumeContext<WordCollectionTestPassedMessage> context)
     {
-        var creatorAchievement = SeedData.QuizConqueror;
+        var creatorAchievement = SeedData.QuizConquerorAchievement;
         var achievementId = creatorAchievement.Id;
         var user = await _unitOfWork.UserRepository.GetUserByIdAsync(context.Message.UserId);
         user.CollectionTestsPassedAmount++;

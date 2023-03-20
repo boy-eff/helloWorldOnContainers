@@ -102,7 +102,7 @@ public static class SeedData
         }
     };
     
-    public static Achievement QuizConqueror { get; } = new()
+    public static Achievement QuizConquerorAchievement { get; } = new()
     {
         Id = 1,
         Name = "Quiz Conqueror",
@@ -209,6 +209,9 @@ public static class SeedData
     };
     public static IEnumerable<Achievement> Achievements { get; } = new List<Achievement>()
     {
-        CollectorAchievement
+        CollectorAchievement,
+        ElderAchievement,
+        QuizConquerorAchievement,
+        CreatorAchievement
     };
 }

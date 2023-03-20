@@ -18,11 +18,12 @@ public class UsersAchievementsRepository : IUsersAchievementsRepository
         return await _dbContext.UsersAchievements.FindAsync(achievementId, userId);
     }
 
-    public async Task<UsersAchievements?> GetWithUserAsync(int userId, int achievementId)
+    public async Task<IEnumerable<UsersAchievements>> GetByUserAsync(int userId)
     {
         return await _dbContext.UsersAchievements
-            .Include(x => x.User)
-            .FirstOrDefaultAsync(x => x.UserId == userId && x.AchievementId == achievementId);
+            .Where(x => x.UserId == userId)
+            .AsNoTracking()
+            .ToListAsync();
     }
 
     public async Task AddAsync(UsersAchievements usersAchievements)
