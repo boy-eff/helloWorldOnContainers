@@ -4,24 +4,22 @@
 ### Services:
 * Identity,
 * Words,
-* Competition.
+* Achievements.
 
 ### Use cases:
 * `All roles` authenticate using login and password credentials,
 * `User` creates and browses collections of words,
 * `User` adds favourite words from collections to dictionary,
-* `User` competes in words learning with another one in real time,
-* `Moderator` checks `User` collections for mistakes,
-* `SuperAdmin` appoints `Moderators`.
+* `User` learns words using word tests,
 
 ### Technologies:
 * `IdentityServer4` - user authentication and authorization,
-* `SignalR` - real time words competitions,
+* `SignalR` - real time words tests passing,
 * `Ocelot` - API Gateway,
-* `RabbitMQ?` - message broker,
+* `RabbitMQ` - message broker,
 * `Docker` - containerize services,
 * `Swagger` - API documentation,
-* `Hangfire` - updating `collection of the week`.
+* `Quartz` - updating `collection of the week`, amount of views of collections and publishing user anniversary message.
 
 ### Application scheme<br>
 ![alt text](helloWorldOnContainers.drawio.png)
