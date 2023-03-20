@@ -1,4 +1,6 @@
+using Achievements.Application.Contracts;
 using Achievements.Application.Extensions;
+using Achievements.Application.Services;
 using Achievements.Domain;
 using Achievements.Domain.Contracts;
 using Achievements.Domain.Models;
@@ -13,6 +15,7 @@ builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
 builder.Services.AddScoped<IUserRepository, UserRepository>();
 builder.Services.AddScoped<IUsersAchievementsRepository, UsersAchievementsRepository>();
 builder.Services.AddScoped<IAchievementLevelRepository, AchievementLevelRepository>();
+builder.Services.AddScoped<IUsersAchievementsService, UsersAchievementsService>();
 
 builder.Services.ConfigureRedis(config);
 builder.Services.ConfigureMassTransit(config);

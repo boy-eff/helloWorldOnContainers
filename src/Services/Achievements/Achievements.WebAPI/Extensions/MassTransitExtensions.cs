@@ -32,6 +32,24 @@ public static class MassTransitExtensions
                     x.Bind<UserCreatedMessage>();
                     x.ConfigureConsumer<UserCreatedMessageConsumer>(context);
                 });
+                
+                cfg.ReceiveEndpoint(config["RabbitMQ:ReceiveEndpoints:WordAddedToDictionary"], x =>
+                {
+                    x.Bind<WordAddedToDictionaryMessage>();
+                    x.ConfigureConsumer<WordAddedToDictionaryMessageConsumer>(context);
+                });
+                
+                cfg.ReceiveEndpoint(config["RabbitMQ:ReceiveEndpoints:WordCollectionCreated"], x =>
+                {
+                    x.Bind<WordCollectionCreatedMessage>();
+                    x.ConfigureConsumer<WordCollectionCreatedMessageConsumer>(context);
+                });
+                
+                cfg.ReceiveEndpoint(config["RabbitMQ:ReceiveEndpoints:WordCollectionTestPassed"], x =>
+                {
+                    x.Bind<WordCollectionTestPassedMessage>();
+                    x.ConfigureConsumer<WordCollectionTestPassedMessageConsumer>(context);
+                });
             });
         });
     }

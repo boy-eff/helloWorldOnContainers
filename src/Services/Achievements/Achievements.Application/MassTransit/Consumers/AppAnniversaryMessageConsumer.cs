@@ -1,18 +1,24 @@
-﻿using Achievements.Domain;
+﻿using Achievements.Application.Contracts;
+using Achievements.Domain;
 using Achievements.Domain.Contracts;
 using Achievements.Domain.Models;
 using MassTransit;
+using Microsoft.Extensions.Logging;
 using Shared.Messages;
 
 namespace Achievements.Application.MassTransit.Consumers;
 
 public class AppAnniversaryMessageConsumer : IConsumer<AppAnniversaryMessage>
 {
+    private readonly IUsersAchievementsService _usersAchievementsService;
     private readonly IUnitOfWork _unitOfWork;
+    private readonly ILogger<AppAnniversaryMessageConsumer> _logger;
 
-    public AppAnniversaryMessageConsumer(IUnitOfWork unitOfWork)
+    public AppAnniversaryMessageConsumer(IUsersAchievementsService usersAchievementsService, IUnitOfWork unitOfWork, ILogger<AppAnniversaryMessageConsumer> logger)
     {
+        _usersAchievementsService = usersAchievementsService;
         _unitOfWork = unitOfWork;
+        _logger = logger;
     }
 
     public async Task Consume(ConsumeContext<AppAnniversaryMessage> context)
@@ -24,27 +30,16 @@ public class AppAnniversaryMessageConsumer : IConsumer<AppAnniversaryMessage>
             return;
         }
 
-        var achievementId = SeedData.ElderAchievement.Id;
-        var usersAchievement =
-            await _unitOfWork.UsersAchievementsRepository.GetWithUserAsync(context.Message.UserId, achievementId);
+        var user = await _unitOfWork.UserRepository.GetUserByIdAsync(context.Message.UserId);
 
-
-        if (usersAchievement is null)
+        if (user is null)
         {
-            usersAchievement = new UsersAchievements()
-            {
-                AchievementId = achievementId,
-                UserId = context.Message.UserId,
-                CurrentLevel = achievementLevel.Level
-            };
-            _unitOfWork.UsersAchievementsRepository.Update(usersAchievement);
-        }
-        else
-        {
-            usersAchievement.CurrentLevel = achievementLevel.Level;
-            await _unitOfWork.UsersAchievementsRepository.AddAsync(usersAchievement);
+            _logger.LogError("User with id {id} is not found", context.Message.UserId);
+            throw new Exception();
         }
         
-        await _unitOfWork.SaveChangesAsync();
+        var achievementId = SeedData.ElderAchievement.Id;
+        await _usersAchievementsService.UpdateUsersAchievementsLevelAsync(user, achievementId,
+            achievementLevel);
     }
 }

@@ -9,5 +9,5 @@ public class UsersAchievements
     public Achievement Achievement { get; set; }
 
     public int CurrentLevel { get; set; }
-    public DateTimeOffset AchieveDate { get; set; }
+    public DateTime AchieveDate { get; set; }
 }
