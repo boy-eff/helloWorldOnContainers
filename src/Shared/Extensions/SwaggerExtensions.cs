@@ -1,14 +1,15 @@
 ﻿using System.Reflection;
 using IdentityServer4.AccessTokenValidation;
-using Microsoft.Net.Http.Headers;
+using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.DependencyInjection;
 using Microsoft.OpenApi.Models;
-using Words.WebAPI.Swagger;
+using Shared.Swagger;
 
-namespace Words.WebAPI.Extensions;
+namespace Shared.Extensions;
 
 public static class SwaggerExtensions
 {
-    public static void ConfigureSwagger(this IServiceCollection services, ConfigurationManager config)
+    public static void ConfigureSwagger(this IServiceCollection services, IConfiguration config)
     {
         services.AddSwaggerGen(options =>
         {

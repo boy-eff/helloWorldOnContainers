@@ -1,4 +1,5 @@
 using FluentValidation;
+using Shared.Extensions;
 using Words.BusinessAccess.Contracts;
 using Words.BusinessAccess.Extensions;
 using Words.BusinessAccess.ModelValidators;

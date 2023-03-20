@@ -7,6 +7,7 @@ using Achievements.Domain.Models;
 using Achievements.Domain.Repositories;
 using Achievements.WebAPI.Extensions;
 using Microsoft.Extensions.Caching.Distributed;
+using Shared.Extensions;
 
 var builder = WebApplication.CreateBuilder(args);
 var config = builder.Configuration;
@@ -17,11 +18,18 @@ builder.Services.AddScoped<IUsersAchievementsRepository, UsersAchievementsReposi
 builder.Services.AddScoped<IAchievementLevelRepository, AchievementLevelRepository>();
 builder.Services.AddScoped<IUsersAchievementsService, UsersAchievementsService>();
 builder.Services.AddControllers();
+builder.Services.ConfigureSwagger(builder.Configuration);
 
 builder.Services.ConfigureRedis(config);
 builder.Services.ConfigureMassTransit(config);
 
 var app = builder.Build();
+
+if (!app.Environment.IsProduction())
+{
+    app.UseSwagger();
+    app.UseSwaggerUI();
+}
 
 app.MapControllers();
 
