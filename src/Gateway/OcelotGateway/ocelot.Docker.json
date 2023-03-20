@@ -10,7 +10,8 @@
         }
       ],
       "UpstreamPathTemplate": "/achievements/{everything}",
-      "UpstreamHttpMethod": [ "Get" ]
+      "UpstreamHttpMethod": [ "Get" ],
+      "SwaggerKey": "achievements"
     },
     {
       "DownstreamPathTemplate": "/{everything}",
@@ -54,6 +55,16 @@
     }
   ],
   "SwaggerEndPoints": [
+    {
+      "Key": "achievements",
+      "Config": [
+        {
+          "Name": "Achievements API",
+          "Version": "v1",
+          "Url": "http://achievements:80/swagger/v1/swagger.json"
+        }
+      ]
+    },
     {
       "Key": "identity",
       "Config": [
