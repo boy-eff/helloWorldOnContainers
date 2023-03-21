@@ -2,18 +2,18 @@
 
 public static class DateTimeExtensions
 {
-    private static int _aprilMonthNumber = 3;
-    private static int _firstDayInMonth = 1;
-    private static int _februaryMonthNumber = 2;
-    private static int _februaryLastDayInMonth = 29;
+    private const int _marchMonthNumber = 3;
+    private const int _firstDayInMonth = 1;
+    private const int _februaryMonthNumber = 2;
+    private const int _februaryLastDayInMonthLeap = 29;
     
-    public static bool IsFirstOfApril(this DateTime dateTime)
+    public static bool IsFirstOfMarch(this DateTime dateTime)
     {
-        return dateTime.Day == _firstDayInMonth && dateTime.Month == _aprilMonthNumber;
+        return dateTime.Day == _firstDayInMonth && dateTime.Month == _marchMonthNumber;
     }
     
-    public static bool IsLastOfLeapFebruary(this DateTimeOffset dateTime)
+    public static bool IsLastDayOfLeapFebruary(this DateTimeOffset dateTime)
     {
-        return dateTime.Day == _februaryLastDayInMonth && dateTime.Month == _februaryMonthNumber;
+        return dateTime.Day == _februaryLastDayInMonthLeap && dateTime.Month == _februaryMonthNumber;
     }
 }

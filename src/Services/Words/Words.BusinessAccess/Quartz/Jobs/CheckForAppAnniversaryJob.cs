@@ -32,7 +32,7 @@ public class CheckForAppAnniversaryJob : IJob
         foreach (var user in users)
         {
             var yearsAmount = currentDate.Year - user.CreatedAt.Year;
-            
+
             if (yearsAmount <= 0)
             {
                 continue;
@@ -49,10 +49,10 @@ public class CheckForAppAnniversaryJob : IJob
 
     private void AddLeapYearUsers(DateTime date, List<User> users)
     {
-        if (date.IsFirstOfApril())
+        if (date.IsFirstOfMarch())
         {
             users.AddRange(_dbContext.Users
-                .Where(x => x.CreatedAt.IsLastOfLeapFebruary()));
+                .Where(x => x.CreatedAt.IsLastDayOfLeapFebruary()));
         }
     }
 }
