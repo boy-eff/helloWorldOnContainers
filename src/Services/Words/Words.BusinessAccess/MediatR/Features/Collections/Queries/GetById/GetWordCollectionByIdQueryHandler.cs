@@ -1,9 +1,9 @@
 ﻿using Mapster;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
+using Shared.Exceptions;
 using Words.BusinessAccess.Contracts;
 using Words.BusinessAccess.Dtos.WordCollection;
-using Words.BusinessAccess.Exceptions;
 using Words.DataAccess;
 
 namespace Words.BusinessAccess.MediatR.Features.Collections.Queries.GetById;

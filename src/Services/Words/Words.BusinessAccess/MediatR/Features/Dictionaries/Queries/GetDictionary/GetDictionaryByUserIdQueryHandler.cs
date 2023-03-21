@@ -2,7 +2,7 @@
 using MediatR;
 using Microsoft.EntityFrameworkCore;
 using Words.BusinessAccess.Dtos;
-using Words.BusinessAccess.Exceptions;
+using Shared.Exceptions;
 using Words.DataAccess;
 
 namespace Words.BusinessAccess.MediatR.Features.Dictionaries.Queries.GetDictionary;

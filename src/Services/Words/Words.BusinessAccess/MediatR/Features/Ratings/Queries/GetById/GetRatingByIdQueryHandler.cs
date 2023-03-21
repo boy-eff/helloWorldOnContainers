@@ -1,7 +1,7 @@
 ﻿using Mapster;
 using MediatR;
 using Words.BusinessAccess.Dtos.CollectionRating;
-using Words.BusinessAccess.Exceptions;
+using Shared.Exceptions;
 using Words.DataAccess;
 
 namespace Words.BusinessAccess.MediatR.Features.Ratings.Queries.GetById;

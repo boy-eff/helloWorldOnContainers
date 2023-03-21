@@ -1,6 +1,6 @@
 ﻿using MediatR;
 using Microsoft.AspNetCore.Http;
-using Words.BusinessAccess.Exceptions;
+using Shared.Exceptions;
 using Words.BusinessAccess.Extensions;
 using Words.DataAccess;
 
