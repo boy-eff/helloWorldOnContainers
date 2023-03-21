@@ -22,7 +22,6 @@ public class UsersController: ControllerBase
     /// </summary>
     /// <response code="200">Returns list of achievements</response>
     /// <response code="401">If user is not authenticated</response>
-    /// <response code="404">If achievement is not found</response>
     [HttpGet("{id:int}/achievements")]
     [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
