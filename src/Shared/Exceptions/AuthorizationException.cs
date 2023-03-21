@@ -1,4 +1,4 @@
-﻿namespace Words.BusinessAccess.Exceptions;
+﻿namespace Shared.Exceptions;
 
 public class AuthorizationException : Exception
 {

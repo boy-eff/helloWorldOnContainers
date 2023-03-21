@@ -1,10 +1,11 @@
 ﻿using System.Net;
 using FluentValidation;
+using Microsoft.AspNetCore.Http;
+using Microsoft.Extensions.Logging;
 using Microsoft.IdentityModel.Tokens;
-using Words.BusinessAccess.Exceptions;
-using Words.WebAPI.Models;
+using Shared.Exceptions;
 
-namespace Words.WebAPI.Middleware;
+namespace Shared.Middleware;
 
 public class ExceptionMiddleware
 {
