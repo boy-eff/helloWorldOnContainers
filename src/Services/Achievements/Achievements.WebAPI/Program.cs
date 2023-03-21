@@ -1,6 +1,7 @@
 using Achievements.Domain;
 using Achievements.WebAPI.Extensions;
 using Shared.Extensions;
+using Shared.Middleware;
 using Words.WebAPI.Extensions;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -13,6 +14,9 @@ builder.Services.ConfigureMassTransit(config);
 builder.Services.ConfigureAuthentication(config);
 
 var app = builder.Build();
+app.UseMiddleware<ExceptionMiddleware>();
+
+AppContext.SetSwitch(config["Switches:NpgsqlLegacyTimestampBehavior"], true);
 
 if (!app.Environment.IsProduction())
 {
