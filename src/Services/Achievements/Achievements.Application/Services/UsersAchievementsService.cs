@@ -1,9 +1,12 @@
 ﻿using Achievements.Application.Contracts;
 using Achievements.Application.Dtos;
 using Achievements.Application.Extensions;
+using Achievements.Domain;
 using Achievements.Domain.Contracts;
 using Achievements.Domain.Models;
 using Mapster;
+using Microsoft.IdentityModel.Tokens;
+using Shared.Exceptions;
 
 namespace Achievements.Application.Services;
 
@@ -16,9 +19,18 @@ public class UsersAchievementsService : IUsersAchievementsService
         _unitOfWork = unitOfWork;
     }
 
-    public async Task UpdateUsersAchievementsLevelAsync(User user, int achievementId, AchievementLevel achievementLevel)
+    public async Task<UsersAchievements?> UpsertUsersAchievementsLevelAsync(User user, int achievementId)
     {
+        var achievementLevel = SeedData.CollectorAchievement.Levels
+            .FirstOrDefault(x => x.PointsToAchieve == user.GetAchievementPoints(achievementId));
+
+        if (achievementLevel is null)
+        {
+            return null;
+        }
+        
         var usersAchievements = await _unitOfWork.UsersAchievementsRepository.GetAsync(achievementId, user.Id);
+        
 
         if (usersAchievements is null)
         {
@@ -31,6 +43,7 @@ public class UsersAchievementsService : IUsersAchievementsService
         
         user.AddBalanceAndExperience(achievementLevel.Reward, achievementLevel.Experience);
         await _unitOfWork.SaveChangesAsync();
+        return usersAchievements;
     }
 
     public async Task<IEnumerable<UsersAchievementsDto>> GetUserAchievementsByIdAsync(int userId)

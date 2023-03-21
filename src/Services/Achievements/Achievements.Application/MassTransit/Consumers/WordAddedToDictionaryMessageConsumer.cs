@@ -19,20 +19,14 @@ public class WordAddedToDictionaryMessageConsumer : IConsumer<WordAddedToDiction
 
     public async Task Consume(ConsumeContext<WordAddedToDictionaryMessage> context)
     {
-        var collectorAchievement = SeedData.CollectorAchievement;
-        var achievementId = collectorAchievement.Id;
         var user = await _unitOfWork.UserRepository.GetUserByIdAsync(context.Message.DictionaryOwnerId);
         user.WordsInDictionaryAmount++;
-        
-        var achievementLevel = SeedData.CollectorAchievement.Levels
-            .FirstOrDefault(x => x.PointsToAchieve == user.WordsInDictionaryAmount);
 
-        if (achievementLevel is null)
+        var result = await _usersAchievementsService.UpsertUsersAchievementsLevelAsync(user, SeedData.CollectorAchievement.Id);
+        
+        if (result is null)
         {
             await _unitOfWork.SaveChangesAsync();
-            return;
         }
-        
-        await _usersAchievementsService.UpdateUsersAchievementsLevelAsync(user, achievementId, achievementLevel);
     }
 }

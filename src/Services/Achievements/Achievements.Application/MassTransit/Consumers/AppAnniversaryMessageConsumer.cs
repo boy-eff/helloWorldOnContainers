@@ -23,14 +23,8 @@ public class AppAnniversaryMessageConsumer : IConsumer<AppAnniversaryMessage>
 
     public async Task Consume(ConsumeContext<AppAnniversaryMessage> context)
     {
-        var achievementLevel = SeedData.ElderAchievement.Levels.FirstOrDefault(x => x.PointsToAchieve == context.Message.Years);
-        
-        if (achievementLevel is null)
-        {
-            return;
-        }
-
         var user = await _unitOfWork.UserRepository.GetUserByIdAsync(context.Message.UserId);
+        user.YearsInAppAmount = context.Message.Years;
 
         if (user is null)
         {
@@ -38,8 +32,11 @@ public class AppAnniversaryMessageConsumer : IConsumer<AppAnniversaryMessage>
             throw new Exception();
         }
         
-        var achievementId = SeedData.ElderAchievement.Id;
-        await _usersAchievementsService.UpdateUsersAchievementsLevelAsync(user, achievementId,
-            achievementLevel);
+        var result = await _usersAchievementsService.UpsertUsersAchievementsLevelAsync(user, SeedData.ElderAchievement.Id);
+
+        if (result is null)
+        {
+            await _unitOfWork.SaveChangesAsync();
+        }
     }
 }

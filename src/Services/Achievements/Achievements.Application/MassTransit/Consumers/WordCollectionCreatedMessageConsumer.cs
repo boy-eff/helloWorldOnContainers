@@ -19,20 +19,14 @@ public class WordCollectionCreatedMessageConsumer : IConsumer<WordCollectionCrea
 
     public async Task Consume(ConsumeContext<WordCollectionCreatedMessage> context)
     {
-        var creatorAchievement = SeedData.CreatorAchievement;
-        var achievementId = creatorAchievement.Id;
         var user = await _unitOfWork.UserRepository.GetUserByIdAsync(context.Message.CreatorId);
         user.CollectionsCreatedAmount++;
-        
-        var achievementLevel = creatorAchievement.Levels
-            .FirstOrDefault(x => x.PointsToAchieve == user.WordsInDictionaryAmount);
 
-        if (achievementLevel is null)
+        var result = await _usersAchievementsService.UpsertUsersAchievementsLevelAsync(user, SeedData.CreatorAchievement.Id);
+
+        if (result is null)
         {
             await _unitOfWork.SaveChangesAsync();
-            return;
         }
-
-        await _usersAchievementsService.UpdateUsersAchievementsLevelAsync(user, achievementId, achievementLevel);
     }
 }

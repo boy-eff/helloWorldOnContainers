@@ -9,6 +9,7 @@ public class User
     public int WordsInDictionaryAmount { get; set; }
     public int CollectionsCreatedAmount { get; set; }
     public int CollectionTestsPassedAmount { get; set; }
+    public int YearsInAppAmount { get; set; }
     public int CurrentStreak { get; set; }
 
     public ICollection<UsersAchievements> UsersAchievements { get; set; }
