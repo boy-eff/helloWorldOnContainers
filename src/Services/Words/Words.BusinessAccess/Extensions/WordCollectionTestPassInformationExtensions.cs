@@ -8,7 +8,7 @@ public static class WordCollectionTestPassInformationExtensions
         WordCollectionTestQuestion question)
     {
         testPassInformation.TotalQuestions++;
-        if (question.IsCorrect)
+        if (question.IsUserAnswerCorrect())
         {
             testPassInformation.CorrectAnswersAmount++;
         }

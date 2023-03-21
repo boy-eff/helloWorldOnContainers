@@ -7,7 +7,6 @@ public class WordCollectionTestQuestion
         WordCollectionTestPassInformationId = wordCollectionTestPassInformationId;
         CorrectAnswer = correctAnswer;
         UserAnswer = userAnswer;
-        IsCorrect = correctAnswer == userAnswer;
     }
 
     public int Id { get; set; }
@@ -17,5 +16,4 @@ public class WordCollectionTestQuestion
     
     public string CorrectAnswer { get; set; }
     public string UserAnswer { get; set; }
-    public bool IsCorrect { get; set; }
 }
