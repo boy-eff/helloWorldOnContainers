@@ -22,9 +22,9 @@ public class UpdateViewsJob : IJob
 
     public async Task Execute(IJobExecutionContext context)
     {
+        _logger.LogInformation("{JobName} job started", context.JobDetail.Key.Name);
         var views = _viewsCounterService.GetViewsAndFlush();
         var wordCollections = _dbContext.Collections.Where(x => views.Keys.Contains(x.Id));
-        _logger.LogInformation("Start updating views of word collections");
         foreach (var collection in wordCollections)
         {
             collection.DailyViews += views[collection.Id];
@@ -33,6 +33,6 @@ public class UpdateViewsJob : IJob
 
         await _dbContext.SaveChangesAsync();
 
-        _logger.LogInformation("End updating views of word collection");
+        _logger.LogInformation("{JobName} job finished", context.JobDetail.Key.Name);
     }
 }

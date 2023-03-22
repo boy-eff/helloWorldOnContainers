@@ -1,5 +1,7 @@
 using FluentValidation;
+using Serilog;
 using Shared.Extensions;
+using Shared.Middleware;
 using Words.BusinessAccess.Contracts;
 using Words.BusinessAccess.Extensions;
 using Words.BusinessAccess.ModelValidators;
@@ -7,7 +9,6 @@ using Words.BusinessAccess.Services;
 using Words.DataAccess;
 using Words.DataAccess.Extensions;
 using Words.WebAPI.Extensions;
-using Words.WebAPI.Middleware;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -33,6 +34,9 @@ builder.Services.RegisterMapsterConfiguration();
 
 var app = builder.Build();
 app.UseMiddleware<ExceptionMiddleware>();
+
+app.UseSerilogRequestLogging(x => x.Logger = app.Services.GetService<Serilog.ILogger>());
+
 
 if (!app.Environment.IsProduction())
 {
