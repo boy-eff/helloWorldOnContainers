@@ -20,13 +20,20 @@ public class WordCollectionCreatedMessageConsumer : IConsumer<WordCollectionCrea
     public async Task Consume(ConsumeContext<WordCollectionCreatedMessage> context)
     {
         var user = await _unitOfWork.UserRepository.GetUserByIdAsync(context.Message.CreatorId);
-        user.CollectionsCreatedAmount++;
 
-        var result = await _usersAchievementsService.UpsertUsersAchievementsLevelAsync(user, SeedData.CreatorAchievement.Id);
-
-        if (result is null)
+        await using var transaction = await _unitOfWork.BeginTransactionAsync();
+        try
         {
+            user.CollectionsCreatedAmount++;
             await _unitOfWork.SaveChangesAsync();
+        
+            var result = await _usersAchievementsService.UpsertUsersAchievementsLevelAsync(user, SeedData.ElderAchievement.Id);
+            await _unitOfWork.CommitAsync();
+        }
+        catch(Exception ex)
+        {
+            await _unitOfWork.RollbackAsync();
+            throw;
         }
     }
 }

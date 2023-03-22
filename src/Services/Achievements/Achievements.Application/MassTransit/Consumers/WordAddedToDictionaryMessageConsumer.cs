@@ -20,13 +20,20 @@ public class WordAddedToDictionaryMessageConsumer : IConsumer<WordAddedToDiction
     public async Task Consume(ConsumeContext<WordAddedToDictionaryMessage> context)
     {
         var user = await _unitOfWork.UserRepository.GetUserByIdAsync(context.Message.DictionaryOwnerId);
-        user.WordsInDictionaryAmount++;
 
-        var result = await _usersAchievementsService.UpsertUsersAchievementsLevelAsync(user, SeedData.CollectorAchievement.Id);
-        
-        if (result is null)
+        await using var transaction = await _unitOfWork.BeginTransactionAsync();
+        try
         {
+            user.WordsInDictionaryAmount++;
             await _unitOfWork.SaveChangesAsync();
+        
+            var result = await _usersAchievementsService.UpsertUsersAchievementsLevelAsync(user, SeedData.ElderAchievement.Id);
+            await _unitOfWork.CommitAsync();
+        }
+        catch(Exception ex)
+        {
+            await _unitOfWork.RollbackAsync();
+            throw;
         }
     }
 }
