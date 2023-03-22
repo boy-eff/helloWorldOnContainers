@@ -23,8 +23,7 @@ public class UsersController: ControllerBase
     /// <response code="200">Returns list of achievements</response>
     /// <response code="401">If user is not authenticated</response>
     [HttpGet("{id:int}/achievements")]
-    [ProducesResponseType(StatusCodes.Status200OK)]
-    [ProducesResponseType(StatusCodes.Status404NotFound)]
+    [ProducesResponseType(StatusCodes.Status200OK)] 
     [ProducesResponseType(StatusCodes.Status401Unauthorized)]
     public async Task<ActionResult<IEnumerable<UsersAchievementsDto>>> GetByCollectionIdAsync(int id)
     {
