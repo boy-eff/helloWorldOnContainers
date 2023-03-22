@@ -1,5 +1,4 @@
 ﻿using MassTransit;
-using Microsoft.EntityFrameworkCore;
 using Quartz;
 using Shared.Messages;
 using Words.BusinessAccess.Extensions;
