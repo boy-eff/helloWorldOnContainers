@@ -1,4 +1,5 @@
 ﻿using System.Reflection;
+using MassTransit;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Words.DataAccess.Models;
@@ -25,6 +26,8 @@ public class WordsDbContext : DbContext
     public virtual DbSet<WordTranslation> WordTranslations { get; set; }
     public virtual DbSet<WordCollection> Collections { get; set; }
     public virtual DbSet<WordCollectionRating> WordCollectionRatings { get; set; }
+    public virtual DbSet<WordCollectionTestPassInformation> WordCollectionTestPassInformation { get; set; }
+    public virtual DbSet<WordCollectionTestQuestion> WordCollectionTestQuestions { get; set; }
 
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
     {
@@ -34,6 +37,9 @@ public class WordsDbContext : DbContext
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         base.OnModelCreating(modelBuilder);
+        modelBuilder.AddInboxStateEntity();
+        modelBuilder.AddOutboxMessageEntity();
+        modelBuilder.AddOutboxStateEntity();
         modelBuilder.ApplyConfigurationsFromAssembly(Assembly.GetExecutingAssembly());
     }
 }

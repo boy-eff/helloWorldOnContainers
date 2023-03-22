@@ -1,7 +1,9 @@
 ﻿using System.Reflection;
 using MassTransit;
+using Shared.Messages;
 using Words.BusinessAccess.MassTransit.Consumers;
 using Words.BusinessAccess.MassTransit.Filters;
+using Words.DataAccess;
 
 namespace Words.WebAPI.Extensions;
 
@@ -17,6 +19,15 @@ public static class MassTransitExtensions
             var username = config["RabbitMQ:Username"];
             var password = config["RabbitMQ:Password"];
             
+            x.AddEntityFrameworkOutbox<WordsDbContext>(o =>
+            {
+                o.UseSqlServer();
+                
+                o.QueryDelay = TimeSpan.FromSeconds(1);
+                
+                o.UseBusOutbox();
+            });
+            
             x.AddConsumers(assembly);
 
             x.UsingRabbitMq((context, cfg) => {
@@ -25,8 +36,13 @@ public static class MassTransitExtensions
                     h.Password(password);
                 });
 
-                cfg.UseConsumeFilter(typeof(LoggingFilter<>), context);
-                cfg.ConfigureEndpoints(context);
+                cfg.UseConsumeFilter(typeof(LoggingFilter<>), context); 
+                
+                cfg.ReceiveEndpoint(config["RabbitMQ:ReceiveEndpoints:UserCreated"], x =>
+                {
+                    x.Bind<UserCreatedMessage>();
+                    x.ConfigureConsumer<UserCreatedMessageConsumer>(context);
+                });
             });
         });
     }

@@ -21,6 +21,6 @@ public class UserCreatedMessageConsumer : IConsumer<UserCreatedMessage>
     {
         var user = context.Message.Adapt<User>();
         await _dbContext.Users.AddAsync(user);
-        await _dbContext.SaveChangesWithIdentityInsert<User>();
+        await _dbContext.SaveChangesAsync();
     }
 }

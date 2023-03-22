@@ -45,7 +45,7 @@ public class UserService : IUserService
                 };
             }
 
-            var message = appUserDto.Adapt<UserCreatedMessage>();
+            var message = appUser.Adapt<UserCreatedMessage>();
 
             await _publishEndpoint.Publish(message);
 

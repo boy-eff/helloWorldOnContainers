@@ -1,5 +1,7 @@
 using FluentValidation;
+using Shared.Extensions;
 using Words.BusinessAccess.Contracts;
+using Words.BusinessAccess.Extensions;
 using Words.BusinessAccess.ModelValidators;
 using Words.BusinessAccess.Services;
 using Words.DataAccess;
@@ -20,8 +22,14 @@ builder.Services.ConfigureMediatR();
 builder.ConfigureLogger();
 builder.Services.AddSingleton<IViewsCounterService, ViewsCounterService>();
 builder.Services.AddSingleton<IDailyWordCollectionService, DailyWordCollectionService>();
+builder.Services.AddScoped<IWordCollectionTestGenerator, WordCollectionTestGenerator>();
 builder.Services.ConfigureQuartz(builder.Configuration);
 builder.Services.ConfigureMassTransit(builder.Configuration);
+builder.Services.AddSignalR(options =>
+{
+    options.EnableDetailedErrors = true;
+});
+builder.Services.RegisterMapsterConfiguration();
 
 var app = builder.Build();
 app.UseMiddleware<ExceptionMiddleware>();
@@ -36,6 +44,7 @@ app.UseAuthentication();
 app.UseAuthorization();
 
 app.MapControllers();
+app.UseSignalR();
 
 app.ApplyMigrations();
 

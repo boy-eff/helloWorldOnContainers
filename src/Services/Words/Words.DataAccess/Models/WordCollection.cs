@@ -13,6 +13,7 @@ public class WordCollection
     public int UserId { get; set; }
     public User User { get; set; }
 
-    public ICollection<Word> Words { get; set; }
+    public IList<Word> Words { get; set; }
     public ICollection<WordCollectionRating> Ratings { get; set; }
+    public ICollection<WordCollectionTestPassInformation> Tests { get; set; }
 }

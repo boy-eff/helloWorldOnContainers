@@ -1,6 +1,7 @@
 ﻿using MediatR;
-using Words.BusinessAccess.Features.Collections.Queries.Get;
 using Words.BusinessAccess.MediatR;
+using Words.BusinessAccess.MediatR.Features.Collections.Queries.Get;
+using Words.BusinessAccess.MediatR.Middleware;
 
 namespace Words.WebAPI.Extensions;
 
