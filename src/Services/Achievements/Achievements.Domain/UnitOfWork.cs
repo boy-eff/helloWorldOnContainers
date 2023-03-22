@@ -1,5 +1,6 @@
 ﻿using Achievements.Domain.Contracts;
 using Achievements.Domain.Repositories;
+using Microsoft.EntityFrameworkCore.Storage;
 
 namespace Achievements.Domain;
 
@@ -54,6 +55,11 @@ public class UnitOfWork : IUnitOfWork
     public async Task RollbackAsync()
     {
         await _dbContext.Database.RollbackTransactionAsync();
+    }
+
+    public async Task<IDbContextTransaction> BeginTransactionAsync()
+    {
+        return await _dbContext.Database.BeginTransactionAsync();
     }
 
     public async Task SaveChangesAsync()

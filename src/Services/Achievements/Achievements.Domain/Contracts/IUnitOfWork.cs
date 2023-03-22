@@ -1,4 +1,6 @@
-﻿namespace Achievements.Domain.Contracts;
+﻿using Microsoft.EntityFrameworkCore.Storage;
+
+namespace Achievements.Domain.Contracts;
 
 public interface IUnitOfWork
 {
@@ -9,5 +11,6 @@ public interface IUnitOfWork
     void Rollback();
     Task CommitAsync();
     Task RollbackAsync();
+    Task<IDbContextTransaction> BeginTransactionAsync();
     Task SaveChangesAsync();
 }

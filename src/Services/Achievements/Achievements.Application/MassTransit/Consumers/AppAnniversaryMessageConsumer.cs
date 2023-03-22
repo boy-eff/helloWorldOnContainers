@@ -1,7 +1,6 @@
 ﻿using Achievements.Application.Contracts;
 using Achievements.Domain;
 using Achievements.Domain.Contracts;
-using Achievements.Domain.Models;
 using MassTransit;
 using Microsoft.Extensions.Logging;
 using Shared.Messages;
@@ -24,19 +23,20 @@ public class AppAnniversaryMessageConsumer : IConsumer<AppAnniversaryMessage>
     public async Task Consume(ConsumeContext<AppAnniversaryMessage> context)
     {
         var user = await _unitOfWork.UserRepository.GetUserByIdAsync(context.Message.UserId);
-        user.YearsInAppAmount = context.Message.Years;
 
-        if (user is null)
+        await using var transaction = await _unitOfWork.BeginTransactionAsync();
+        try
         {
-            _logger.LogError("User with id {id} is not found", context.Message.UserId);
-            throw new Exception();
-        }
-        
-        var result = await _usersAchievementsService.UpsertUsersAchievementsLevelAsync(user, SeedData.ElderAchievement.Id);
-
-        if (result is null)
-        {
+            user.YearsInAppAmount = context.Message.Years;
             await _unitOfWork.SaveChangesAsync();
+        
+            var result = await _usersAchievementsService.UpsertUsersAchievementsLevelAsync(user, SeedData.ElderAchievement.Id);
+            await _unitOfWork.CommitAsync();
+        }
+        catch(Exception ex)
+        {
+            await _unitOfWork.RollbackAsync();
+            throw;
         }
     }
 }
