@@ -14,22 +14,13 @@ public static class UserExtensions
     public static int GetAchievementPoints(this User user, int achievementId)
     {
         var achievementType = (AchievementType)achievementId;
-        switch (achievementType)
+        return achievementType switch
         {
-            case AchievementType.Collector:
-                return user.WordsInDictionaryAmount;
-                break;
-            case AchievementType.Creator:
-                return user.CollectionsCreatedAmount;
-                break;
-            case AchievementType.QuizConqueror:
-                return user.CollectionTestsPassedAmount;
-                break;
-            case AchievementType.Elder:
-                return user.YearsInAppAmount;
-                break;
-            default:
-                throw new ArgumentOutOfRangeException(nameof(achievementType), achievementType, null);
-        }
+            AchievementType.Collector => user.WordsInDictionaryAmount,
+            AchievementType.Creator => user.CollectionsCreatedAmount,
+            AchievementType.QuizConqueror => user.CollectionTestsPassedAmount,
+            AchievementType.Elder => user.YearsInAppAmount,
+            _ => throw new ArgumentOutOfRangeException(nameof(achievementType), achievementType, null)
+        };
     }
 }
