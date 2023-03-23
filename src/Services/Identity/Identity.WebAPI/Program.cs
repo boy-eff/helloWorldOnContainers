@@ -4,6 +4,7 @@ using Identity.Infrastructure.Data;
 using Identity.Infrastructure.Extensions;
 using Identity.WebAPI.Extensions;
 using Identity.WebAPI.Middleware;
+using Serilog;
 
 var builder = WebApplication.CreateBuilder(args);
 var config = builder.Configuration;
@@ -21,9 +22,12 @@ builder.Services.ConfigureIdentity();
 builder.Services.ConfigureIdentityServer(config);
 builder.Services.ConfigureCors(env);
 builder.Services.ConfigureMassTransit(config);
+builder.ConfigureLogger();
 
 var app = builder.Build();
 app.UseMiddleware<ExceptionMiddleware>();
+
+app.UseSerilogRequestLogging(x => x.Logger = app.Services.GetService<Serilog.ILogger>());
 
 if (!app.Environment.IsProduction())
 {

@@ -1,14 +1,14 @@
 ﻿using MassTransit;
 using Microsoft.Extensions.Logging;
 
-namespace Words.BusinessAccess.MassTransit.Filters;
+namespace Shared.MassTransit.Filters;
 
-public class LoggingFilter<T> : IFilter<ConsumeContext<T>>
+public class ConsumeLoggingFilter<T> : IFilter<ConsumeContext<T>>
     where T : class
 {
-    private readonly ILogger<LoggingFilter<T>> _logger;
+    private readonly ILogger<ConsumeLoggingFilter<T>> _logger;
 
-    public LoggingFilter(ILogger<LoggingFilter<T>> logger)
+    public ConsumeLoggingFilter(ILogger<ConsumeLoggingFilter<T>> logger)
     {
         _logger = logger;
     }

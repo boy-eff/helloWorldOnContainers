@@ -1,8 +1,8 @@
 ﻿using System.Reflection;
 using MassTransit;
+using Shared.MassTransit.Filters;
 using Shared.Messages;
 using Words.BusinessAccess.MassTransit.Consumers;
-using Words.BusinessAccess.MassTransit.Filters;
 using Words.DataAccess;
 
 namespace Words.WebAPI.Extensions;
@@ -36,7 +36,8 @@ public static class MassTransitExtensions
                     h.Password(password);
                 });
 
-                cfg.UseConsumeFilter(typeof(LoggingFilter<>), context); 
+                cfg.UseConsumeFilter(typeof(ConsumeLoggingFilter<>), context);
+                cfg.UsePublishFilter(typeof(PublishLoggingFilter<>), context);
                 
                 cfg.ReceiveEndpoint(config["RabbitMQ:ReceiveEndpoints:UserCreated"], x =>
                 {

@@ -73,7 +73,10 @@ public class UsersController : ControllerBase
     public async Task<IActionResult> GetUserByIdAsync(int id)
     {
         var serviceResult = await _userService.GetUserByIdAsync(id);
-        if (serviceResult.Succeeded) return Ok(serviceResult.Value);
+        if (serviceResult.Succeeded)
+        {
+            return Ok(serviceResult.Value);
+        }
         if (serviceResult.Errors[0].StatusCode == ServiceErrorStatusCode.NotFound)
         {
             return NotFound(serviceResult.Errors[0].Message);
