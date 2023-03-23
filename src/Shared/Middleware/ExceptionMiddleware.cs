@@ -63,6 +63,13 @@ public class ExceptionMiddleware
                 await context.Response.WriteAsync(message);
                 break;
             }
+            case ForbiddenException:
+            {
+                context.Response.StatusCode = (int)HttpStatusCode.Forbidden;
+                var message = exception.Message.IsNullOrEmpty() ? "Forbidden" : exception.Message;
+                await context.Response.WriteAsync(message);
+                break;
+            }
             default:
             {
                 _logger.LogError(exception.Message);

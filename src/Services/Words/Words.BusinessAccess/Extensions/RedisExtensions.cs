@@ -2,14 +2,16 @@
 using System.Text.Json;
 using System.Text.Json.Serialization;
 using Microsoft.Extensions.Caching.Distributed;
+using Words.DataAccess.Models;
 
-namespace Achievements.Application.Extensions;
+namespace Words.BusinessAccess.Extensions;
 
 public static class RedisExtensions
 {
     public static Task SetAsync<T>(this IDistributedCache cache, string key, T value)
     {
-        return SetAsync(cache, key, value, new DistributedCacheEntryOptions());
+        var options = new DistributedCacheEntryOptions();
+        return SetAsync(cache, key, value, options);
     }
     
     public static Task SetAsync<T>(this IDistributedCache cache, string key, T value, DistributedCacheEntryOptions options)
@@ -26,6 +28,7 @@ public static class RedisExtensions
         value = JsonSerializer.Deserialize<T>(val, GetJsonSerializerOptions());
         return true;
     }
+    
     private static JsonSerializerOptions GetJsonSerializerOptions()
     {
         return new JsonSerializerOptions()
@@ -34,6 +37,7 @@ public static class RedisExtensions
             WriteIndented = true,
             AllowTrailingCommas = true,
             DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull,
+            ReferenceHandler = ReferenceHandler.Preserve
         };
     }
 }

@@ -13,7 +13,6 @@ using Words.WebAPI.Extensions;
 var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddControllers();
-builder.Services.AddEndpointsApiExplorer();
 builder.Services.ConfigureSwagger(builder.Configuration);
 builder.Services.AddDbContext<WordsDbContext>();
 builder.Services.AddHttpContextAccessor();
@@ -26,11 +25,9 @@ builder.Services.AddSingleton<IDailyWordCollectionService, DailyWordCollectionSe
 builder.Services.AddScoped<IWordCollectionTestGenerator, WordCollectionTestGenerator>();
 builder.Services.ConfigureQuartz(builder.Configuration);
 builder.Services.ConfigureMassTransit(builder.Configuration);
-builder.Services.AddSignalR(options =>
-{
-    options.EnableDetailedErrors = true;
-});
+builder.Services.AddSignalR();
 builder.Services.RegisterMapsterConfiguration();
+builder.Services.ConfigureRedis(builder.Configuration);
 
 var app = builder.Build();
 
@@ -53,5 +50,3 @@ app.UseSignalR();
 app.ApplyMigrations();
 
 app.Run();
-
-public partial class Program { }
