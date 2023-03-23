@@ -45,7 +45,7 @@ public class UserService : IUserService
                 }
             };
         }
-        _logger.LogInformation("User with id {Id} successfully created", appUser.Id);
+        _logger.LogInformation("User with id {Id} was successfully created", appUser.Id);
 
         var message = appUser.Adapt<UserCreatedMessage>();
 
@@ -63,16 +63,16 @@ public class UserService : IUserService
         var user = await _userManager.FindByIdAsync(id.ToString());
         if (user is null)
         {
-            _logger.LogInformation("User with id {Id} is not found", id);
+            _logger.LogInformation("User with id {Id} was not found", id);
             return new ServiceResult<AppUserDto>()
             {
                 Errors = new List<ServiceError>
                 {
-                    new ServiceError(ServiceErrorStatusCode.NotFound, "User is not found")
+                    new ServiceError(ServiceErrorStatusCode.NotFound, "User was not found")
                 }
             };
         }
-        _logger.LogInformation("User with id {Id} is found", id);
+        _logger.LogInformation("User with id {Id} was successfully retrieved", id);
         var userDto = user.Adapt<AppUserDto>();
         return new ServiceResult<AppUserDto>()
         {
@@ -84,7 +84,7 @@ public class UserService : IUserService
     {
         var users = await _userManager.Users.ToListAsync();
         var usersDto = users.Adapt<List<AppUserDto>>();
-        _logger.LogInformation("Users successfully retrieved");
+        _logger.LogInformation("Users was successfully retrieved");
         return new ServiceResult<List<AppUserDto>>()
         {
             Value = usersDto

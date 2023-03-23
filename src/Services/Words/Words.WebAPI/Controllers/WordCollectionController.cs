@@ -95,10 +95,12 @@ public class WordCollectionController : ControllerBase
     /// </summary>
     /// <response code="200">Returns updated collection id</response>
     /// <response code="401">If user is not authenticated</response>
+    /// <response code="403">If user has no permission to update collection</response>
     /// <response code="404">If collection is not found</response>
     [HttpPut("{id:int}")]
     [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+    [ProducesResponseType(StatusCodes.Status403Forbidden)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
     public async Task<ActionResult<int>> UpdateAsync(int id,[FromBody] WordCollectionRequestDto wordCollectionDto)
     {

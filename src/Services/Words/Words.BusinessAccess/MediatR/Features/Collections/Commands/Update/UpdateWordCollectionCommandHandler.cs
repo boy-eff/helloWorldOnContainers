@@ -3,6 +3,7 @@ using MediatR;
 using Microsoft.AspNetCore.Http;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Caching.Distributed;
+using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using Shared.Exceptions;
 using Words.BusinessAccess.Dtos.WordCollection;
@@ -20,14 +21,19 @@ public class UpdateWordCollectionCommandHandler : IRequestHandler<UpdateWordColl
     private readonly WordsDbContext _dbContext;
     private readonly IDistributedCache _cache;
     private readonly IOptions<WordsRedisCacheOptions> _wordsRedisCacheOptions;
+    private readonly ILogger<UpdateWordCollectionCommandHandler> _logger;
 
     public UpdateWordCollectionCommandHandler(IHttpContextAccessor httpContextAccessor,
-        WordsDbContext dbContext, IDistributedCache cache, IOptions<WordsRedisCacheOptions> wordsRedisCacheOptions)
+        WordsDbContext dbContext, 
+        IDistributedCache cache, 
+        IOptions<WordsRedisCacheOptions> wordsRedisCacheOptions, 
+        ILogger<UpdateWordCollectionCommandHandler> logger)
     {
         _httpContextAccessor = httpContextAccessor;
         _dbContext = dbContext;
         _cache = cache;
         _wordsRedisCacheOptions = wordsRedisCacheOptions;
+        _logger = logger;
     }
 
     public async Task<WordCollectionResponseDto> Handle(UpdateWordCollectionCommand request, CancellationToken cancellationToken)
@@ -46,17 +52,21 @@ public class UpdateWordCollectionCommandHandler : IRequestHandler<UpdateWordColl
         
         if (existingWordCollection is null)
         {
-            throw new NotFoundException($"Collection with id {request.Id} is not found");
+            _logger.LogInformation("Updating failed: Collection with id {CollectionId} was not found", request.Id);
+            throw new NotFoundException($"Collection with id {request.Id} was not found");
         }
 
         if (existingWordCollection.UserId != userId)
         {
+            _logger.LogInformation("Updating failed: User with id {UserId} has no permission to update {CollectionId}", userId, request.Id);
             throw new ForbiddenException($"Cannot update collection with id {existingWordCollection.Id}");
         }
 
         var wordCollection = request.WordCollectionDto.Adapt(existingWordCollection);
         _dbContext.Collections.Update(wordCollection);
         await _dbContext.SaveChangesAsync(cancellationToken);
+        
+        _logger.LogInformation("Word collection with id {CollectionId} was successfully updated", wordCollection.Id);
 
         if (!isCollectionInCache)
         {
@@ -66,6 +76,8 @@ public class UpdateWordCollectionCommandHandler : IRequestHandler<UpdateWordColl
         var cacheOptions = new DistributedCacheEntryOptions()
             { SlidingExpiration = TimeSpan.FromMinutes(_wordsRedisCacheOptions.Value.SlidingExpirationTimeInMinutes) };
         await _cache.SetAsync(cacheKey, wordCollection, cacheOptions);
+        
+        _logger.LogInformation("Updated word collection with id {CollectionId} was successfully cached after updating", wordCollection.Id);
 
         return wordCollection.Adapt<WordCollectionResponseDto>();
     }
