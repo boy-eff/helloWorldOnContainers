@@ -1,5 +1,6 @@
 using FluentValidation;
 using Shared.Extensions;
+using Shared.Middleware;
 using Words.BusinessAccess.Contracts;
 using Words.BusinessAccess.Extensions;
 using Words.BusinessAccess.ModelValidators;
@@ -7,12 +8,10 @@ using Words.BusinessAccess.Services;
 using Words.DataAccess;
 using Words.DataAccess.Extensions;
 using Words.WebAPI.Extensions;
-using Words.WebAPI.Middleware;
 
 var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddControllers();
-builder.Services.AddEndpointsApiExplorer();
 builder.Services.ConfigureSwagger(builder.Configuration);
 builder.Services.AddDbContext<WordsDbContext>();
 builder.Services.AddHttpContextAccessor();
@@ -25,11 +24,9 @@ builder.Services.AddSingleton<IDailyWordCollectionService, DailyWordCollectionSe
 builder.Services.AddScoped<IWordCollectionTestGenerator, WordCollectionTestGenerator>();
 builder.Services.ConfigureQuartz(builder.Configuration);
 builder.Services.ConfigureMassTransit(builder.Configuration);
-builder.Services.AddSignalR(options =>
-{
-    options.EnableDetailedErrors = true;
-});
+builder.Services.AddSignalR();
 builder.Services.RegisterMapsterConfiguration();
+builder.Services.ConfigureRedis(builder.Configuration);
 
 var app = builder.Build();
 app.UseMiddleware<ExceptionMiddleware>();
@@ -49,5 +46,3 @@ app.UseSignalR();
 app.ApplyMigrations();
 
 app.Run();
-
-public partial class Program { }

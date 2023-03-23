@@ -2,6 +2,7 @@
 using Microsoft.Extensions.Logging;
 using Quartz;
 using Words.BusinessAccess.Contracts;
+using Words.BusinessAccess.Extensions;
 using Words.DataAccess;
 
 namespace Words.BusinessAccess.Quartz.Jobs;
@@ -25,8 +26,13 @@ public class UpdateDailyWordCollectionJob : IJob
     public async Task Execute(IJobExecutionContext context)
     {
         _logger.LogInformation("Start updating daily word collection");
-        var maxViews = _dbContext.Collections.Max(x => x.DailyViews);
-        var dailyWordCollection = await _dbContext.Collections.FirstOrDefaultAsync(x => x.DailyViews >= maxViews);
+        
+        var dailyWordCollection = await _dbContext.Collections
+            .Include(x => x.Words)
+            .ThenInclude(x => x.Translations)
+            .FirstOrDefaultAsync(x 
+                => x.DailyViews == _dbContext.Collections.Max(x => x.DailyViews));
+
         _dailyWordCollectionService.DailyWordCollection = dailyWordCollection;
         _logger.LogInformation("Daily word collection is {dailyWordCollection} with id {id}", dailyWordCollection.Name, dailyWordCollection.Id);
         await _dbContext.Collections.ForEachAsync(x => x.DailyViews = 0);

@@ -33,6 +33,14 @@ public static class QuartzExtensions
                 .ForJob(checkAppAnniversaryJobName)
                 .WithIdentity(checkAppAnniversaryJobName + "Trigger")
                 .WithCronSchedule(config["Quartz:CheckForGameAnniversaryJob:Schedule"]));
+            
+            var updateCachedCollectionsJobName = nameof(UpdateCachedCollectionsJob);
+            q.AddJob<UpdateCachedCollectionsJob>(opt => opt.WithIdentity(updateCachedCollectionsJobName));
+
+            q.AddTrigger(opts => opts
+                .ForJob(updateCachedCollectionsJobName)
+                .WithIdentity(updateCachedCollectionsJobName + "Trigger")
+                .WithCronSchedule(config["Quartz:UpdateCachedCollectionsJob:Schedule"]));
         });
         
         services.AddQuartzHostedService(q =>
