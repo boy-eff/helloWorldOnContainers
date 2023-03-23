@@ -19,20 +19,25 @@ public class CollectionHub : Hub
     private readonly IWordCollectionTestGenerator _testGenerator;
     private readonly WordsDbContext _dbContext;
     private readonly IPublishEndpoint _publishEndpoint;
+    private readonly ILogger<CollectionHub> _logger;
 
     private const string StartRoute = "Start";
 
-    public CollectionHub(IConfiguration configuration, IWordCollectionTestGenerator testGenerator, WordsDbContext dbContext, IPublishEndpoint publishEndpoint)
+    public CollectionHub(IConfiguration configuration, IWordCollectionTestGenerator testGenerator, WordsDbContext dbContext, IPublishEndpoint publishEndpoint, ILogger<CollectionHub> logger)
     {
         _configuration = configuration;
         _testGenerator = testGenerator;
         _dbContext = dbContext;
         _publishEndpoint = publishEndpoint;
+        _logger = logger;
     }
 
     public override async Task OnConnectedAsync()
     {
-
+        var userId = Context.User.GetUserId();
+        _logger.LogInformation("SignalR | Connection with id {ConnectionId} has been started with user {UserId}",
+            Context.ConnectionId, userId);
+        
         var answerOptionsCount = GetAnswerOptionsCountFromConfiguration();
         var collectionId = GetCollectionIdFromHttpContext();
         
@@ -48,13 +53,30 @@ public class CollectionHub : Hub
         
         var testDto = enumerator.Current.Adapt<WordCollectionTestQuestionDto>();
         await Clients.Caller.SendAsync(StartRoute, testDto, tests.Count);
+        _logger.LogInformation("SignalR | Connection id: {ConnectionId} | Test passing has been started with user {UserId}",
+            Context.ConnectionId, userId);
+    }
+
+    public override async Task OnDisconnectedAsync(Exception exception)
+    {
+        _logger.LogInformation("Connection {ConnectionId} has been closed", Context.ConnectionId);
+        await base.OnDisconnectedAsync(exception);
     }
 
     public async Task<WordCollectionTestQuestionDto> ReceiveAnswerAndSendNextWord(string userAnswer)
     {
+        var userId = Context.User.GetUserId();
+        _logger.LogInformation("SignalR | Connection id: {ConnectionId} | Answer {UserAnswer} received from user {UserId}: ", 
+            Context.ConnectionId, userAnswer, userId);
         var testEnumerator = Context.Items.GetTestEnumerator();
         var collectionId = Context.Items.GetCollectionId();
         var test = testEnumerator.Current;
+
+        if (testEnumerator.Current is null)
+        {
+            Context.Abort();
+            return null;
+        }
 
         var correctAnswer = test.GetCorrectAnswerOptionValue();
         var question = new WordCollectionTestQuestion(collectionId, correctAnswer, userAnswer);
@@ -68,12 +90,16 @@ public class CollectionHub : Hub
         if (nextSucceed)
         {
             var testDto = testEnumerator.Current.Adapt<WordCollectionTestQuestionDto>();
+            _logger.LogInformation("SignalR | Connection id: {ConnectionId} | Sending next question to user {UserId}",
+                Context.ConnectionId, userId);
             return testDto;
         }
         
         await _dbContext.WordCollectionTestPassInformation.AddAsync(testPassInformation);
         await PublishTestPassedMessage(testPassInformation);
         await _dbContext.SaveChangesAsync();
+        _logger.LogInformation("SignalR | Connection id: {ConnectionId} | Test {TestId} successfully passed by user {UserId}",
+            Context.ConnectionId, testPassInformation.Id, userId);
         return null;
     }
 

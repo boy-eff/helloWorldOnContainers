@@ -1,4 +1,6 @@
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Logging;
+using Serilog;
 using Words.BusinessAccess.Contracts;
 using Words.BusinessAccess.Extensions;
 using Words.BusinessAccess.Models;
@@ -11,14 +13,17 @@ public class WordCollectionTestGenerator : IWordCollectionTestGenerator
 {
     private readonly Random _random = new();
     private readonly WordsDbContext _dbContext;
+    private readonly ILogger<WordCollectionTestGenerator> _logger;
 
-    public WordCollectionTestGenerator(WordsDbContext dbContext)
+    public WordCollectionTestGenerator(WordsDbContext dbContext, ILogger<WordCollectionTestGenerator> logger)
     {
         _dbContext = dbContext;
+        _logger = logger;
     }
 
     public async Task<ICollection<WordCollectionTest>> GenerateTestsFromCollection(int wordCollectionId, int answerOptionsCount)
     {
+        _logger.LogInformation("Tests generation has been started");
         var wordCollection = await _dbContext.Collections
             .AsNoTracking()
             .Include(x => x.Words)
@@ -26,9 +31,11 @@ public class WordCollectionTestGenerator : IWordCollectionTestGenerator
             .FirstOrDefaultAsync(x => x.Id == wordCollectionId);
         
         var tests = InitializeTests(wordCollection);
+        _logger.LogInformation("{TestsCount} tests were successfully initialized", tests.Count);
 
         var possibleTranslations = GeneratePossibleTranslations(wordCollection);
-
+        _logger.LogInformation("{PossibleTranslationsCount} possible translations were successfully generated",
+            possibleTranslations.Count);
         foreach (var test in tests)
         {
             var usedTranslations = new List<int>();
@@ -48,7 +55,7 @@ public class WordCollectionTestGenerator : IWordCollectionTestGenerator
 
             test.AnswerOptions.Shuffle();
         }
-
+        _logger.LogInformation("Tests generation has been finished successfully");
         return tests;
     }
 

@@ -46,6 +46,7 @@ public class UpdateWordCollectionCommandHandler : IRequestHandler<UpdateWordColl
         if (!isCollectionInCache)
         {
             existingWordCollection = await _dbContext.Collections
+                .Include(x => x.Words)
                 .FirstOrDefaultAsync(x => x.Id == request.Id,
                     cancellationToken: cancellationToken);
         }
@@ -61,6 +62,8 @@ public class UpdateWordCollectionCommandHandler : IRequestHandler<UpdateWordColl
             _logger.LogInformation("Updating failed: User with id {UserId} has no permission to update {CollectionId}", userId, request.Id);
             throw new ForbiddenException($"Cannot update collection with id {existingWordCollection.Id}");
         }
+        
+        _dbContext.Words.RemoveRange(existingWordCollection.Words);
 
         var wordCollection = request.WordCollectionDto.Adapt(existingWordCollection);
         _dbContext.Collections.Update(wordCollection);
