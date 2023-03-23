@@ -33,10 +33,10 @@ builder.Services.AddSignalR(options =>
 builder.Services.RegisterMapsterConfiguration();
 
 var app = builder.Build();
-app.UseMiddleware<ExceptionMiddleware>();
 
 app.UseSerilogRequestLogging(x => x.Logger = app.Services.GetService<Serilog.ILogger>());
 
+app.UseMiddleware<ExceptionMiddleware>();
 
 if (!app.Environment.IsProduction())
 {
