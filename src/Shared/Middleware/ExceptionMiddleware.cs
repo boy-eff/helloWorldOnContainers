@@ -24,13 +24,8 @@ public class ExceptionMiddleware
         {
             await _next(httpContext);
         }
-        catch (AuthorizationException ex)
-        {
-            await HandleExceptionAsync(httpContext, ex);
-        }
         catch(Exception ex)
         {
-            _logger.LogError($"Something went wrong {ex}");
             await HandleExceptionAsync(httpContext, ex);
         }
     }
@@ -54,7 +49,7 @@ public class ExceptionMiddleware
                 await context.Response.WriteAsync(message);
                 break;
             }
-            case ValidationException:
+            case CustomValidationException:
             {
                 context.Response.StatusCode = (int)HttpStatusCode.BadRequest;
                 var message = exception.Message.IsNullOrEmpty() ? "Validation error" : exception.Message;
@@ -70,6 +65,7 @@ public class ExceptionMiddleware
             }
             default:
             {
+                _logger.LogError(exception.Message);
                 context.Response.StatusCode = (int)HttpStatusCode.InternalServerError;
                 await context.Response.WriteAsync("Internal server error");
                 break;
