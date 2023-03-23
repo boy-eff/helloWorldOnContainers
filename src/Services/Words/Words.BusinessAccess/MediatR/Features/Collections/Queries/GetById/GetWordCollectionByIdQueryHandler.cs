@@ -6,6 +6,7 @@ using Shared.Exceptions;
 using Words.BusinessAccess.Contracts;
 using Words.BusinessAccess.Dtos.WordCollection;
 using Words.BusinessAccess.Extensions;
+using Words.BusinessAccess.Helpers;
 using Words.DataAccess;
 using Words.DataAccess.Models;
 
@@ -26,11 +27,11 @@ public class GetWordCollectionByIdQueryHandler : IRequestHandler<GetWordCollecti
 
     public async Task<WordCollectionResponseDto> Handle(GetWordCollectionByIdQuery request, CancellationToken cancellationToken)
     {
-        var wordCollectionName = nameof(WordCollection);
         WordCollection collection;
-        var isCacheHit = _cache.TryGetWordCollection(request.Id, out collection);
+        var cacheKey = CacheHelper.GetCacheKeyForWordCollection(request.Id);
+        var isCollectionInCache = _cache.TryGetValue(cacheKey, out collection);
 
-        if (!isCacheHit)
+        if (!isCollectionInCache)
         {
             collection = await _dbContext.Collections
                 .Include(x => x.Words)

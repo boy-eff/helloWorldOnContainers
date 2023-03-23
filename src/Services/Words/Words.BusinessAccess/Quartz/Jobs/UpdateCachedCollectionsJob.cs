@@ -1,11 +1,13 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Caching.Distributed;
 using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.Options;
 using Quartz;
-using StackExchange.Redis;
 using Words.DataAccess;
 using Words.DataAccess.Models;
 using Words.BusinessAccess.Extensions;
+using Words.BusinessAccess.Helpers;
+using Words.BusinessAccess.Options;
 
 namespace Words.BusinessAccess.Quartz.Jobs;
 
@@ -15,24 +17,30 @@ public class UpdateCachedCollectionsJob : IJob
     private readonly IDistributedCache _cache;
     private readonly WordsDbContext _dbContext;
     private readonly IConfiguration _configuration;
+    private readonly IOptions<WordsRedisCacheOptions> _wordsRedisCacheOptions;
 
-    public UpdateCachedCollectionsJob(IDistributedCache cache, WordsDbContext dbContext, IConfiguration configuration)
+    public UpdateCachedCollectionsJob(IDistributedCache cache, 
+        WordsDbContext dbContext, 
+        IConfiguration configuration, 
+        IOptions<WordsRedisCacheOptions> options)
     {
         _cache = cache;
         _dbContext = dbContext;
         _configuration = configuration;
+        _wordsRedisCacheOptions = options;
     }
 
     public async Task Execute(IJobExecutionContext context)
     {
-        var cachedCollectionsCount = Convert.ToInt32(_configuration["Redis:CachedCollectionsCount"]);
-        var minutesCount = Convert.ToInt32(_configuration["Redis:SlidingExpirationTimeInMinutes"]);
-        var slidingExpirationTime = TimeSpan.FromMinutes(minutesCount);
-        var wordCollections = await GetMostPopularWordCollections(cachedCollectionsCount);
-        const string wordCollectionTypeName = nameof(WordCollection);
+        
+        var wordCollections = await GetMostPopularWordCollections(_wordsRedisCacheOptions.Value.CachedCollectionsCount);
+        var cacheOptions = new DistributedCacheEntryOptions()
+            { SlidingExpiration = TimeSpan.FromMinutes(_wordsRedisCacheOptions.Value.SlidingExpirationTimeInMinutes) };
         foreach (var wordCollection in wordCollections)
         {
-            await _cache.SetAsync(wordCollectionTypeName + wordCollection.Id, wordCollection, slidingExpirationTime);
+            var cacheKey = CacheHelper.GetCacheKeyForWordCollection(wordCollection.Id);
+            
+            await _cache.SetAsync(cacheKey, wordCollection, cacheOptions);
         }
     }
     

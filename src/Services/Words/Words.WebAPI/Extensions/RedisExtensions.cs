@@ -1,4 +1,6 @@
-﻿using StackExchange.Redis;
+﻿using Microsoft.Identity.Client;
+using StackExchange.Redis;
+using Words.BusinessAccess.Options;
 
 namespace Words.WebAPI.Extensions;
 
@@ -12,5 +14,8 @@ public static class RedisExtensions
             options.Configuration = redisCacheUrl;
             options.InstanceName = "local";
         });
+
+        services.Configure<WordsRedisCacheOptions>(
+            config.GetSection(WordsRedisCacheOptions.Section));
     }
 }

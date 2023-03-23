@@ -8,22 +8,9 @@ namespace Words.BusinessAccess.Extensions;
 
 public static class RedisExtensions
 {
-    private const string WordCollectionName = nameof(WordCollection);
-    public static async Task SetWordCollectionAsync(this IDistributedCache cache, WordCollection wordCollection,
-        TimeSpan? slidingExpiration = null)
-    {
-        var key = WordCollectionName + wordCollection.Id;
-        await SetAsync(cache, key, wordCollection, slidingExpiration);
-    }
-    public static Task SetAsync<T>(this IDistributedCache cache, string key, T value, TimeSpan? slidingExpiration = null)
+    public static Task SetAsync<T>(this IDistributedCache cache, string key, T value)
     {
         var options = new DistributedCacheEntryOptions();
-        
-        if (slidingExpiration is not null)
-        {
-            options.SlidingExpiration = slidingExpiration;
-        }
-        
         return SetAsync(cache, key, value, options);
     }
     
@@ -41,12 +28,7 @@ public static class RedisExtensions
         value = JsonSerializer.Deserialize<T>(val, GetJsonSerializerOptions());
         return true;
     }
-
-    public static bool TryGetWordCollection(this IDistributedCache cache, int id, out WordCollection wordCollection)
-    {
-        var key = WordCollectionName + id;
-        return TryGetValue(cache, key, out wordCollection);
-    }
+    
     private static JsonSerializerOptions GetJsonSerializerOptions()
     {
         return new JsonSerializerOptions()
