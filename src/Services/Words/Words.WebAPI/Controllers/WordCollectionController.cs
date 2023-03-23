@@ -114,10 +114,12 @@ public class WordCollectionController : ControllerBase
     /// </summary>
     /// <response code="200">Returns deleted collection id</response>
     /// <response code="404">If collection is not found</response>
+    /// <response code="403">If user has no permission to delete collection</response>
     /// <response code="401">If user is not authenticated</response>
     [HttpDelete("{id:int}")]
     [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
+    [ProducesResponseType(StatusCodes.Status403Forbidden)]
     [ProducesResponseType(StatusCodes.Status401Unauthorized)]
     public async Task<ActionResult<int>> DeleteAsync(int id)
     {
