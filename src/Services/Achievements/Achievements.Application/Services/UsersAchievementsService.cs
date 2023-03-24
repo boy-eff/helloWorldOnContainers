@@ -5,6 +5,7 @@ using Achievements.Domain;
 using Achievements.Domain.Contracts;
 using Achievements.Domain.Models;
 using Mapster;
+using Microsoft.Extensions.Logging;
 using Microsoft.IdentityModel.Tokens;
 using Shared.Exceptions;
 
@@ -13,22 +14,25 @@ namespace Achievements.Application.Services;
 public class UsersAchievementsService : IUsersAchievementsService
 {
     private readonly IUnitOfWork _unitOfWork;
+    private readonly ILogger<UsersAchievementsService> _logger;
 
-    public UsersAchievementsService(IUnitOfWork unitOfWork)
+    public UsersAchievementsService(IUnitOfWork unitOfWork, ILogger<UsersAchievementsService> logger)
     {
         _unitOfWork = unitOfWork;
+        _logger = logger;
     }
 
     public async Task<UsersAchievements?> UpsertUsersAchievementsLevelAsync(User user, int achievementId)
     {
-        var achievementLevel = SeedData.CollectorAchievement.Levels
+        var achievementLevel = SeedData.Achievements.FirstOrDefault(x => x.Id == achievementId)
+            ?.Levels
             .FirstOrDefault(x => x.PointsToAchieve == user.GetAchievementPoints(achievementId));
 
         if (achievementLevel is null)
         {
             return null;
         }
-        
+
         var usersAchievements = await _unitOfWork.UsersAchievementsRepository.GetAsync(achievementId, user.Id);
         
 
@@ -43,6 +47,10 @@ public class UsersAchievementsService : IUsersAchievementsService
         
         user.AddBalanceAndExperience(achievementLevel.Reward, achievementLevel.Experience);
         await _unitOfWork.SaveChangesAsync();
+        
+        _logger.LogInformation("User {UserId} gained {AchievementLevel} level of achievement {AchievementId}",
+            user.Id, achievementLevel.Level, achievementId);
+        
         return usersAchievements;
     }
 

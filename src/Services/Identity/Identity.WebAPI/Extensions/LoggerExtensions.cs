@@ -1,6 +1,6 @@
 ﻿using Serilog;
 
-namespace Words.WebAPI.Extensions;
+namespace Identity.WebAPI.Extensions;
 
 public static class LoggerExtensions
 {

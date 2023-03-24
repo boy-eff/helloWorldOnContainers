@@ -25,7 +25,7 @@ public class UpdateDailyWordCollectionJob : IJob
 
     public async Task Execute(IJobExecutionContext context)
     {
-        _logger.LogInformation("Start updating daily word collection");
+        _logger.LogInformation("{JobName} job started", context.JobDetail.Key.Name);
         
         var dailyWordCollection = await _dbContext.Collections
             .Include(x => x.Words)
@@ -36,6 +36,6 @@ public class UpdateDailyWordCollectionJob : IJob
         _dailyWordCollectionService.DailyWordCollection = dailyWordCollection;
         _logger.LogInformation("Daily word collection is {dailyWordCollection} with id {id}", dailyWordCollection.Name, dailyWordCollection.Id);
         await _dbContext.Collections.ForEachAsync(x => x.DailyViews = 0);
-        _logger.LogInformation("End updating daily word collection");
+        _logger.LogInformation("{JobName} job finished", context.JobDetail.Key.Name);
     }
 }

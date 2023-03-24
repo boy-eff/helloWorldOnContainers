@@ -1,4 +1,5 @@
 ﻿using MassTransit;
+using Microsoft.Extensions.Logging;
 using Quartz;
 using Shared.Messages;
 using Words.BusinessAccess.Extensions;
@@ -11,15 +12,18 @@ public class CheckForAppAnniversaryJob : IJob
 {
     private readonly WordsDbContext _dbContext;
     private readonly IPublishEndpoint _publishEndpoint;
+    private readonly ILogger<CheckForAppAnniversaryJob> _logger;
 
-    public CheckForAppAnniversaryJob(WordsDbContext dbContext, IPublishEndpoint publishEndpoint)
+    public CheckForAppAnniversaryJob(WordsDbContext dbContext, IPublishEndpoint publishEndpoint, ILogger<CheckForAppAnniversaryJob> logger)
     {
         _dbContext = dbContext;
         _publishEndpoint = publishEndpoint;
+        _logger = logger;
     }
 
     public async Task Execute(IJobExecutionContext context)
     {
+        _logger.LogInformation("{JobName} job started", context.JobDetail.Key.Name);
         var currentDate = DateTime.Today;
         var users = new List<User>();
         
@@ -44,6 +48,7 @@ public class CheckForAppAnniversaryJob : IJob
             };
             await _publishEndpoint.Publish(message);
         }
+        _logger.LogInformation("{JobName} job finished", context.JobDetail.Key.Name);
     }
 
     private void AddLeapYearUsers(DateTime date, List<User> users)

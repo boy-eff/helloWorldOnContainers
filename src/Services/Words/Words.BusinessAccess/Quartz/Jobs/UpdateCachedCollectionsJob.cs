@@ -1,8 +1,9 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Caching.Distributed;
-using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using Quartz;
+using Serilog;
 using Words.DataAccess;
 using Words.DataAccess.Models;
 using Words.BusinessAccess.Extensions;
@@ -16,23 +17,22 @@ public class UpdateCachedCollectionsJob : IJob
 {
     private readonly IDistributedCache _cache;
     private readonly WordsDbContext _dbContext;
-    private readonly IConfiguration _configuration;
     private readonly IOptions<WordsRedisCacheOptions> _wordsRedisCacheOptions;
+    private readonly ILogger<UpdateCachedCollectionsJob> _logger;
 
     public UpdateCachedCollectionsJob(IDistributedCache cache, 
         WordsDbContext dbContext, 
-        IConfiguration configuration, 
-        IOptions<WordsRedisCacheOptions> options)
+        IOptions<WordsRedisCacheOptions> options, ILogger<UpdateCachedCollectionsJob> logger)
     {
         _cache = cache;
         _dbContext = dbContext;
-        _configuration = configuration;
         _wordsRedisCacheOptions = options;
+        _logger = logger;
     }
 
     public async Task Execute(IJobExecutionContext context)
     {
-        
+        _logger.LogInformation("{JobName} job started", context.JobDetail.Key.Name);
         var wordCollections = await GetMostPopularWordCollections(_wordsRedisCacheOptions.Value.CachedCollectionsCount);
         var cacheOptions = new DistributedCacheEntryOptions()
             { SlidingExpiration = TimeSpan.FromMinutes(_wordsRedisCacheOptions.Value.SlidingExpirationTimeInMinutes) };
@@ -42,6 +42,7 @@ public class UpdateCachedCollectionsJob : IJob
             
             await _cache.SetAsync(cacheKey, wordCollection, cacheOptions);
         }
+        _logger.LogInformation("{JobName} job finished", context.JobDetail.Key.Name);
     }
     
     private async Task<List<WordCollection>> GetMostPopularWordCollections(int count) 

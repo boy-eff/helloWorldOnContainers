@@ -1,4 +1,5 @@
 using FluentValidation;
+using Serilog;
 using Shared.Extensions;
 using Shared.Middleware;
 using Words.BusinessAccess.Contracts;
@@ -29,6 +30,9 @@ builder.Services.RegisterMapsterConfiguration();
 builder.Services.ConfigureRedis(builder.Configuration);
 
 var app = builder.Build();
+
+app.UseSerilogRequestLogging(x => x.Logger = app.Services.GetService<Serilog.ILogger>());
+
 app.UseMiddleware<ExceptionMiddleware>();
 
 if (!app.Environment.IsProduction())

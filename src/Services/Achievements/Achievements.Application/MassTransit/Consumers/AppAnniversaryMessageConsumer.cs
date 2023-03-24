@@ -22,6 +22,7 @@ public class AppAnniversaryMessageConsumer : IConsumer<AppAnniversaryMessage>
 
     public async Task Consume(ConsumeContext<AppAnniversaryMessage> context)
     {
+        _logger.LogInformation("User {UserId} is active in app for {YearsCount} years", context.Message.UserId, context.Message.Years);
         var user = await _unitOfWork.UserRepository.GetUserByIdAsync(context.Message.UserId);
 
         await using var transaction = await _unitOfWork.BeginTransactionAsync();
@@ -38,5 +39,6 @@ public class AppAnniversaryMessageConsumer : IConsumer<AppAnniversaryMessage>
             await _unitOfWork.RollbackAsync();
             throw;
         }
+        _logger.LogInformation("Achievement information successfully updated for user {UserId}", user.Id);
     }
 }

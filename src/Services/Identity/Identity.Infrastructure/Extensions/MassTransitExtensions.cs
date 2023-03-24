@@ -3,6 +3,7 @@ using Identity.Infrastructure.Data;
 using MassTransit;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Shared.MassTransit.Filters;
 
 namespace Identity.Infrastructure.Extensions;
 
@@ -35,6 +36,8 @@ public static class MassTransitExtensions
                     h.Password(password);
                 });
                 
+                cfg.UsePublishFilter(typeof(PublishLoggingFilter<>), context);
+
                 cfg.ConfigureEndpoints(context);
             });
         });
