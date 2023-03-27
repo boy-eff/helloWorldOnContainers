@@ -16,14 +16,12 @@ public class UserService : IUserService
 {
     private readonly UserManager<AppUser> _userManager;
     private readonly IPublishEndpoint _publishEndpoint;
-    private readonly IAuthDbContext _authDbContext;
     private readonly ILogger<UserService> _logger;
 
-    public UserService(UserManager<AppUser> userManager, IPublishEndpoint publishEndpoint, IAuthDbContext authDbContext, ILogger<UserService> logger)
+    public UserService(UserManager<AppUser> userManager, IPublishEndpoint publishEndpoint, ILogger<UserService> logger)
     {
         _userManager = userManager;
         _publishEndpoint = publishEndpoint;
-        _authDbContext = authDbContext;
         _logger = logger;
     }
 

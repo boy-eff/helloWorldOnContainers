@@ -1,12 +1,11 @@
 ﻿using FluentAssertions;
 using Identity.Application.Dtos;
-using Identity.Application.Interfaces;
 using Identity.Application.Services;
 using Identity.Domain.Entities;
 using Identity.Domain.Enums;
-using Identity.WebAPI.Controllers;
+using MassTransit;
 using Microsoft.AspNetCore.Identity;
-using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Logging;
 using MockQueryable.Moq;
 using Moq;
 
@@ -14,20 +13,32 @@ namespace Identity.UnitTests;
 
 public class UserServiceTests
 {
+    private Mock<UserManager<AppUser>> _userManagerMock;
+    private Mock<IPublishEndpoint> _publishEndpointMock;
+    private Mock<ILogger<UserService>> _loggerMock;
+    private UserService _sut;
+    
+    [SetUp]
+    public void Setup()
+    {
+        _userManagerMock = MockUserManager();
+        _publishEndpointMock = new Mock<IPublishEndpoint>();
+        _loggerMock = new Mock<ILogger<UserService>>();
+        _sut = new UserService(_userManagerMock.Object, _publishEndpointMock.Object, _loggerMock.Object);
+    }
+    
     [Test]
     public async Task AddUserAsync_WhenSucceed_ShouldReturnUserIdWithoutErrors()
     {
-        var userManagerMock = MockUserManager();
         var appUserRegisterDto = new AppUserRegisterDto()
         {
             UserName = "username",
             Password = "password"
         };
-        userManagerMock.Setup(x => x.CreateAsync(It.IsAny<AppUser>(), It.IsAny<string>()))
+        _userManagerMock.Setup(x => x.CreateAsync(It.IsAny<AppUser>(), It.IsAny<string>()))
             .ReturnsAsync(IdentityResult.Success);
-        var sut = new UserService(userManagerMock.Object);
 
-        var result = await sut.AddUserAsync(appUserRegisterDto);
+        var result = await _sut.AddUserAsync(appUserRegisterDto);
 
         result.Succeeded.Should().BeTrue();
     }
@@ -35,17 +46,15 @@ public class UserServiceTests
     [Test]
     public async Task AddUserAsync_WhenUserExists_ShouldReturnWrongActionError()
     {
-        var userManagerMock = MockUserManager();
         var appUserRegisterDto = new AppUserRegisterDto()
         {
             UserName = "username",
             Password = "password"
         };
-        userManagerMock.Setup(x => x.CreateAsync(It.IsAny<AppUser>(), It.IsAny<string>()))
+        _userManagerMock.Setup(x => x.CreateAsync(It.IsAny<AppUser>(), It.IsAny<string>()))
             .ReturnsAsync(IdentityResult.Failed(new IdentityError() { Description = "User already exists" }));
-        var sut = new UserService(userManagerMock.Object);
 
-        var result = await sut.AddUserAsync(appUserRegisterDto);
+        var result = await _sut.AddUserAsync(appUserRegisterDto);
 
         result.Succeeded.Should().BeFalse();
         result.Errors[0].StatusCode.Should().Be(ServiceErrorStatusCode.WrongAction);
@@ -54,8 +63,6 @@ public class UserServiceTests
     [Test]
     public async Task GetUsersAsync_WhenSucceed_ShouldReturnUsers()
     {
-        var userManagerMock = MockUserManager();
-        
         var appUser = new AppUser()
         {
             Id = 1,
@@ -67,11 +74,10 @@ public class UserServiceTests
             appUser
         };
         
-        userManagerMock.Setup(x => x.Users)
+        _userManagerMock.Setup(x => x.Users)
             .Returns(users.AsQueryable().BuildMock());
-        var sut = new UserService(userManagerMock.Object);
 
-        var result = await sut.GetUsersAsync();
+        var result = await _sut.GetUsersAsync();
 
         result.Succeeded.Should().BeTrue();
         result.Value.Count.Should().Be(users.Count);
@@ -83,18 +89,16 @@ public class UserServiceTests
     [Test]
     public async Task GetUserByIdAsync_WhenUserExists_ShouldReturnUser()
     {
-        var userManagerMock = MockUserManager();
         var appUser = new AppUser()
         {
             Id = 1,
             UserName = "username"
         };
         var expectedAppUserDto = new AppUserDto() { Id = 1, UserName = "username" };
-        userManagerMock.Setup(x => x.FindByIdAsync(appUser.Id.ToString()))
+        _userManagerMock.Setup(x => x.FindByIdAsync(appUser.Id.ToString()))
             .ReturnsAsync(appUser);
-        var sut = new UserService(userManagerMock.Object);
 
-        var result = await sut.GetUserByIdAsync(appUser.Id);
+        var result = await _sut.GetUserByIdAsync(appUser.Id);
         
         result.Succeeded.Should().BeTrue();
         result.Value.Should().BeEquivalentTo(expectedAppUserDto);
@@ -103,12 +107,10 @@ public class UserServiceTests
     [Test]
     public async Task GetUserByIdAsync_WhenUserIsNotFound_ShouldReturn404NotFound()
     {
-        var userManagerMock = MockUserManager();
-        userManagerMock.Setup(x => x.FindByIdAsync(It.IsAny<string>()))
+        _userManagerMock.Setup(x => x.FindByIdAsync(It.IsAny<string>()))
             .Returns(Task.FromResult<AppUser>(null));
-        var sut = new UserService(userManagerMock.Object);
 
-        var result = await sut.GetUserByIdAsync(0);
+        var result = await _sut.GetUserByIdAsync(0);
         
         result.Succeeded.Should().BeFalse();
         result.Value.Should().BeNull();
