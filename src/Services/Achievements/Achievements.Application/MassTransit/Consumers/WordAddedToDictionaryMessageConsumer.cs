@@ -40,6 +40,6 @@ public class WordAddedToDictionaryMessageConsumer : IConsumer<WordAddedToDiction
             await _unitOfWork.RollbackAsync();
             throw;
         }
-        _logger.LogInformation("Achievement information successfully updated for user {UserId}", user.Id);
+        _logger.LogInformation("Achievement information was successfully updated for user {UserId}", user.Id);
     }
 }

@@ -23,6 +23,6 @@ public class UserCreatedMessageConsumer : IConsumer<UserCreatedMessage>
         var user = context.Message.Adapt<User>();
         await _unitOfWork.UserRepository.AddAsync(user);
         await _unitOfWork.SaveChangesAsync();
-        _logger.LogInformation("User {UserId} successfully created", user.Id);
+        _logger.LogInformation("User {UserId} has been successfully created", user.Id);
     }
 }
