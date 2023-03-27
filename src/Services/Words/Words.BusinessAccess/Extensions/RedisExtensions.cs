@@ -8,12 +8,6 @@ namespace Words.BusinessAccess.Extensions;
 
 public static class RedisExtensions
 {
-    public static Task SetAsync<T>(this IDistributedCache cache, string key, T value)
-    {
-        var options = new DistributedCacheEntryOptions();
-        return SetAsync(cache, key, value, options);
-    }
-    
     public static Task SetAsync<T>(this IDistributedCache cache, string key, T value, DistributedCacheEntryOptions options)
     {
         var bytes = Encoding.UTF8.GetBytes(JsonSerializer.Serialize(value, GetJsonSerializerOptions()));
