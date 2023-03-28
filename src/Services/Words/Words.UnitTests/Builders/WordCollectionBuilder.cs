@@ -2,6 +2,7 @@
 using Microsoft.IdentityModel.Tokens;
 using Shared.Enums;
 using Words.BusinessAccess.Dtos;
+using Words.BusinessAccess.Dtos.WordCollection;
 using Words.DataAccess.Models;
 
 namespace Words.UnitTests.Builders;
@@ -19,6 +20,7 @@ public class WordCollectionBuilder
     {
         return Default()
             .WithId()
+            .WithUserId()
             .WithName()
             .WithWords()
             .WithEnglishLevel();
@@ -27,6 +29,12 @@ public class WordCollectionBuilder
     public WordCollectionBuilder WithId(int id = 1)
     {
         _wordCollection.Id = id;
+        return this;
+    }
+
+    public WordCollectionBuilder WithUserId(int userId = 1)
+    {
+        _wordCollection.UserId = userId;
         return this;
     }
 
@@ -71,13 +79,13 @@ public class WordCollectionBuilder
         return _wordCollection;
     }
 
-    public WordCollectionDto BuildAsDto()
+    public WordCollectionResponseDto BuildAsResponseDto()
     {
-        return _wordCollection.Adapt<WordCollectionDto>();
+        return _wordCollection.Adapt<WordCollectionResponseDto>();
     }
 
-    public WordCollectionCreateDto BuildAsCreateDto()
+    public WordCollectionRequestDto BuildAsRequestDto()
     {
-        return _wordCollection.Adapt<WordCollectionCreateDto>();
+        return _wordCollection.Adapt<WordCollectionRequestDto>();
     }
 }

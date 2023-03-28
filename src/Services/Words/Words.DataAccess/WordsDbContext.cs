@@ -31,7 +31,10 @@ public class WordsDbContext : DbContext
 
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
     {
-        optionsBuilder.UseSqlServer(_configuration.GetConnectionString("Default"));
+        if (!optionsBuilder.IsConfigured)
+        {
+            optionsBuilder.UseSqlServer(_configuration.GetConnectionString("Default"));
+        }
     }
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)

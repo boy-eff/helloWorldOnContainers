@@ -34,7 +34,7 @@ public class UserServiceTests
         {
             UserName = "username",
             Password = "password"
-        };
+        };  
         _userManagerMock.Setup(x => x.CreateAsync(It.IsAny<AppUser>(), It.IsAny<string>()))
             .ReturnsAsync(IdentityResult.Success);
 

@@ -3,17 +3,17 @@ using MediatR;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Moq;
-using Words.BusinessAccess.Dtos;
-using Words.BusinessAccess.Features.Collections.Commands.Add;
-using Words.BusinessAccess.Features.Collections.Commands.Delete;
-using Words.BusinessAccess.Features.Collections.Commands.Update;
-using Words.BusinessAccess.Features.Collections.Queries.Get;
-using Words.DataAccess.Models;
+using Words.BusinessAccess.Dtos.WordCollection;
+using Words.BusinessAccess.MediatR.Features.Collections.Commands.Add;
+using Words.BusinessAccess.MediatR.Features.Collections.Commands.Delete;
+using Words.BusinessAccess.MediatR.Features.Collections.Commands.Update;
+using Words.BusinessAccess.MediatR.Features.Collections.Queries.Get;
 using Words.UnitTests.Builders;
 using Words.WebAPI.Controllers;
 
 namespace Words.UnitTests;
 
+[TestFixture]
 public class WordCollectionControllerTests
 {
     private WordCollectionController _sut;
@@ -31,9 +31,9 @@ public class WordCollectionControllerTests
         var wordCollectionDto = WordCollectionBuilder
             .Default()
             .Simple()
-            .BuildAsDto();
+            .BuildAsResponseDto();
 
-        var wordCollections = new List<WordCollectionDto>()
+        var wordCollections = new List<WordCollectionResponseDto>()
         {
             wordCollectionDto
         };
@@ -56,44 +56,49 @@ public class WordCollectionControllerTests
             .Default()
             .Simple();
 
-        var wordCollectionDto = wordCollectionBuilder.BuildAsDto();
-        var wordCollectionCreateDto = wordCollectionBuilder.BuildAsCreateDto();
+        var expectedResponse = wordCollectionBuilder.BuildAsResponseDto();
+        var requestDto = wordCollectionBuilder.BuildAsRequestDto();
         
 
         _mediatorMock.Setup(x => x.Send(
                 It.IsAny<AddWordCollectionCommand>(), It.IsAny<CancellationToken>()))
-            .ReturnsAsync(wordCollectionDto);
+            .ReturnsAsync(expectedResponse);
 
-        var result = await _sut.InsertAsync(wordCollectionCreateDto);
+        var result = await _sut.InsertAsync(requestDto);
 
         result.Result.Should().BeAssignableTo<OkObjectResult>()
             .Which.StatusCode.Should().Be(StatusCodes.Status200OK);
-        result.Result.As<OkObjectResult>().Value.Should().BeEquivalentTo(wordCollectionDto);
+        result.Result.As<OkObjectResult>().Value.Should().BeEquivalentTo(expectedResponse);
     }
     
     [Test]
     public async Task UpdateAsync_WhenCalled_ShouldReturn200Ok()
     {
-        var wordCollectionDto = WordCollectionBuilder
+        var wordCollectionRequestDto = WordCollectionBuilder
             .Default()
             .Simple()
-            .BuildAsDto();
+            .BuildAsRequestDto();
+
+        var expectedResponse = WordCollectionBuilder
+            .Default()
+            .Simple()
+            .BuildAsResponseDto();
         
         _mediatorMock.Setup(x => x.Send(
                 It.IsAny<UpdateWordCollectionCommand>(), It.IsAny<CancellationToken>()))
-            .ReturnsAsync(wordCollectionDto);
+            .ReturnsAsync(expectedResponse);
 
-        var result = await _sut.UpdateAsync(wordCollectionDto);
+        var result = await _sut.UpdateAsync(expectedResponse.Id, wordCollectionRequestDto);
 
         result.Result.Should().BeAssignableTo<OkObjectResult>()
             .Which.StatusCode.Should().Be(StatusCodes.Status200OK);
-        result.Result.As<OkObjectResult>().Value.Should().BeEquivalentTo(wordCollectionDto);
+        result.Result.As<OkObjectResult>().Value.Should().BeEquivalentTo(expectedResponse);
     }
     
     [Test]
     public async Task DeleteAsync_WhenCalled_ShouldReturn200Ok()
     {
-        var wordCollectionId = 1;
+        const int wordCollectionId = 1;
 
         _mediatorMock.Setup(x => x.Send(
                 It.IsAny<DeleteWordCollectionCommand>(), It.IsAny<CancellationToken>()))
