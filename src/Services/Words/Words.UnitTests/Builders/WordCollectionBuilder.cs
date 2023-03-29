@@ -23,12 +23,19 @@ public class WordCollectionBuilder
             .WithUserId()
             .WithName()
             .WithWords()
-            .WithEnglishLevel();
+            .WithEnglishLevel()
+            .WithDailyViews();
     }
 
     public WordCollectionBuilder WithId(int id = 1)
     {
         _wordCollection.Id = id;
+        return this;
+    }
+    
+    public WordCollectionBuilder WithDailyViews(int views = 0)
+    {
+        _wordCollection.DailyViews = views;
         return this;
     }
 
