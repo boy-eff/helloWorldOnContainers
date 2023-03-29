@@ -60,12 +60,12 @@ public class RatingController: ControllerBase
     /// <response code="200">Returns created rating</response>
     /// <response code="400">If user has already rated collection</response>
     /// <response code="401">If user is not authenticated</response>
-    [HttpPost]
+    [HttpPost("{collectionId:int}")]
     [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status401Unauthorized)]
-    public async Task<ActionResult<CollectionRatingResponseDto>> RateAsync([FromBody] CollectionRatingCreateDto ratingCreateDto)
+    public async Task<ActionResult<CollectionRatingResponseDto>> RateAsync([FromRoute] int collectionId, [FromBody] CollectionRatingRequestDto ratingRequestDto)
     {
-        var command = new AddRatingCommand(ratingCreateDto);
+        var command = new AddRatingCommand(collectionId, ratingRequestDto);
         var result = await _mediator.Send(command);
         return Ok(result);
     }
@@ -101,7 +101,7 @@ public class RatingController: ControllerBase
     [ProducesResponseType(StatusCodes.Status403Forbidden)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
     [ProducesResponseType(StatusCodes.Status401Unauthorized)]
-    public async Task<ActionResult<CollectionRatingResponseDto>> UpdateRatingAsync(int id, [FromBody] CollectionRatingUpdateDto ratingDto)
+    public async Task<ActionResult<CollectionRatingResponseDto>> UpdateRatingAsync(int id, [FromBody] CollectionRatingRequestDto ratingDto)
     {
         var command = new UpdateRatingCommand(id, ratingDto);
         var result = await _mediator.Send(command);

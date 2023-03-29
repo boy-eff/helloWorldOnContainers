@@ -27,11 +27,20 @@ public class AddRatingCommandHandler : IRequestHandler<AddRatingCommand, Collect
 
     public async Task<CollectionRatingResponseDto> Handle(AddRatingCommand request, CancellationToken cancellationToken)
     {
-        var rating = request.CreateDto.Adapt<WordCollectionRating>();
+        var wordCollection = await _dbContext.Collections.FirstOrDefaultAsync(x 
+            => x.Id == request.WordCollectionId, cancellationToken: cancellationToken);
+
+        if (wordCollection is null)
+        {
+            _logger.LogInformation("Failed to add: Word collection with id {CollectionId} was not found", request.WordCollectionId);
+            throw new NotFoundException($"Collection with id {request.WordCollectionId} was not found");
+        }
+        
+        
         var userId = _httpContextAccessor.HttpContext.User.GetUserId();
 
         var existingRating = await _dbContext.WordCollectionRatings.FirstOrDefaultAsync(x => 
-            x.UserId == userId && rating.CollectionId == x.CollectionId, cancellationToken: cancellationToken);
+            x.UserId == userId && request.WordCollectionId == x.CollectionId, cancellationToken: cancellationToken);
 
         if (existingRating is not null)
         {
@@ -39,9 +48,15 @@ public class AddRatingCommandHandler : IRequestHandler<AddRatingCommand, Collect
                 userId, existingRating.CollectionId);
             throw new WrongActionException("Rating already exists");
         }
-        rating.UserId = userId;
+
+        var rating = new WordCollectionRating()
+        {
+            CollectionId = request.WordCollectionId, 
+            Rating = request.RequestDto.Rating, 
+            UserId = userId
+        };
         
-        _dbContext.WordCollectionRatings.Add(rating);
+        await _dbContext.WordCollectionRatings.AddAsync(rating, cancellationToken);
         await _dbContext.SaveChangesAsync(cancellationToken);
         _logger.LogInformation("Rating from user {UserId} to word collection {CollectionId} was successfully added",
             userId, rating.CollectionId);

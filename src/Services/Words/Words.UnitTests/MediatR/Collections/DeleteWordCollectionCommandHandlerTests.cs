@@ -59,6 +59,40 @@ public class DeleteWordCollectionCommandHandlerTests
         response.Value.Should().Be(wordCollection.Id);
         _cacheMock.Verify(x => x.RemoveAsync(It.IsAny<string>(), It.IsAny<CancellationToken>()), Times.Once);
     }
+    
+    [Test] 
+    public async Task Handle_WhenCalled_ShouldDeleteCollectionFromDatabase()
+    {
+        var wordCollection = WordCollectionBuilder
+            .Default()
+            .Simple()
+            .Build();
+
+        await _dbContext.AddAsync(wordCollection);
+        await _dbContext.SaveChangesAsync();
+
+        var command = new DeleteWordCollectionCommand(wordCollection.Id);
+        var response = await _sut.Handle(command, CancellationToken.None);
+
+        _dbContext.Collections.Should().BeEmpty();
+    }
+    
+    [Test] 
+    public async Task Handle_WhenCalled_ShouldRemoveCollectionFromCache()
+    {
+        var wordCollection = WordCollectionBuilder
+            .Default()
+            .Simple()
+            .Build();
+
+        await _dbContext.AddAsync(wordCollection);
+        await _dbContext.SaveChangesAsync();
+
+        var command = new DeleteWordCollectionCommand(wordCollection.Id);
+        var response = await _sut.Handle(command, CancellationToken.None);
+
+        _cacheMock.Verify(x => x.RemoveAsync(It.IsAny<string>(), It.IsAny<CancellationToken>()), Times.Once);
+    }
 
     [Test]
     public async Task Handle_WhenCollectionIsNotFound_ShouldThrowNotFoundException()

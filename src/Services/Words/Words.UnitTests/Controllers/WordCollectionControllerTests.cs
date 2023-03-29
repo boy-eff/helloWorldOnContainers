@@ -11,7 +11,7 @@ using Words.BusinessAccess.MediatR.Features.Collections.Queries.Get;
 using Words.UnitTests.Builders;
 using Words.WebAPI.Controllers;
 
-namespace Words.UnitTests;
+namespace Words.UnitTests.Controllers;
 
 [TestFixture]
 public class WordCollectionControllerTests
