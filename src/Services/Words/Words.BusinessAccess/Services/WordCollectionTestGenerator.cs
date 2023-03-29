@@ -1,6 +1,7 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using Serilog;
+using Shared.Exceptions;
 using Words.BusinessAccess.Contracts;
 using Words.BusinessAccess.Extensions;
 using Words.BusinessAccess.Models;
@@ -29,6 +30,20 @@ public class WordCollectionTestGenerator : IWordCollectionTestGenerator
             .Include(x => x.Words)
             .ThenInclude(x => x.Translations)
             .FirstOrDefaultAsync(x => x.Id == wordCollectionId);
+
+        var wordsCount = wordCollection.Words.Count();
+
+        if (wordsCount < 2)
+        {
+            _logger.LogError("Word collection has {WordsCount} words. Unable to create tests", wordsCount);
+            throw new WrongActionException($"Word collection has {wordsCount} words. Unable to create tests");
+        }
+        
+        if (answerOptionsCount > wordsCount)
+        {
+            answerOptionsCount = wordsCount;
+            _logger.LogInformation("Answer options count exceeds words amount in collection, options count was decreased to {AnswerOptionsCount}", answerOptionsCount);
+        }
         
         var tests = InitializeTests(wordCollection);
         _logger.LogInformation("{TestsCount} tests were successfully initialized", tests.Count);
