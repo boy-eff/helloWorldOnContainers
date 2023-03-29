@@ -24,8 +24,4 @@
       <ProjectReference Include="..\Words.WebAPI\Words.WebAPI.csproj" />
     </ItemGroup>
 
-    <ItemGroup>
-      <Folder Include="SignalR" />
-    </ItemGroup>
-
 </Project>

@@ -114,7 +114,7 @@ public class WordCollectionTestGeneratorTests
         }
     }
 
-    private WordCollection SeedCollectionWithWords() => new WordCollection
+    private static WordCollection SeedCollectionWithWords() => new WordCollection
     {
         Id = 1,
         Name = "fruits",

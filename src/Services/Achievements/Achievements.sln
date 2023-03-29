@@ -8,6 +8,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Achievements.Domain", "Achi
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Shared", "..\..\Shared\Shared.csproj", "{C929A32C-7013-4C6B-90CB-A94EF86F32AD}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Achievements.UnitTests", "Achievements.UnitTests\Achievements.UnitTests.csproj", "{CADB0905-2A5F-4506-BB48-C835D9C33069}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -30,5 +32,9 @@ Global
 		{C929A32C-7013-4C6B-90CB-A94EF86F32AD}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{C929A32C-7013-4C6B-90CB-A94EF86F32AD}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{C929A32C-7013-4C6B-90CB-A94EF86F32AD}.Release|Any CPU.Build.0 = Release|Any CPU
+		{CADB0905-2A5F-4506-BB48-C835D9C33069}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{CADB0905-2A5F-4506-BB48-C835D9C33069}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{CADB0905-2A5F-4506-BB48-C835D9C33069}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{CADB0905-2A5F-4506-BB48-C835D9C33069}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 EndGlobal
