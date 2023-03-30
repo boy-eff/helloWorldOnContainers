@@ -68,7 +68,7 @@ namespace Words.DataAccess.Migrations
 
                     b.HasIndex("Delivered");
 
-                    b.ToTable("InboxState", (string)null);
+                    b.ToTable("InboxState");
                 });
 
             modelBuilder.Entity("MassTransit.EntityFrameworkCoreIntegration.OutboxMessage", b =>
@@ -157,7 +157,7 @@ namespace Words.DataAccess.Migrations
                         .IsUnique()
                         .HasFilter("[InboxMessageId] IS NOT NULL AND [InboxConsumerId] IS NOT NULL");
 
-                    b.ToTable("OutboxMessage", (string)null);
+                    b.ToTable("OutboxMessage");
                 });
 
             modelBuilder.Entity("MassTransit.EntityFrameworkCoreIntegration.OutboxState", b =>
@@ -187,7 +187,38 @@ namespace Words.DataAccess.Migrations
 
                     b.HasIndex("Created");
 
-                    b.ToTable("OutboxState", (string)null);
+                    b.ToTable("OutboxState");
+                });
+
+            modelBuilder.Entity("Words.DataAccess.Models.ModerationStatus", b =>
+                {
+                    b.Property<int>("Id")
+                        .HasColumnType("int");
+
+                    b.Property<string>("Name")
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar(100)");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("ModerationStatuses");
+
+                    b.HasData(
+                        new
+                        {
+                            Id = 1,
+                            Name = "Pending"
+                        },
+                        new
+                        {
+                            Id = 2,
+                            Name = "Accepted"
+                        },
+                        new
+                        {
+                            Id = 3,
+                            Name = "Rejected"
+                        });
                 });
 
             modelBuilder.Entity("Words.DataAccess.Models.User", b =>
@@ -208,7 +239,7 @@ namespace Words.DataAccess.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Users", (string)null);
+                    b.ToTable("Users");
                 });
 
             modelBuilder.Entity("Words.DataAccess.Models.UserWord", b =>
@@ -223,7 +254,7 @@ namespace Words.DataAccess.Migrations
 
                     b.HasIndex("WordId");
 
-                    b.ToTable("UserWords", (string)null);
+                    b.ToTable("UserWords");
                 });
 
             modelBuilder.Entity("Words.DataAccess.Models.Word", b =>
@@ -246,7 +277,7 @@ namespace Words.DataAccess.Migrations
 
                     b.HasIndex("WordCollectionId");
 
-                    b.ToTable("Words", (string)null);
+                    b.ToTable("Words");
                 });
 
             modelBuilder.Entity("Words.DataAccess.Models.WordCollection", b =>
@@ -256,6 +287,11 @@ namespace Words.DataAccess.Migrations
                         .HasColumnType("int");
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<int>("ActualModerationStatus")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasDefaultValue(1);
 
                     b.Property<DateTimeOffset>("CreatedAt")
                         .HasPrecision(2)
@@ -282,7 +318,42 @@ namespace Words.DataAccess.Migrations
 
                     b.HasIndex("UserId");
 
-                    b.ToTable("Collections", (string)null);
+                    b.ToTable("Collections");
+                });
+
+            modelBuilder.Entity("Words.DataAccess.Models.WordCollectionModeration", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<DateTimeOffset>("CreatedAt")
+                        .HasColumnType("datetimeoffset");
+
+                    b.Property<int>("ModerationStatusId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("ModeratorId")
+                        .HasColumnType("int");
+
+                    b.Property<string>("Review")
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar(100)");
+
+                    b.Property<int>("WordCollectionId")
+                        .HasColumnType("int");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("ModerationStatusId");
+
+                    b.HasIndex("ModeratorId");
+
+                    b.HasIndex("WordCollectionId");
+
+                    b.ToTable("WordCollectionModerations");
                 });
 
             modelBuilder.Entity("Words.DataAccess.Models.WordCollectionRating", b =>
@@ -312,7 +383,7 @@ namespace Words.DataAccess.Migrations
 
                     b.HasIndex("UserId");
 
-                    b.ToTable("WordCollectionRatings", (string)null);
+                    b.ToTable("WordCollectionRatings");
                 });
 
             modelBuilder.Entity("Words.DataAccess.Models.WordCollectionTestPassInformation", b =>
@@ -341,7 +412,7 @@ namespace Words.DataAccess.Migrations
 
                     b.HasIndex("WordCollectionId");
 
-                    b.ToTable("WordCollectionTestPassInformation", (string)null);
+                    b.ToTable("WordCollectionTestPassInformation");
                 });
 
             modelBuilder.Entity("Words.DataAccess.Models.WordCollectionTestQuestion", b =>
@@ -367,7 +438,7 @@ namespace Words.DataAccess.Migrations
 
                     b.HasIndex("WordCollectionTestPassInformationId");
 
-                    b.ToTable("WordCollectionTestQuestions", (string)null);
+                    b.ToTable("WordCollectionTestQuestions");
                 });
 
             modelBuilder.Entity("Words.DataAccess.Models.WordTranslation", b =>
@@ -390,7 +461,7 @@ namespace Words.DataAccess.Migrations
 
                     b.HasIndex("WordId");
 
-                    b.ToTable("WordTranslations", (string)null);
+                    b.ToTable("WordTranslations");
                 });
 
             modelBuilder.Entity("Words.DataAccess.Models.UserWord", b =>
@@ -432,6 +503,33 @@ namespace Words.DataAccess.Migrations
                         .IsRequired();
 
                     b.Navigation("User");
+                });
+
+            modelBuilder.Entity("Words.DataAccess.Models.WordCollectionModeration", b =>
+                {
+                    b.HasOne("Words.DataAccess.Models.ModerationStatus", "ModerationStatus")
+                        .WithMany()
+                        .HasForeignKey("ModerationStatusId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("Words.DataAccess.Models.User", "Moderator")
+                        .WithMany("Moderations")
+                        .HasForeignKey("ModeratorId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.HasOne("Words.DataAccess.Models.WordCollection", "WordCollection")
+                        .WithMany("Moderations")
+                        .HasForeignKey("WordCollectionId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("ModerationStatus");
+
+                    b.Navigation("Moderator");
+
+                    b.Navigation("WordCollection");
                 });
 
             modelBuilder.Entity("Words.DataAccess.Models.WordCollectionRating", b =>
@@ -502,6 +600,8 @@ namespace Words.DataAccess.Migrations
 
                     b.Navigation("DictionaryWords");
 
+                    b.Navigation("Moderations");
+
                     b.Navigation("TestsPassInformation");
                 });
 
@@ -514,6 +614,8 @@ namespace Words.DataAccess.Migrations
 
             modelBuilder.Entity("Words.DataAccess.Models.WordCollection", b =>
                 {
+                    b.Navigation("Moderations");
+
                     b.Navigation("Ratings");
 
                     b.Navigation("Tests");

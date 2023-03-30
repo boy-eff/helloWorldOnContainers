@@ -1,7 +1,9 @@
-﻿namespace Words.DataAccess.Models;
+﻿using Words.DataAccess.Enums;
+
+namespace Words.DataAccess.Models;
 
 public class ModerationStatus
 {
-    public int Id { get; set; }
+    public ModerationStatusType Id { get; set; }
     public string Name { get; set; }
 }

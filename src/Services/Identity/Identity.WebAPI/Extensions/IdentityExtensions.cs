@@ -3,6 +3,8 @@ using Identity.Infrastructure.Data;
 using Identity.WebAPI.IdentityServer4;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.IdentityModel.Tokens;
+using Shared.Constants;
 
 namespace Identity.WebAPI.Extensions;
 
@@ -31,12 +33,39 @@ public static class IdentityExtensions
             .AddAspNetIdentity<AppUser>()
             .AddInMemoryApiScopes(IdentityServerConfig.ApiScopes)
             .AddInMemoryClients(IdentityServerConfig.Clients)
+            .AddInMemoryApiResources(IdentityServerConfig.ApiResources)
+            .AddInMemoryIdentityResources(IdentityServerConfig.IdentityResources)
             .AddProfileService<ProfileService>();
+        
+        services.AddLocalApiAuthentication();
     }
     
     public static void ConfigureAuthentication(this IServiceCollection services) 
     {
-        services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
-            .AddJwtBearer();
+        services.AddAuthentication(auth =>
+            {
+                auth.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+                auth.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+            })
+            .AddJwtBearer(options =>
+            {
+                options.TokenValidationParameters = new TokenValidationParameters()
+                {
+                    ValidateIssuer = false,
+                    ValidateAudience = false,
+                    RoleClaimType = ClaimNames.RoleClaimName
+                };
+            });
+    }
+    
+    public static void ConfigureAuthorization(this IServiceCollection services)
+    {
+        services.AddAuthorization(options =>
+        {
+            options.AddPolicy(Policies.AdminOnly, policy =>
+            {
+                policy.RequireRole(Roles.AdminRole.Name);
+            });
+        });
     }
 }

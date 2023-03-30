@@ -16,15 +16,17 @@ public class UserServiceTests
     private Mock<UserManager<AppUser>> _userManagerMock;
     private Mock<IPublishEndpoint> _publishEndpointMock;
     private Mock<ILogger<UserService>> _loggerMock;
+    private Mock<RoleManager<IdentityRole<int>>> _roleManagerMock;
     private UserService _sut;
     
     [SetUp]
     public void Setup()
     {
         _userManagerMock = MockUserManager();
+        _roleManagerMock = MockRoleManager();
         _publishEndpointMock = new Mock<IPublishEndpoint>();
         _loggerMock = new Mock<ILogger<UserService>>();
-        _sut = new UserService(_userManagerMock.Object, _publishEndpointMock.Object, _loggerMock.Object);
+        _sut = new UserService(_userManagerMock.Object, _publishEndpointMock.Object, _loggerMock.Object, _roleManagerMock.Object);
     }
     
     [Test]
@@ -124,6 +126,14 @@ public class UserServiceTests
         var mgr = new Mock<UserManager<AppUser>>(store.Object, null, null, null, null, null, null, null, null);
         mgr.Object.UserValidators.Add(new UserValidator<AppUser>());
         mgr.Object.PasswordValidators.Add(new PasswordValidator<AppUser>());
+        return mgr;
+    }
+    
+    private static Mock<RoleManager<IdentityRole<int>>> MockRoleManager()
+    {
+        var store = new Mock<IRoleStore<IdentityRole<int>>>();
+        
+        var mgr = new Mock<RoleManager<IdentityRole<int>>>(store.Object, null, null, null, null);
         return mgr;
     }
 }

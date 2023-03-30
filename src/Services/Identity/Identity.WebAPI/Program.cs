@@ -1,10 +1,10 @@
 using Identity.Application.Interfaces;
 using Identity.Application.Services;
-using Identity.Infrastructure.Data;
 using Identity.Infrastructure.Extensions;
 using Identity.WebAPI.Extensions;
 using Identity.WebAPI.Middleware;
 using Serilog;
+using Shared.Extensions;
 
 var builder = WebApplication.CreateBuilder(args);
 var config = builder.Configuration;
@@ -15,7 +15,7 @@ builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.ConfigureSwagger(config);
 builder.Services.ConfigureAuthentication();
-builder.Services.AddAuthorization();
+builder.Services.ConfigureAuthorization();
 builder.Services.ConfigureDatabaseConnection(config);
 builder.Services.ConfigureIdentity();
 builder.Services.ConfigureIdentityServer(config);

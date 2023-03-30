@@ -1,7 +1,11 @@
 using Identity.Application.Dtos;
 using Identity.Application.Interfaces;
+using Identity.Domain.Entities;
 using Identity.Domain.Enums;
+using IdentityServer4;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Shared.Constants;
 
 namespace Identity.WebAPI.Controllers;
 
@@ -37,11 +41,7 @@ public class UsersController : ControllerBase
     public async Task<IActionResult> AddUserAsync(AppUserRegisterDto appUserRegisterDto)
     {
         var serviceResult = await _userService.AddUserAsync(appUserRegisterDto);
-        if (!serviceResult.Succeeded)
-        {
-            return BadRequest(serviceResult.Errors[0].Message);
-        }
-        return Ok(serviceResult.Value);
+        return HandleServiceResult(serviceResult);
     }
 
     /// <summary>
@@ -53,11 +53,7 @@ public class UsersController : ControllerBase
     public async Task<IActionResult> GetUsersAsync()
     {
         var serviceResult = await _userService.GetUsersAsync();
-        if (!serviceResult.Succeeded)
-        {
-            return BadRequest(serviceResult.Errors[0].Message);
-        }
-        return Ok(serviceResult.Value);
+        return HandleServiceResult(serviceResult);
     }
         
     /// <summary>
@@ -65,22 +61,47 @@ public class UsersController : ControllerBase
     /// </summary>
     /// <response code="200">Returns user with specified id</response>
     /// <response code="404">If the user is not found</response>
-    /// <response code="400">If something went wrong</response>
     [HttpGet("{id:int}")]
     [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
-    [ProducesResponseType(StatusCodes.Status400BadRequest)]
     public async Task<IActionResult> GetUserByIdAsync(int id)
     {
         var serviceResult = await _userService.GetUserByIdAsync(id);
+        return HandleServiceResult(serviceResult);
+    }
+    
+    /// <summary>
+    /// Add user to role
+    /// </summary>
+    /// <response code="200">Returns updated user id</response>
+    /// <response code="400">If user is already assigned to role</response>
+    /// <response code="404">If user or role was not found</response>
+    [Authorize(Policies.AdminOnly)]
+    [Authorize(IdentityServerConstants.LocalApi.PolicyName)]
+    [HttpPost("{userId:int}/roles/{roleId:int}")]
+    [ProducesResponseType(StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status404NotFound)]
+    [ProducesResponseType(StatusCodes.Status400BadRequest)]
+    public async Task<IActionResult> AddUserToRoleAsync([FromRoute] int roleId, [FromRoute] int userId)
+    {
+        var serviceResult = await _userService.AddUserToRoleAsync(roleId, userId);
+        return HandleServiceResult(serviceResult);
+    }
+
+    private IActionResult HandleServiceResult<T>(ServiceResult<T> serviceResult)
+    {
         if (serviceResult.Succeeded)
         {
             return Ok(serviceResult.Value);
         }
-        if (serviceResult.Errors[0].StatusCode == ServiceErrorStatusCode.NotFound)
+
+        var error = serviceResult.Errors[0];
+        return error.StatusCode switch
         {
-            return NotFound(serviceResult.Errors[0].Message);
-        }
-        return BadRequest(serviceResult.Errors[0].Message);
+            ServiceErrorStatusCode.NotFound => NotFound(error.Message),
+            ServiceErrorStatusCode.WrongAction => BadRequest(error.Message),
+            ServiceErrorStatusCode.ForbiddenAction => Forbid(error.Message),
+            _ => StatusCode(StatusCodes.Status500InternalServerError)
+        };
     }
 }

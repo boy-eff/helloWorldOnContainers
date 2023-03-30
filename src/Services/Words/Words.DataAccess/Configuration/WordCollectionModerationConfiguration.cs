@@ -10,5 +10,13 @@ public class WordCollectionModerationConfiguration : IEntityTypeConfiguration<Wo
     {
         builder.Property(x => x.Review)
             .HasMaxLength(100);
+
+        builder.HasOne(x => x.Moderator)
+            .WithMany(x => x.Moderations)
+            .HasForeignKey(x => x.ModeratorId);
+
+        builder.HasOne(x => x.Moderator)
+            .WithMany(x => x.Moderations)
+            .OnDelete(DeleteBehavior.Restrict);
     }
 }

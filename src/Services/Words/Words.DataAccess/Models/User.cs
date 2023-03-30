@@ -15,4 +15,5 @@ public class User
     public ICollection<WordCollectionRating> CollectionRatings { get; set; }
     public ICollection<UserWord> DictionaryWords { get; set; }
     public ICollection<WordCollectionTestPassInformation> TestsPassInformation { get; set; }
+    public ICollection<WordCollectionModeration> Moderations { get; set; }
 }
