@@ -7,7 +7,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Identity.Infrastructure.Data;
 
-public class AuthDbContext: IdentityDbContext<AppUser, IdentityRole<int>, int>, IAuthDbContext
+public class AuthDbContext: IdentityDbContext<AppUser, IdentityRole<int>, int>
 {
     public AuthDbContext(DbContextOptions options) : base(options)
     {

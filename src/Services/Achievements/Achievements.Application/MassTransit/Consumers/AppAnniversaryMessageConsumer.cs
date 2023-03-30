@@ -1,6 +1,5 @@
 ﻿using Achievements.Application.Contracts;
-using Achievements.Domain;
-using Achievements.Domain.Contracts;
+using Achievements.Application.Services.UserAchievementIncrementors;
 using MassTransit;
 using Microsoft.Extensions.Logging;
 using Shared.Messages;
@@ -9,36 +8,20 @@ namespace Achievements.Application.MassTransit.Consumers;
 
 public class AppAnniversaryMessageConsumer : IConsumer<AppAnniversaryMessage>
 {
-    private readonly IUsersAchievementsService _usersAchievementsService;
-    private readonly IUnitOfWork _unitOfWork;
     private readonly ILogger<AppAnniversaryMessageConsumer> _logger;
+    private readonly IUserService _userService;
 
-    public AppAnniversaryMessageConsumer(IUsersAchievementsService usersAchievementsService, IUnitOfWork unitOfWork, ILogger<AppAnniversaryMessageConsumer> logger)
+    public AppAnniversaryMessageConsumer(ILogger<AppAnniversaryMessageConsumer> logger, IUserService userService)
     {
-        _usersAchievementsService = usersAchievementsService;
-        _unitOfWork = unitOfWork;
         _logger = logger;
+        _userService = userService;
     }
 
     public async Task Consume(ConsumeContext<AppAnniversaryMessage> context)
     {
         _logger.LogInformation("User {UserId} is active in app for {YearsCount} years", context.Message.UserId, context.Message.Years);
-        var user = await _unitOfWork.UserRepository.GetUserByIdAsync(context.Message.UserId);
-
-        await using var transaction = await _unitOfWork.BeginTransactionAsync();
-        try
-        {
-            user.YearsInAppAmount = context.Message.Years;
-            await _unitOfWork.SaveChangesAsync();
-        
-            var result = await _usersAchievementsService.UpsertUsersAchievementsLevelAsync(user, SeedData.ElderAchievement.Id);
-            await _unitOfWork.CommitAsync();
-        }
-        catch(Exception ex)
-        {
-            await _unitOfWork.RollbackAsync();
-            throw;
-        }
-        _logger.LogInformation("Achievement information successfully updated for user {UserId}", user.Id);
+        var incrementor = new ElderAchievementIncrementor();
+        await _userService.UpdateAchievementPointsAsync(context.Message.UserId, incrementor);
+        _logger.LogInformation("Achievement information was successfully updated for user {UserId}", context.Message.UserId);
     }
 }

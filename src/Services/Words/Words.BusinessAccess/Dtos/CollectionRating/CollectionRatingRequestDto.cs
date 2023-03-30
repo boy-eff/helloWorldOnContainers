@@ -1,7 +1,6 @@
 ﻿namespace Words.BusinessAccess.Dtos.CollectionRating;
 
-public class CollectionRatingCreateDto
+public class CollectionRatingRequestDto
 {
-    public int CollectionId { get; set; }
     public int Rating { get; set; }
 }

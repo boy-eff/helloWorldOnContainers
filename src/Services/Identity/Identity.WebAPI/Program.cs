@@ -17,7 +17,6 @@ builder.Services.ConfigureSwagger(config);
 builder.Services.ConfigureAuthentication();
 builder.Services.AddAuthorization();
 builder.Services.ConfigureDatabaseConnection(config);
-builder.Services.AddScoped<IAuthDbContext>(x => x.GetService<AuthDbContext>());
 builder.Services.ConfigureIdentity();
 builder.Services.ConfigureIdentityServer(config);
 builder.Services.ConfigureCors(env);

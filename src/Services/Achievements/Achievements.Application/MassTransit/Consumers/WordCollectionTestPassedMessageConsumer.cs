@@ -1,4 +1,5 @@
 ﻿using Achievements.Application.Contracts;
+using Achievements.Application.Services.UserAchievementIncrementors;
 using Achievements.Domain;
 using Achievements.Domain.Contracts;
 using MassTransit;
@@ -9,38 +10,19 @@ namespace Achievements.Application.MassTransit.Consumers;
 
 public class WordCollectionTestPassedMessageConsumer : IConsumer<WordCollectionTestPassedMessage>
 {
-    private readonly IUnitOfWork _unitOfWork;
-    private readonly IUsersAchievementsService _usersAchievementsService;
-    private readonly ILogger<WordCollectionTestPassedMessageConsumer> _logger;
+    private readonly ILogger<AppAnniversaryMessageConsumer> _logger;
+    private readonly IUserService _userService;
 
-    public WordCollectionTestPassedMessageConsumer(IUnitOfWork unitOfWork, IUsersAchievementsService usersAchievementsService, ILogger<WordCollectionTestPassedMessageConsumer> logger)
+    public WordCollectionTestPassedMessageConsumer(ILogger<AppAnniversaryMessageConsumer> logger, IUserService userService)
     {
-        _unitOfWork = unitOfWork;
-        _usersAchievementsService = usersAchievementsService;
         _logger = logger;
+        _userService = userService;
     }
 
     public async Task Consume(ConsumeContext<WordCollectionTestPassedMessage> context)
     {
-        var user = await _unitOfWork.UserRepository.GetUserByIdAsync(context.Message.UserId);
-
-        await using var transaction = await _unitOfWork.BeginTransactionAsync();
-        try
-        {
-            user.CollectionTestsPassedAmount++;
-            await _unitOfWork.SaveChangesAsync();
-            
-            _logger.LogInformation("User {UserId} passed collection {CollectionId} test, total passed tests count - {TestsCount}",
-                user.Id, context.Message.WordCollectionId, user.CollectionTestsPassedAmount);
-        
-            await _usersAchievementsService.UpsertUsersAchievementsLevelAsync(user, SeedData.ElderAchievement.Id);
-            await _unitOfWork.CommitAsync();
-        }
-        catch(Exception ex)
-        {
-            await _unitOfWork.RollbackAsync();
-            throw;
-        }
-        _logger.LogInformation("Achievement information successfully updated for user {UserId}", user.Id);
+        var incrementor = new QuizConquerorAchievementIncrementor();
+        await _userService.UpdateAchievementPointsAsync(context.Message.UserId, incrementor);
+        _logger.LogInformation("Achievement information was successfully updated for user {UserId}", context.Message.UserId);
     }
 }

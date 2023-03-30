@@ -59,7 +59,7 @@ public class UsersAchievementsService : IUsersAchievementsService
         var usersAchievements = await _unitOfWork.UsersAchievementsRepository.GetByUserAsync(userId);
         return usersAchievements.Adapt<IEnumerable<UsersAchievementsDto>>();
     }
-    
+
     private void UpdateUsersAchievementsLevel(UsersAchievements usersAchievements, AchievementLevel achievementLevel)
     {
         usersAchievements.CurrentLevel = achievementLevel.Level;
