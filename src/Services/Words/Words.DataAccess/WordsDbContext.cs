@@ -28,6 +28,8 @@ public class WordsDbContext : DbContext
     public virtual DbSet<WordCollectionRating> WordCollectionRatings { get; set; }
     public virtual DbSet<WordCollectionTestPassInformation> WordCollectionTestPassInformation { get; set; }
     public virtual DbSet<WordCollectionTestQuestion> WordCollectionTestQuestions { get; set; }
+    public virtual DbSet<ModerationStatus> ModerationStatuses { get; set; }
+    public virtual DbSet<WordCollectionModeration> WordCollectionModerations { get; set; }
 
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
     {

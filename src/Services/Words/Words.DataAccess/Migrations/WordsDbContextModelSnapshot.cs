@@ -190,6 +190,40 @@ namespace Words.DataAccess.Migrations
                     b.ToTable("OutboxState");
                 });
 
+            modelBuilder.Entity("Words.DataAccess.Models.ModerationStatus", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("Name")
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar(100)");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("ModerationStatuses");
+
+                    b.HasData(
+                        new
+                        {
+                            Id = 1,
+                            Name = "Pending"
+                        },
+                        new
+                        {
+                            Id = 2,
+                            Name = "Accepted"
+                        },
+                        new
+                        {
+                            Id = 3,
+                            Name = "Rejected"
+                        });
+                });
+
             modelBuilder.Entity("Words.DataAccess.Models.User", b =>
                 {
                     b.Property<int>("Id")
@@ -257,6 +291,11 @@ namespace Words.DataAccess.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
+                    b.Property<int>("ActualModerationStatus")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasDefaultValue(1);
+
                     b.Property<DateTimeOffset>("CreatedAt")
                         .HasPrecision(2)
                         .HasColumnType("datetimeoffset(2)");
@@ -283,6 +322,33 @@ namespace Words.DataAccess.Migrations
                     b.HasIndex("UserId");
 
                     b.ToTable("Collections");
+                });
+
+            modelBuilder.Entity("Words.DataAccess.Models.WordCollectionModeration", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<int>("ModerationStatusId")
+                        .HasColumnType("int");
+
+                    b.Property<string>("Review")
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar(100)");
+
+                    b.Property<int>("WordCollectionId")
+                        .HasColumnType("int");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("ModerationStatusId");
+
+                    b.HasIndex("WordCollectionId");
+
+                    b.ToTable("WordCollectionModerations");
                 });
 
             modelBuilder.Entity("Words.DataAccess.Models.WordCollectionRating", b =>
@@ -434,6 +500,25 @@ namespace Words.DataAccess.Migrations
                     b.Navigation("User");
                 });
 
+            modelBuilder.Entity("Words.DataAccess.Models.WordCollectionModeration", b =>
+                {
+                    b.HasOne("Words.DataAccess.Models.ModerationStatus", "ModerationStatus")
+                        .WithMany()
+                        .HasForeignKey("ModerationStatusId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("Words.DataAccess.Models.WordCollection", "WordCollection")
+                        .WithMany("Moderations")
+                        .HasForeignKey("WordCollectionId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("ModerationStatus");
+
+                    b.Navigation("WordCollection");
+                });
+
             modelBuilder.Entity("Words.DataAccess.Models.WordCollectionRating", b =>
                 {
                     b.HasOne("Words.DataAccess.Models.WordCollection", "Collection")
@@ -514,6 +599,8 @@ namespace Words.DataAccess.Migrations
 
             modelBuilder.Entity("Words.DataAccess.Models.WordCollection", b =>
                 {
+                    b.Navigation("Moderations");
+
                     b.Navigation("Ratings");
 
                     b.Navigation("Tests");
