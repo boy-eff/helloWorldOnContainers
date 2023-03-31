@@ -5,10 +5,12 @@ using Microsoft.Extensions.Caching.Distributed;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using Shared.Exceptions;
+using Words.BusinessAccess.Dtos;
 using Words.BusinessAccess.Extensions;
 using Words.BusinessAccess.Helpers;
 using Words.BusinessAccess.Options;
 using Words.DataAccess;
+using Words.DataAccess.Enums;
 using Words.DataAccess.Models;
 
 namespace Words.BusinessAccess.MediatR.Features.Collections.Commands.UpdateModerationStatus;
@@ -47,12 +49,10 @@ public class UpdateModerationStatusCommandHandler : IRequestHandler<UpdateModera
             throw new NotFoundException("Collection was not found");
         }
 
-        collection.ActualModerationStatus = request.ModerationDto.ModerationStatusId;
-
-        var moderation = request.ModerationDto.Adapt<WordCollectionModeration>();
-        moderation.ModeratorId = _httpContextAccessor.HttpContext.User.GetUserId();
+        UpdateCollectionActualModerationStatus(collection, request.ModerationDto.ModerationStatusId);
         
-        await _dbContext.WordCollectionModerations.AddAsync(moderation, cancellationToken);
+        var moderation = await AddModerationToDatabaseAsync(request.ModerationDto);
+        
         await _dbContext.SaveChangesAsync(cancellationToken);
         
         _logger.LogInformation("Moderation status for collection with id {CollectionId} was successfully updated to {ModerationStatus}",
@@ -62,13 +62,25 @@ public class UpdateModerationStatusCommandHandler : IRequestHandler<UpdateModera
         {
             return moderation.Id;
         }
-        
-        var cacheOptions = new DistributedCacheEntryOptions()
-            { SlidingExpiration = TimeSpan.FromMinutes(_options.Value.SlidingExpirationTimeInMinutes) };
-        await _cache.SetAsync(cacheKey, collection, cacheOptions);
+
+        await collection.AddToCacheAsync(_cache, _options);
         
         _logger.LogInformation("Updated word collection with id {CollectionId} was successfully cached after updating", collection.Id);
 
         return moderation.Id;
+    }
+
+    private async Task<WordCollectionModeration> AddModerationToDatabaseAsync(WordCollectionModerationDto moderationDto)
+    {
+        var moderation = moderationDto.Adapt<WordCollectionModeration>();
+        moderation.ModeratorId = _httpContextAccessor.HttpContext.User.GetUserId();
+        
+        await _dbContext.WordCollectionModerations.AddAsync(moderation);
+        return moderation;
+    }
+
+    private void UpdateCollectionActualModerationStatus(WordCollection collection, ModerationStatusType status)
+    {
+        collection.ActualModerationStatus = status;
     }
 }
