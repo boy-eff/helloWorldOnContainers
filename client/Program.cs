@@ -11,7 +11,8 @@ using Words.DataAccess.Models;
 const string gatewayUrl = "http://localhost:5001/";
 const string tokenUrl = gatewayUrl + "identity/connect/token";
 const string usersUrl = gatewayUrl + "identity/api/users";
-const string apiUrl = gatewayUrl + "words/api/wordcollection";
+const string wordCollectionUrl = gatewayUrl + "words/api/wordcollection";
+const string wordDictionaryUrl = gatewayUrl + "words/api/dictionary/words/";
 
 var client = new HttpClient();
 
@@ -23,7 +24,13 @@ if (token is null)
     Console.WriteLine("Token retrieving failure");
 }
 
-await AddWordCollectionAsync(client, token.AccessToken);
+var decodedToken = DecodeJwtToken(token.AccessToken);
+
+var collection = await AddWordCollectionAsync(client, decodedToken);
+
+await AddWordToUserDictionaryAsync(client, collection, decodedToken);
+
+
 
 async Task<User> RegisterUserAsync(HttpClient client)
 {
@@ -39,7 +46,7 @@ async Task<User> RegisterUserAsync(HttpClient client)
         responseMessage = await client.PostAsync(usersUrl, content);
         Console.WriteLine($"Server responded with status {responseMessage.StatusCode}");
     } while (!responseMessage.IsSuccessStatusCode);
-    Thread.Sleep(1000);
+    Thread.Sleep(5000);
     return user;
 }
 
@@ -73,15 +80,23 @@ async Task<TokenResponse?> RetrieveTokenAsync(User user)
     });
 
     Console.WriteLine($"Token successfully retrieved: {tokenResponse.AccessToken}");
+    Thread.Sleep(5000);
     return tokenResponse;
 }
 
-async Task AddWordCollectionAsync(HttpClient client, string token)
+JwtSecurityToken DecodeJwtToken(string token)
 {
     var handler = new JwtSecurityTokenHandler();
-    var jwtSecurityToken = handler.ReadJwtToken(token);
+    var decodedToken = handler.ReadJwtToken(token);
+    Console.WriteLine("JWT token successfully decoded");
+    return decodedToken;
 
-    var userId = Convert.ToInt32(jwtSecurityToken.Claims.First(x => x.Type == "sub").Value);
+}
+
+async Task<WordCollection> AddWordCollectionAsync(HttpClient client, JwtSecurityToken token)
+{
+    
+    var userId = Convert.ToInt32(token.Claims.First(x => x.Type == "sub").Value);
 
     var collection = new WordCollection()
     {
@@ -102,8 +117,20 @@ async Task AddWordCollectionAsync(HttpClient client, string token)
     };
 
     var content = JsonContent.Create(collection);
-    client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
-    
-    var response = await client.PostAsync(apiUrl, content);
-    Console.WriteLine("Kek");
+    client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token.RawData);
+    Console.WriteLine("Trying to save word collection with saved token");
+    var responseMessage = await client.PostAsync(wordCollectionUrl, content);
+    Console.WriteLine($"Server responded with status {responseMessage.StatusCode}");
+    var response = await responseMessage.Content.ReadAsStringAsync();
+    var returnedCollection = JsonConvert.DeserializeObject<WordCollection>(response, new JsonSerializerSettings());
+    Thread.Sleep(5000);
+    return returnedCollection;
+}
+
+async Task AddWordToUserDictionaryAsync(HttpClient client, WordCollection collection, JwtSecurityToken token)
+{
+    Console.WriteLine("Trying to add word to user dictionary");
+    var word = collection.Words.First();
+    var responseMessage = await client.PostAsync(wordDictionaryUrl + word.Id, null);
+    Console.WriteLine($"Server responded with status {responseMessage.StatusCode}");
 }
