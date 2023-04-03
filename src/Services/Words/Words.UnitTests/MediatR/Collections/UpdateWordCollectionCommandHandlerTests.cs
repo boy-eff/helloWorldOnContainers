@@ -68,7 +68,7 @@ public class UpdateWordCollectionCommandHandlerTests
         await _dbContext.SaveChangesAsync();
         
         _cacheMock.Setup(x 
-            => x.Get(It.IsAny<string>())).Returns((byte[]?)null);
+            => x.Get(It.IsAny<string>())).Returns((byte[])null);
 
         var command = new UpdateWordCollectionCommand(wordCollectionId, requestDto);
         var result = await _sut.Handle(command, CancellationToken.None);
@@ -98,7 +98,7 @@ public class UpdateWordCollectionCommandHandlerTests
         await _dbContext.SaveChangesAsync();
         
         _cacheMock.Setup(x 
-            => x.Get(It.IsAny<string>())).Returns((byte[]?)null);
+            => x.Get(It.IsAny<string>())).Returns((byte[])null);
 
         var command = new UpdateWordCollectionCommand(wordCollectionId, requestDto);
         await _sut.Handle(command, CancellationToken.None);
@@ -184,7 +184,7 @@ public class UpdateWordCollectionCommandHandlerTests
             .WithUserId(UserId);
         
         _cacheMock.Setup(x => x.Get(It.IsAny<string>()))
-            .Returns((byte[]?)null);
+            .Returns((byte[])null);
 
         var requestDto = wordCollectionDefaultBuilder
             .BuildAsRequestDto();
