@@ -1,5 +1,6 @@
 ﻿using FluentAssertions;
 using Identity.Application.Dtos;
+using Identity.Application.Interfaces;
 using Identity.Application.Services;
 using Identity.Domain.Entities;
 using Identity.Domain.Enums;
@@ -17,6 +18,7 @@ public class UserServiceTests
     private Mock<IPublishEndpoint> _publishEndpointMock;
     private Mock<ILogger<UserService>> _loggerMock;
     private Mock<RoleManager<IdentityRole<int>>> _roleManagerMock;
+    private Mock<IAuthDbContext> _authDbContextMock;
     private UserService _sut;
     
     [SetUp]
@@ -26,7 +28,9 @@ public class UserServiceTests
         _roleManagerMock = MockRoleManager();
         _publishEndpointMock = new Mock<IPublishEndpoint>();
         _loggerMock = new Mock<ILogger<UserService>>();
-        _sut = new UserService(_userManagerMock.Object, _publishEndpointMock.Object, _loggerMock.Object, _roleManagerMock.Object);
+        _authDbContextMock = new Mock<IAuthDbContext>();
+        _sut = new UserService(_userManagerMock.Object, _publishEndpointMock.Object, 
+            _loggerMock.Object, _roleManagerMock.Object, _authDbContextMock.Object);
     }
     
     [Test]
