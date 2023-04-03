@@ -83,6 +83,6 @@ public class UsersAchievementsServiceTests
         var result = await _sut.UpsertUsersAchievementsLevelAsync(user, elderAchievementId);
 
         result.Should().NotBeNull();
-        result.CurrentLevel.Should().Be(achievementLevel.Level);
+        result!.CurrentLevel.Should().Be(achievementLevel.Level);
     }
 }
