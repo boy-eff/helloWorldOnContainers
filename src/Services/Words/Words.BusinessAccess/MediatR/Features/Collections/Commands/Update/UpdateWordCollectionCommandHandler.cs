@@ -75,10 +75,8 @@ public class UpdateWordCollectionCommandHandler : IRequestHandler<UpdateWordColl
         {
             return wordCollection.Adapt<WordCollectionResponseDto>();
         }
-        
-        var cacheOptions = new DistributedCacheEntryOptions()
-            { SlidingExpiration = TimeSpan.FromMinutes(_wordsRedisCacheOptions.Value.SlidingExpirationTimeInMinutes) };
-        await _cache.SetAsync(cacheKey, wordCollection, cacheOptions);
+
+        await wordCollection.AddToCacheAsync(_cache, _wordsRedisCacheOptions);
         
         _logger.LogInformation("Updated word collection with id {CollectionId} was successfully cached after updating", wordCollection.Id);
 

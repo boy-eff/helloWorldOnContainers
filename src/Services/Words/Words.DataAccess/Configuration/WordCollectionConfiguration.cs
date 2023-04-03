@@ -1,5 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
+using Words.DataAccess.Enums;
 using Words.DataAccess.Models;
 
 namespace Words.DataAccess.Configuration;
@@ -15,6 +16,10 @@ public class WordCollectionConfiguration : IEntityTypeConfiguration<WordCollecti
         builder.Property(x => x.EnglishLevel)
             .IsRequired();
         
-        builder.Property(x => x.CreatedAt).HasPrecision(2);
+        builder.Property(x => x.CreatedAt)
+            .HasPrecision(2);
+
+        builder.Property(x => x.ActualModerationStatus)
+            .HasDefaultValue(ModerationStatusType.Pending);
     }
 }
