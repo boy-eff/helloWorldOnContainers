@@ -1,3 +1,4 @@
+using Identity.Application.Interfaces;
 using Identity.Domain.Entities;
 using MassTransit;
 using Microsoft.AspNetCore.Identity;
@@ -7,7 +8,7 @@ using Shared.Constants;
 
 namespace Identity.Infrastructure.Data;
 
-public class AuthDbContext: IdentityDbContext<AppUser, IdentityRole<int>, int>
+public class AuthDbContext: IdentityDbContext<AppUser, IdentityRole<int>, int>, IAuthDbContext
 {
     public AuthDbContext(DbContextOptions options) : base(options)
     {
