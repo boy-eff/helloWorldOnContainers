@@ -24,6 +24,7 @@
 * WebSocket communication using **SignalR**
 * Validation with **FluentValidation**
 * CI pipeline using **GitHub Actions**
+* **Docker** containerization
 
 ### Technologies:
 * [ASP.NET Core 7.0](https://dotnet.microsoft.com/en-us/)
