@@ -1,4 +1,5 @@
-﻿using Identity.Infrastructure.Data;
+﻿using Identity.Application.Interfaces;
+using Identity.Infrastructure.Data;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
@@ -14,6 +15,8 @@ public static class DatabaseConfigurationExtensions
         services.AddDbContext<AuthDbContext>(options => {
             options.UseNpgsql(connectionString);
         });
+
+        services.AddScoped<IAuthDbContext>(x => x.GetService<AuthDbContext>());
     }
     
     public static void ApplyMigrations(this IApplicationBuilder app)
