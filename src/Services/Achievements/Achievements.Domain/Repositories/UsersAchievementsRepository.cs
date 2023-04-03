@@ -13,7 +13,7 @@ public class UsersAchievementsRepository : IUsersAchievementsRepository
         _dbContext = dbContext;
     }
 
-    public async Task<UsersAchievements?> GetAsync(int achievementId, int userId)
+    public async Task<UsersAchievements> GetAsync(int achievementId, int userId)
     {
         return await _dbContext.UsersAchievements.FindAsync(achievementId, userId);
     }

@@ -52,7 +52,7 @@ public class GetWordCollectionByIdQueryHandlerTests
         await _dbContext.Collections.AddAsync(wordCollection);
         await _dbContext.SaveChangesAsync();
 
-        _cacheMock.Setup(x => x.Get(It.IsAny<string>())).Returns((byte[]?)null);
+        _cacheMock.Setup(x => x.Get(It.IsAny<string>())).Returns((byte[])null);
 
         var expectedResult = defaultBuilder.BuildAsResponseDto();
         
@@ -69,7 +69,7 @@ public class GetWordCollectionByIdQueryHandlerTests
         var collectionId = 1;
         var request = new GetWordCollectionByIdQuery(collectionId);
         
-        _cacheMock.Setup(x => x.Get(It.IsAny<string>())).Returns((byte[]?)null);
+        _cacheMock.Setup(x => x.Get(It.IsAny<string>())).Returns((byte[])null);
 
         _sut.Invoking(x => x.Handle(request, CancellationToken.None)).Should().ThrowAsync<NotFoundException>();
         

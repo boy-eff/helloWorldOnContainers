@@ -25,7 +25,7 @@ public class UserService : IUserService
             achievementIncrementor.IncrementAchievementPoints(user);
             await _unitOfWork.SaveChangesAsync();
         
-            await _usersAchievementsService.UpsertUsersAchievementsLevelAsync(user, SeedData.ElderAchievement.Id);
+            await _usersAchievementsService.UpsertUsersAchievementsLevelAsync(user, (int)achievementIncrementor.AchievementType);
             await _unitOfWork.CommitAsync();
         }
         catch(Exception)
