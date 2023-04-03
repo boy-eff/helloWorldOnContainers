@@ -11,6 +11,8 @@
 * `User` creates and browses collections of words,
 * `User` adds favourite words from collections to dictionary,
 * `User` learns words using word tests,
+* `Admin` assigns users to roles,
+* `Moderator` updates word collections moderation status,
 
 ### Technologies:
 * `IdentityServer4` - user authentication and authorization,
