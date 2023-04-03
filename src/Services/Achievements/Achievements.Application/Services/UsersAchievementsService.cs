@@ -38,7 +38,7 @@ public class UsersAchievementsService : IUsersAchievementsService
 
         if (usersAchievements is null)
         {
-            await AddUsersAchievementsAsync(user.Id, achievementId, achievementLevel);
+            usersAchievements = await AddUsersAchievementsAsync(user.Id, achievementId, achievementLevel);
         }
         else
         {
@@ -67,7 +67,7 @@ public class UsersAchievementsService : IUsersAchievementsService
         _unitOfWork.UsersAchievementsRepository.Update(usersAchievements);
     }
 
-    private async Task AddUsersAchievementsAsync(int userId, int achievementId, AchievementLevel achievementLevel)
+    private async Task<UsersAchievements> AddUsersAchievementsAsync(int userId, int achievementId, AchievementLevel achievementLevel)
     {
         var usersAchievements = new UsersAchievements()
         {
@@ -77,5 +77,6 @@ public class UsersAchievementsService : IUsersAchievementsService
             AchieveDate = DateTime.Now
         };
         await _unitOfWork.UsersAchievementsRepository.AddAsync(usersAchievements);
+        return usersAchievements;
     }
 }
