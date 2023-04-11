@@ -3,6 +3,7 @@ using IdentityServer4.Models;
 using IdentityServer4.Services;
 using Identity.Domain.Entities;
 using Microsoft.AspNetCore.Identity;
+using Shared.Constants;
 
 namespace Identity.WebAPI.IdentityServer4;
 
@@ -21,7 +22,7 @@ public class ProfileService : IProfileService
 
         var roles = await _userManager.GetRolesAsync(user);
 
-        var claims = roles.Select(role => new Claim("roles", role));
+        var claims = roles.Select(role => new Claim(ClaimNames.RoleClaimName, role));
         
         context.IssuedClaims.AddRange(claims);
     }

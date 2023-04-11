@@ -1,9 +1,9 @@
-using Identity.Application.Interfaces;
 using Identity.Domain.Entities;
 using MassTransit;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
+using Shared.Constants;
 
 namespace Identity.Infrastructure.Data;
 
@@ -31,24 +31,9 @@ public class AuthDbContext: IdentityDbContext<AppUser, IdentityRole<int>, int>
     {
         builder.Entity<IdentityRole<int>>().HasData(new List<IdentityRole<int>>()
         {
-            new IdentityRole<int>()
-            {
-                Id = 1,
-                Name = "User",
-                NormalizedName = "USER"
-            },
-            new IdentityRole<int>()
-            {
-                Id = 2,
-                Name = "Moderator",
-                NormalizedName = "MODERATOR"
-            },
-            new IdentityRole<int>()
-            {
-                Id = 3,
-                Name = "SuperAdmin",
-                NormalizedName = "SUPERADMIN"
-            }
+            Shared.Constants.Roles.UserRole,
+            Shared.Constants.Roles.ModeratorRole,
+            Shared.Constants.Roles.AdminRole
         });
     }
 

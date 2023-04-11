@@ -14,6 +14,7 @@ public class UserConfiguration : IEntityTypeConfiguration<User>
         builder.Property(x => x.EnglishLevel)
             .IsRequired();
         
-        builder.Property(x => x.CreatedAt).HasPrecision(2);
+        builder.Property(x => x.CreatedAt)
+            .HasPrecision(2);
     }
 }

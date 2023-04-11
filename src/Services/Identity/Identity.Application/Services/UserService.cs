@@ -6,7 +6,6 @@ using Mapster;
 using MassTransit;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
 using Shared.Messages;
 
@@ -15,14 +14,16 @@ namespace Identity.Application.Services;
 public class UserService : IUserService
 {
     private readonly UserManager<AppUser> _userManager;
+    private readonly RoleManager<IdentityRole<int>> _roleManager;
     private readonly IPublishEndpoint _publishEndpoint;
     private readonly ILogger<UserService> _logger;
 
-    public UserService(UserManager<AppUser> userManager, IPublishEndpoint publishEndpoint, ILogger<UserService> logger)
+    public UserService(UserManager<AppUser> userManager, IPublishEndpoint publishEndpoint, ILogger<UserService> logger, RoleManager<IdentityRole<int>> roleManager)
     {
         _userManager = userManager;
         _publishEndpoint = publishEndpoint;
         _logger = logger;
+        _roleManager = roleManager;
     }
 
     public async Task<ServiceResult<int>> AddUserAsync(AppUserRegisterDto appUserDto)
@@ -66,7 +67,7 @@ public class UserService : IUserService
             {
                 Errors = new List<ServiceError>
                 {
-                    new ServiceError(ServiceErrorStatusCode.NotFound, "User was not found")
+                    new(ServiceErrorStatusCode.NotFound, "User was not found")
                 }
             };
         }
@@ -75,6 +76,56 @@ public class UserService : IUserService
         return new ServiceResult<AppUserDto>()
         {
             Value = userDto
+        };
+    }
+
+    public async Task<ServiceResult<int>> AddUserToRoleAsync(int roleId, int userId)
+    {
+        var user = await _userManager.FindByIdAsync(userId.ToString());
+        
+        if (user is null)
+        {
+            _logger.LogInformation("User with id {UserId} was not found", userId);
+            return new ServiceResult<int>()
+            {
+                Errors = new List<ServiceError>()
+                {
+                    new(ServiceErrorStatusCode.NotFound, "User was not found")
+                }
+            };
+        }
+
+        var role = await _roleManager.FindByIdAsync(roleId.ToString());
+
+        if (role is null)
+        {
+            _logger.LogInformation("Role with id {RoleId} was not found", roleId);
+            return new ServiceResult<int>()
+            {
+                Errors = new List<ServiceError>()
+                {
+                    new(ServiceErrorStatusCode.NotFound, "Role was not found")
+                }
+            };
+        }
+
+        if (await _userManager.IsInRoleAsync(user, role.Name))
+        {
+            _logger.LogInformation("User {UserId} is already assigned to role {RoleName}", user.Id, role.Name);
+            return new ServiceResult<int>()
+            {
+                Errors = new List<ServiceError>()
+                {
+                    new(ServiceErrorStatusCode.WrongAction, "User is already assigned to this role")
+                }
+            };
+        }
+
+        await _userManager.AddToRoleAsync(user, role.Name);
+        _logger.LogInformation("User with id {UserId} is assigned to role {RoleName}", user.Id, role.Name);
+        return new ServiceResult<int>()
+        {
+            Value = role.Id
         };
     }
 

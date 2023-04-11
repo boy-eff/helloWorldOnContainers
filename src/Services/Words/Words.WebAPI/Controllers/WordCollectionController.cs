@@ -1,11 +1,13 @@
 ﻿using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Shared.Constants;
 using Words.BusinessAccess.Dtos;
 using Words.BusinessAccess.Dtos.WordCollection;
 using Words.BusinessAccess.MediatR.Features.Collections.Commands.Add;
 using Words.BusinessAccess.MediatR.Features.Collections.Commands.Delete;
 using Words.BusinessAccess.MediatR.Features.Collections.Commands.Update;
+using Words.BusinessAccess.MediatR.Features.Collections.Commands.UpdateModerationStatus;
 using Words.BusinessAccess.MediatR.Features.Collections.Queries.Get;
 using Words.BusinessAccess.MediatR.Features.Collections.Queries.GetById;
 
@@ -124,6 +126,24 @@ public class WordCollectionController : ControllerBase
     public async Task<ActionResult<int>> DeleteAsync(int id)
     {
         var command = new DeleteWordCollectionCommand(id);
+        var result = await _mediator.Send(command);
+        return Ok(result);
+    }
+    
+    /// <summary>
+    /// Update collection moderation status
+    /// </summary>
+    /// <response code="200">Returns updated collection id</response>
+    /// <response code="401">If user is not authenticated</response>
+    /// <response code="404">If collection is not found</response>
+    [HttpPut("moderate")]
+    [Authorize(Policies.ModeratorOnly)]
+    [ProducesResponseType(StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+    [ProducesResponseType(StatusCodes.Status404NotFound)]
+    public async Task<ActionResult<int>> UpdateModerationStatusAsync([FromBody] WordCollectionModerationDto wordCollectionDto)
+    {
+        var command = new UpdateModerationStatusCommand(wordCollectionDto);
         var result = await _mediator.Send(command);
         return Ok(result);
     }
