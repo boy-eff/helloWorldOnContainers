@@ -3,8 +3,10 @@ using Identity.Application.Services;
 using Identity.Infrastructure.Extensions;
 using Identity.WebAPI.Extensions;
 using Identity.WebAPI.Middleware;
+using Microsoft.Extensions.Options;
 using Serilog;
 using Shared.Extensions;
+using Shared.Options;
 
 var builder = WebApplication.CreateBuilder(args);
 var config = builder.Configuration;
@@ -19,7 +21,7 @@ builder.Services.ConfigureAuthorization();
 builder.Services.ConfigureDatabaseConnection(config);
 builder.Services.ConfigureIdentity();
 builder.Services.ConfigureIdentityServer(config);
-builder.Services.ConfigureCors(env);
+builder.Services.ConfigureCors(config);
 builder.Services.ConfigureMassTransit(config);
 builder.ConfigureLogger();
 
@@ -27,6 +29,9 @@ var app = builder.Build();
 app.UseMiddleware<ExceptionMiddleware>();
 
 app.UseSerilogRequestLogging(x => x.Logger = app.Services.GetService<Serilog.ILogger>());
+
+var corsOptions = app.Services.GetRequiredService<IOptions<CorsConfigurationOptions>>();
+app.UseCors(corsOptions.Value.PolicyName);
 
 if (!app.Environment.IsProduction())
 {
