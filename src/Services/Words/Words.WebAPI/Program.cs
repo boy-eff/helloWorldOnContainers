@@ -29,6 +29,7 @@ builder.Services.ConfigureMassTransit(builder.Configuration);
 builder.Services.AddSignalR();
 builder.Services.RegisterMapsterConfiguration();
 builder.Services.ConfigureRedis(builder.Configuration);
+builder.Services.ConfigureCloudinaryOptions(builder.Configuration);
 
 var app = builder.Build();
 
