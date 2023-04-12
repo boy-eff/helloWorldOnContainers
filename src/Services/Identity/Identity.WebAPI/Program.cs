@@ -1,5 +1,6 @@
 using Identity.Application.Interfaces;
 using Identity.Application.Services;
+using Identity.Infrastructure.Data;
 using Identity.Infrastructure.Extensions;
 using Identity.WebAPI.Extensions;
 using Identity.WebAPI.Middleware;
@@ -23,6 +24,7 @@ builder.Services.ConfigureIdentity();
 builder.Services.ConfigureIdentityServer(config);
 builder.Services.ConfigureCors(config);
 builder.Services.ConfigureMassTransit(config);
+builder.Services.AddScoped<IDbContext>(x => x.GetService<AuthDbContext>());
 builder.ConfigureLogger();
 
 var app = builder.Build();

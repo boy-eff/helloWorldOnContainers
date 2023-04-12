@@ -17,13 +17,15 @@ public class UserService : IUserService
     private readonly RoleManager<IdentityRole<int>> _roleManager;
     private readonly IPublishEndpoint _publishEndpoint;
     private readonly ILogger<UserService> _logger;
+    private readonly IDbContext _dbContext;
 
-    public UserService(UserManager<AppUser> userManager, IPublishEndpoint publishEndpoint, ILogger<UserService> logger, RoleManager<IdentityRole<int>> roleManager)
+    public UserService(UserManager<AppUser> userManager, IPublishEndpoint publishEndpoint, ILogger<UserService> logger, RoleManager<IdentityRole<int>> roleManager, IDbContext dbContext)
     {
         _userManager = userManager;
         _publishEndpoint = publishEndpoint;
         _logger = logger;
         _roleManager = roleManager;
+        _dbContext = dbContext;
     }
 
     public async Task<ServiceResult<int>> AddUserAsync(AppUserRegisterDto appUserDto)
@@ -50,6 +52,7 @@ public class UserService : IUserService
 
         await _publishEndpoint.Publish(message);
 
+        await _dbContext.SaveChangesAsync();
 
         return new ServiceResult<int>()
         {

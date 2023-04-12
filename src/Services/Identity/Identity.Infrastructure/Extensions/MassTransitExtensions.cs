@@ -22,9 +22,6 @@ public static class MassTransitExtensions
             x.AddEntityFrameworkOutbox<AuthDbContext>(o =>
             {
                 o.UsePostgres();
-                
-                o.QueryDelay = TimeSpan.FromSeconds(1);
-                
                 o.UseBusOutbox();
             });
 

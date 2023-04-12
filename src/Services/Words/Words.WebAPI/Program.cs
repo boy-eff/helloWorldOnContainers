@@ -24,6 +24,7 @@ builder.ConfigureLogger();
 builder.Services.AddSingleton<IViewsCounterService, ViewsCounterService>();
 builder.Services.AddSingleton<IDailyWordCollectionService, DailyWordCollectionService>();
 builder.Services.AddScoped<IWordCollectionTestGenerator, WordCollectionTestGenerator>();
+builder.Services.AddScoped<ICloudinaryService, CloudinaryService>();
 builder.Services.ConfigureQuartz(builder.Configuration);
 builder.Services.ConfigureMassTransit(builder.Configuration);
 builder.Services.AddSignalR();
