@@ -10,6 +10,9 @@ public class User
     public string UserName { get; set; }
     public EnglishLevel EnglishLevel { get; set; }
     public DateTimeOffset CreatedAt { get; set; } = DateTimeOffset.Now;
+    
+    public string PhotoUrl { get; set; }
+    public string PhotoPublicId { get; set; }
 
     public ICollection<WordCollection> Collections { get; set; }
     public ICollection<WordCollectionRating> CollectionRatings { get; set; }
