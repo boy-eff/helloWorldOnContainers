@@ -10,6 +10,7 @@ using Words.BusinessAccess.MediatR.Features.Collections.Commands.Update;
 using Words.BusinessAccess.MediatR.Features.Collections.Commands.UpdateModerationStatus;
 using Words.BusinessAccess.MediatR.Features.Collections.Queries.Get;
 using Words.BusinessAccess.MediatR.Features.Collections.Queries.GetById;
+using Words.BusinessAccess.Pagination;
 
 namespace Words.WebAPI.Controllers;
 
@@ -33,9 +34,9 @@ public class WordCollectionController : ControllerBase
     [HttpGet]
     [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status401Unauthorized)]
-    public async Task<ActionResult<List<WordCollectionResponseDto>>> GetAsync()
+    public async Task<ActionResult<List<WordCollectionResponseDto>>> GetAsync([FromQuery]PaginationParameters paginationParameters)
     {
-        var query = new GetWordCollectionsQuery();
+        var query = new GetWordCollectionsQuery(paginationParameters);
         var result = await _mediator.Send(query, CancellationToken.None);
         return Ok(result);
     }
