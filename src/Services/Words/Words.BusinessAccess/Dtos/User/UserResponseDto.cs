@@ -7,6 +7,7 @@ public class UserResponseDto
 {
     public int Id { get; set; }
     public string UserName { get; set; }
+    public string ImageUrl { get; set; }
     public EnglishLevel EnglishLevel { get; set; }
     public DateTimeOffset CreatedAt { get; set; } = DateTimeOffset.Now;
 }

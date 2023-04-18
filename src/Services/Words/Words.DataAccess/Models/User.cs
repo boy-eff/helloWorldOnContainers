@@ -11,8 +11,8 @@ public class User
     public EnglishLevel EnglishLevel { get; set; }
     public DateTimeOffset CreatedAt { get; set; } = DateTimeOffset.Now;
     
-    public string PhotoUrl { get; set; }
-    public string PhotoPublicId { get; set; }
+    public string ImageUrl { get; set; }
+    public string ImagePublicId { get; set; }
 
     public ICollection<WordCollection> Collections { get; set; }
     public ICollection<WordCollectionRating> CollectionRatings { get; set; }

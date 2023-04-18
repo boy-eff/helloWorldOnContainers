@@ -52,9 +52,9 @@ public class UpdateUserPhotoCommandHandler: IRequestHandler<UpdateUserPhotoComma
         return Unit.Value;
     }
 
-    private void _updateUserPhotoInformation(ImageUploadResult imageUploadResult, User user)
+    private void _updateUserPhotoInformation(UploadResult imageUploadResult, User user)
     {
-        user.PhotoUrl = imageUploadResult.SecureUrl.AbsoluteUri;
-        user.PhotoPublicId = imageUploadResult.PublicId;
+        user.ImageUrl = imageUploadResult.SecureUrl.AbsoluteUri;
+        user.ImagePublicId = imageUploadResult.PublicId;
     }
 }

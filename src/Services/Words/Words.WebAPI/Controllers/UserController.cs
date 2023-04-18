@@ -1,7 +1,9 @@
 ﻿using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Words.BusinessAccess.Dtos.User;
 using Words.BusinessAccess.MediatR.Features.Users.Commands.UpdatePhoto;
+using Words.BusinessAccess.MediatR.Features.Users.Queries.GetUserById;
 
 namespace Words.WebAPI.Controllers;
 
@@ -18,10 +20,18 @@ public class UserController : ControllerBase
     }
 
     [HttpPost]
-    public async Task<ActionResult> UpdateUserPhoto(IFormFile file)
+    public async Task<ActionResult> UpdateUserPhotoAsync(IFormFile file)
     {
         var command = new UpdateUserPhotoCommand(file);
         await _mediator.Send(command);
         return Ok();
+    }
+
+    [HttpGet("{userId:int}")]
+    public async Task<ActionResult<UserResponseDto>> GetUserByIdAsync(int userId)
+    {
+        var query = new GetUserByIdCommand(userId);
+        var result = await _mediator.Send(query);
+        return Ok(result);
     }
 }

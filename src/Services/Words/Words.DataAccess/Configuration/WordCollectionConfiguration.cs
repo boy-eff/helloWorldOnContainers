@@ -21,5 +21,11 @@ public class WordCollectionConfiguration : IEntityTypeConfiguration<WordCollecti
 
         builder.Property(x => x.ActualModerationStatus)
             .HasDefaultValue(ModerationStatusType.Pending);
+        
+        builder.Property(x => x.ImageUrl)
+            .HasMaxLength(100);
+
+        builder.Property(x => x.ImagePublicId)
+            .HasMaxLength(100);
     }
 }

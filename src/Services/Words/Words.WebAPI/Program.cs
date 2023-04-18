@@ -1,7 +1,9 @@
 using FluentValidation;
+using Microsoft.Extensions.Options;
 using Serilog;
 using Shared.Extensions;
 using Shared.Middleware;
+using Shared.Options;
 using Words.BusinessAccess.Contracts;
 using Words.BusinessAccess.Extensions;
 using Words.BusinessAccess.ModelValidators;
@@ -31,8 +33,12 @@ builder.Services.AddSignalR();
 builder.Services.RegisterMapsterConfiguration();
 builder.Services.ConfigureRedis(builder.Configuration);
 builder.Services.ConfigureCloudinaryOptions(builder.Configuration);
+builder.Services.ConfigureCors(builder.Configuration);
 
 var app = builder.Build();
+
+var corsOptions = app.Services.GetRequiredService<IOptions<CorsConfigurationOptions>>();
+app.UseCors(corsOptions.Value.PolicyName);
 
 app.UseSerilogRequestLogging(x => x.Logger = app.Services.GetService<Serilog.ILogger>());
 

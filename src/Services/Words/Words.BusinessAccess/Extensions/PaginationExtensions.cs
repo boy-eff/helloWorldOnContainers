@@ -1,4 +1,6 @@
-﻿using Words.BusinessAccess.Pagination;
+﻿using Microsoft.EntityFrameworkCore;
+using Words.BusinessAccess.Models;
+using Words.BusinessAccess.Pagination;
 
 namespace Words.BusinessAccess.Extensions;
 

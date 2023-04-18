@@ -8,6 +8,8 @@ public class WordCollection
     public int Id { get; set; }
     public string Name { get; set; }
     public EnglishLevel EnglishLevel { get; set; }
+    public string ImageUrl { get; set; }
+    public string ImagePublicId { get; set; }
     public int TotalViews { get; set; }
     public int DailyViews { get; set; }
     

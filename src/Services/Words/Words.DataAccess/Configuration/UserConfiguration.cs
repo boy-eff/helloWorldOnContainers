@@ -17,10 +17,10 @@ public class UserConfiguration : IEntityTypeConfiguration<User>
         builder.Property(x => x.CreatedAt)
             .HasPrecision(2);
 
-        builder.Property(x => x.PhotoUrl)
+        builder.Property(x => x.ImageUrl)
             .HasMaxLength(100);
 
-        builder.Property(x => x.PhotoPublicId)
+        builder.Property(x => x.ImagePublicId)
             .HasMaxLength(100);
     }
 }
