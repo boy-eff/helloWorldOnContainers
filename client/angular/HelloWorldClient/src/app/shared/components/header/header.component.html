@@ -1,33 +1,52 @@
 <nav class="navbar navbar-expand-lg navbar-light bg-light fixed-top px-3">
   <a class="navbar-brand" routerLink="/">HelloWorldOnContainers</a>
-  <button 
-    class="navbar-toggler" 
-    type="button" 
-    (click)="isCollapsed = !isCollapsed">
-    <span class="navbar-toggler-icon"></span>
+  <button class="navbar-toggler" type="button" (click)="isCollapsed = !isCollapsed">
+    <img src="{{user?.imageUrl !== null ? user?.imageUrl : 'assets/default-avatar.jpg'}}" alt="user photo"
+      class="rounded-circle mr-2" width="40" height="40">
+    <span></span>
   </button>
-  <div class="navbar-collapse justify-content-end" id="navbarContent" [ngbCollapse]="isCollapsed">
+  <div class="navbar-collapse justify-content-between" id="navbarContent" [ngbCollapse]="isCollapsed">
     <ul class="navbar-nav">
-      <ng-container *ngIf="(authService.currentToken$ | async); else unauthorizedBlock">
+      <li class="nav-item">
+        <a class="nav-link" routerLink="/collections">Collections</a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link" routerLink="/achievements">Achievements</a>
+      </li>
+    </ul>
+    <ng-container *ngIf="user; else unauthorizedBlock">
+      <ul class="navbar-nav d-lg-none">
+        <li class="nav-item">
+          <a class="nav-link" routerLink="/account">Account Settings</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" routerLink="/login" (click)="logout()">Log Out</a>
+        </li>
+      </ul>
+      <ul class="navbar-nav d-none d-lg-flex">
         <li class="nav-item" ngbDropdown>
           <button id="dropdownMenuButton" class="btn btn-link" ngbDropdownToggle>
-            <img src="https://fastly.picsum.photos/id/555/30/30.jpg?hmac=jIsFbc3RDhHEDSzzJZqJnTImzg8gFBnJRtQQcUtMcM0" class="rounded-circle mr-2" width="40" height="40">
+            <img src="{{user.imageUrl !== null ? user.imageUrl : 'assets/default-avatar.jpg'}}" alt="user photo"
+              class="rounded-circle mr-2" width="40" height="40">
             <span></span>
           </button>
-          <div ngbDropdownMenu aria-labelledby="dropdownMenuButton">
+          <div ngbDropdownMenu aria-labelledby="dropdownMenuButton" class="ml-n4">
             <a ngbDropdownItem routerLink="/account">Account Settings</a>
             <a ngbDropdownItem routerLink="/login" (click)="logout()">Log Out</a>
           </div>
         </li>
-      </ng-container>
-      <ng-template #unauthorizedBlock>
-        <li class="nav-item">
-          <a class="nav-link" routerLink="/login">Login</a>
-        </li>
-        <li class="nav-item">
-          <a class="nav-link" routerLink="/register">Register</a>
-        </li>
-      </ng-template>
-    </ul>
+      </ul>
+    </ng-container>
   </div>
 </nav>
+
+<ng-template #unauthorizedBlock>
+  <ul class="navbar-nav">
+    <li class="nav-item">
+      <a class="nav-link" routerLink="/login">Login</a>
+    </li>
+    <li class="nav-item">
+      <a class="nav-link" routerLink="/register">Register</a>
+    </li>
+  </ul>
+</ng-template>

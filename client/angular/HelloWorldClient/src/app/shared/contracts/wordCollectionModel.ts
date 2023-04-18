@@ -1,8 +1,9 @@
 import { EnglishLevel } from '../enums/EnglishLevel';
 
-export interface UserModel {
+export interface WordCollectionModel {
   id: number;
+  name: string;
   englishLevel: EnglishLevel;
-  username: string;
   imageUrl: string;
+  userId: number;
 }

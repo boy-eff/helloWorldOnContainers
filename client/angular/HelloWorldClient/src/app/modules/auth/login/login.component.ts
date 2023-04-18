@@ -8,32 +8,38 @@ import { UserCredentials } from 'src/app/shared/contracts/userCredentials';
 @Component({
   selector: 'app-login',
   templateUrl: './login.component.html',
-  styleUrls: ['./login.component.scss']
+  styleUrls: ['./login.component.scss'],
 })
 export class LoginComponent {
-
   invalidCredentials: boolean = false;
 
-  constructor(private authService: AuthenticationService, private router: Router) {
-
-  }
+  constructor(
+    private authService: AuthenticationService,
+    private router: Router
+  ) {}
 
   loginForm: FormGroup = new FormGroup({
-    username: new FormControl('', [Validators.required, Validators.minLength(6)]),
-    password: new FormControl('', [Validators.required, Validators.minLength(8)])
-  });;
+    username: new FormControl('', [
+      Validators.required,
+      Validators.minLength(6),
+    ]),
+    password: new FormControl('', [
+      Validators.required,
+      Validators.minLength(8),
+    ]),
+  });
 
   onSubmit() {
     this.authService.login(this.loginForm.value).subscribe({
       next: (response) => {
-        this.router.navigateByUrl("/");
+        this.router.navigateByUrl('/');
       },
       error: (err: HttpErrorResponse) => {
         if (err.status === HttpStatusCode.BadRequest) {
           this.loginForm.reset();
           this.invalidCredentials = true;
         }
-      }
+      },
     });
   }
 }

@@ -1,0 +1,20 @@
+<div class="container" infiniteScroll (scrolled)="onScroll()">
+    <div class="row">
+        <div class="col-sm-6 col-md-4 col-lg-2 mb-3" *ngFor="let collection of collections" id="{{collection.id}}">
+            <a class="card" routerLink="/login">
+                <img src="{{collection.imageUrl ? collection.imageUrl : 'assets/no-image.png'}}" class="card-img-top"
+                    alt="{{collection.name}}">
+                <div class="card-body">
+                    <h5 class="card-title">{{collection.name}}</h5>
+                </div>
+            </a>
+        </div>
+    </div>
+
+    <div class="row" *ngIf="loading">
+        <div class="col-md-12 text-center">
+            <i class="fa fa-spinner fa-spin fa-2x"></i>
+            <p>Loading more...</p>
+        </div>
+    </div>
+</div>
