@@ -41,7 +41,7 @@ public class UserService : IUserService
                 Value = 0,
                 Errors = new List<ServiceError>
                 {
-                    new(ServiceErrorStatusCode.WrongAction,
+                    new(ServiceErrorStatusCode.Conflict,
                         identityResult.Errors.ToList()[0].Description)
                 }
             };

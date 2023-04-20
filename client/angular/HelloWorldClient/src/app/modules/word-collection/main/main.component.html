@@ -1,7 +1,10 @@
 <div class="container" infiniteScroll (scrolled)="onScroll()">
     <div class="row">
         <div class="col-sm-6 col-md-4 col-lg-2 mb-3" *ngFor="let collection of collections" id="{{collection.id}}">
-            <a class="card" routerLink="/login">
+            <a class="card" routerLink="/collections/{{collection.id}}">
+                <div class="card-header">
+                    {{ collection.englishLevel | enumToString: englishLevel }}
+                </div>
                 <img src="{{collection.imageUrl ? collection.imageUrl : 'assets/no-image.png'}}" class="card-img-top"
                     alt="{{collection.name}}">
                 <div class="card-body">

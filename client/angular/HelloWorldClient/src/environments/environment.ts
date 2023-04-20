@@ -11,8 +11,17 @@ export const environment = {
     getUserById: (id: number) => {
       return `http://localhost:5001/words/api/user/${id}`;
     },
+    registerUser: () => {
+      return `http://localhost:5001/identity/api/users`;
+    },
     getWordCollections: () => {
       return 'http://localhost:5001/words/api/wordcollection';
+    },
+    getWordCollectionById: (id: number) => {
+      return `http://localhost:5001/words/api/wordcollection/${id}`;
+    },
+    addWordToDictionary: (wordId: number) => {
+      return `http://localhost:5001/words/api/dictionary/words/${wordId}`;
     },
   },
 };

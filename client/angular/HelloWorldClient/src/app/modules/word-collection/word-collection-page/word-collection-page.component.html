@@ -1,0 +1,16 @@
+<div class="container">
+    <div class="row">
+        <h2>{{wordCollection?.name}}</h2>
+        <div class="col-md-6 mb-3" *ngFor="let word of wordCollection?.words" id="{{word.id}}" class="word">
+            <div class="card m-1">
+                <div class="card-body d-flex justify-content-between">
+                    <div class="card-title d-inline m-0" placement="right"
+                        ngbTooltip="{{word.translations[0].translation}}">
+                        {{word.value}}
+                    </div>
+                    <i class="bi bi-plus-square" (click)="addWordToDictionary(word.id)"></i>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

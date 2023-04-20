@@ -24,7 +24,6 @@ export class AuthenticationService {
   constructor(private http: HttpClient, private usersService: UsersService) {
     let user = this.getUser();
     if (user) {
-      console.log(user);
       this.currentUserSource.next(user);
     }
   }

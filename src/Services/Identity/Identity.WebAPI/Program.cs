@@ -1,3 +1,4 @@
+using System.Text.Json.Serialization;
 using Identity.Application.Interfaces;
 using Identity.Application.Services;
 using Identity.Infrastructure.Data;
@@ -14,7 +15,10 @@ var config = builder.Configuration;
 var env = builder.Environment;
 
 builder.Services.AddScoped<IUserService, UserService>();
-builder.Services.AddControllers();
+builder.Services.AddControllers().AddJsonOptions(opt =>
+{
+    opt.JsonSerializerOptions.Converters.Add(new JsonStringEnumConverter());
+});
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.ConfigureSwagger(config);
 builder.Services.ConfigureAuthentication();

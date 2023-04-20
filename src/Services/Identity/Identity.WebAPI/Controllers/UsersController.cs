@@ -101,6 +101,7 @@ public class UsersController : ControllerBase
             ServiceErrorStatusCode.NotFound => NotFound(error.Message),
             ServiceErrorStatusCode.WrongAction => BadRequest(error.Message),
             ServiceErrorStatusCode.ForbiddenAction => Forbid(error.Message),
+            ServiceErrorStatusCode.Conflict => Conflict(error.Message),
             _ => StatusCode(StatusCodes.Status500InternalServerError)
         };
     }

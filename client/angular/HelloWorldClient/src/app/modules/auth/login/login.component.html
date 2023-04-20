@@ -23,7 +23,8 @@
             </div>
             <div class="invalid-feedback"
                 *ngIf="invalidCredentials && !loginForm.get('password')?.touched && !loginForm.get('password')?.dirty">
-                Invalid credentials</div>
+                Invalid credentials
+            </div>
         </div>
         <button [disabled]="!loginForm.valid" type="submit" class="btn btn-primary">Submit</button>
     </form>

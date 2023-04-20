@@ -26,4 +26,10 @@ export class WordCollectionsService {
       }
     );
   }
+
+  getWordCollectionById(collectionId: number): Observable<WordCollectionModel> {
+    return this.http.get<WordCollectionModel>(
+      environment.apiPaths.getWordCollectionById(collectionId)
+    );
+  }
 }

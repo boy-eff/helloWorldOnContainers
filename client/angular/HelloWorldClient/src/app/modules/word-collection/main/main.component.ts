@@ -1,3 +1,4 @@
+import { EnglishLevel } from './../../../shared/enums/EnglishLevel';
 import { Component, OnInit } from '@angular/core';
 import { WordCollectionsService } from 'src/app/services/word-collections.service';
 import { WordCollectionModel } from 'src/app/shared/contracts/wordCollectionModel';
@@ -13,6 +14,7 @@ export class MainComponent implements OnInit {
   pageSize = 18;
   totalCount = 0;
   loading = false;
+  englishLevel = EnglishLevel;
 
   constructor(private collectionService: WordCollectionsService) {}
 
