@@ -15,6 +15,5 @@ public static class ServiceCollectionExtensions
         services.AddScoped<IUsersAchievementsRepository, UsersAchievementsRepository>();
         services.AddScoped<IAchievementLevelRepository, AchievementLevelRepository>();
         services.AddScoped<IUsersAchievementsService, UsersAchievementsService>();
-        services.AddScoped<IUserService, UserService>();
     }
 }
