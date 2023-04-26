@@ -1,0 +1,48 @@
+<div class="container d-flex justify-content-center align-items-center vh-100">
+    <ng-container *ngIf="!testPassResult; else resultBlock">
+        <div class="container">
+            <ngb-progressbar [value]="currentWordIndex" [max]="wordsCount"></ngb-progressbar>
+            <div class="row justify-content-center align-items-center mb-3">
+                <div class="col text-center mt-5">
+                    <h1>{{wordTestQuestion?.word}}</h1>
+                </div>
+            </div>
+            <div class="row justify-content-center mt-5">
+                <div class="btn-group-vertical" role="group" aria-label="Answer options">
+                    <button (click)="getNextWord(option)" type="button" class="btn btn-light mb-4"
+                        *ngFor="let option of wordTestQuestion?.answerOptions">
+                        {{option}}
+                    </button>
+                </div>
+            </div>
+        </div>
+    </ng-container>
+    <ng-template #resultBlock>
+        <div class="container">
+            <div class="row">
+                <h3>Your results</h3>
+            </div>
+            <div class="row">
+                <table class="table table-bordered table-hover">
+                    <thead>
+                        <tr>
+                            <th>Word</th>
+                            <th>User Answer</th>
+                            <th>Correct Answer</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr *ngFor="let answer of testPassResult.questions"
+                            [ngClass]="{'table-success': answer.userAnswer === answer.correctAnswer, 'table-danger': answer.userAnswer !== answer.correctAnswer}">
+                            <td>{{ answer.word }}</td>
+                            <td>{{ answer.userAnswer }}</td>
+                            <td>{{ answer.correctAnswer }}</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+            <button class="btn btn-primary" routerLink="/collections">Back to collections</button>
+        </div>
+
+    </ng-template>
+</div>
