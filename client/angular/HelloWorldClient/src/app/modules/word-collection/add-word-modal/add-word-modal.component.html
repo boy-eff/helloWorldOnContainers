@@ -1,0 +1,34 @@
+<div class="modal-header">
+    <h4 class="modal-title">Add Word</h4>
+    <button type="button" class="close" aria-label="Close" (click)="activeModal.dismiss()">
+        <span aria-hidden="true">&times;</span>
+    </button>
+</div>
+<div class="modal-body">
+    <form [formGroup]="addWordForm" (submit)="onSubmit()" class="form">
+        <div class="form-group">
+            <label for="value">Word:</label>
+            <input type="text" id="value" formControlName="value" required class="form-control">
+        </div>
+
+        <div formArrayName="translations">
+            <div>Translations</div>
+            <div *ngFor="let translation of translationControls.controls; let i = index" class="form-group my-1">
+                <div class="input-group">
+                    <input type="text" id="translation{{i}}" [formControlName]="i" class="form-control">
+                    <div class="input-group-append">
+                        <button type="button" class="btn btn-outline-danger"
+                            (click)="removeTranslation(i)">Remove</button>
+                    </div>
+                </div>
+            </div>
+            <button type="button" class="btn btn-outline-secondary my-2" (click)="addTranslation()">Add
+                Translation</button>
+        </div>
+
+        <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" (click)="activeModal.dismiss()">Close</button>
+            <button type="submit" class="btn btn-primary">Add Word</button>
+        </div>
+    </form>
+</div>
