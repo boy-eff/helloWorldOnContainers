@@ -28,6 +28,7 @@ public static class IdentityExtensions
         services.AddIdentityServer(options =>
             {
                 options.IssuerUri = config["IdentityServerSettings:IssuerUri"];
+                
             })
             .AddDeveloperSigningCredential()
             .AddAspNetIdentity<AppUser>()
@@ -53,6 +54,7 @@ public static class IdentityExtensions
                 {
                     ValidateIssuer = false,
                     ValidateAudience = false,
+                    ValidateLifetime = true,
                     RoleClaimType = ClaimNames.RoleClaimName
                 };
             });
