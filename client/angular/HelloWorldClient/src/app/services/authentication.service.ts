@@ -1,6 +1,6 @@
 import { UsersService } from './users.service';
 import { Token } from '../shared/contracts/token';
-import { Injectable, OnInit } from '@angular/core';
+import { Injectable } from '@angular/core';
 import { HttpClient, HttpParams } from '@angular/common/http';
 import { UserCredentials } from '../shared/contracts/userCredentials';
 import { environment } from 'src/environments/environment';
@@ -127,7 +127,7 @@ export class AuthenticationService {
   private _decodeToken(token: string): any {
     try {
       return jwt_decode(token);
-    } catch (Error) {
+    } catch (err) {
       return null;
     }
   }

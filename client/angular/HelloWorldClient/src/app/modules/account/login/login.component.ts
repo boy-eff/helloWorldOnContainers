@@ -1,9 +1,8 @@
 import { HttpErrorResponse, HttpStatusCode } from '@angular/common/http';
-import { Component, OnInit } from '@angular/core';
+import { Component } from '@angular/core';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
 import { AuthenticationService } from 'src/app/services/authentication.service';
-import { UserCredentials } from 'src/app/shared/contracts/userCredentials';
 
 @Component({
   selector: 'app-login',

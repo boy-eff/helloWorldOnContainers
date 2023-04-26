@@ -13,7 +13,7 @@ import { WordTestQuestion } from 'src/app/shared/contracts/wordTestQuestion';
 })
 export class WordCollectionTestComponent implements OnInit {
   readonly idParamName: string = 'id';
-  wordTestQuestion: WordTestQuestion;
+  wordTestQuestion: WordTestQuestion | null;
   currentWordIndex = 0;
   wordsCount = 0;
   testPassResult: WordCollectionTestPassInformation;
