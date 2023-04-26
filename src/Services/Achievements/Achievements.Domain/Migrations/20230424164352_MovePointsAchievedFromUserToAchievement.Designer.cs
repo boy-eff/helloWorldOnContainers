@@ -3,6 +3,7 @@ using System;
 using Achievements.Domain;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
@@ -11,9 +12,10 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace Achievements.Domain.Migrations
 {
     [DbContext(typeof(AchievementsDbContext))]
-    partial class AchievementsDbContextModelSnapshot : ModelSnapshot
+    [Migration("20230424164352_MovePointsAchievedFromUserToAchievement")]
+    partial class MovePointsAchievedFromUserToAchievement
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder

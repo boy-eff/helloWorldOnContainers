@@ -9,5 +9,10 @@ public class UsersAchievementsConfiguration : IEntityTypeConfiguration<UsersAchi
     public void Configure(EntityTypeBuilder<UsersAchievements> builder)
     {
         builder.HasKey(x => new { x.AchievementId, x.UserId });
+
+        builder.HasOne(x => x.NextLevel)
+            .WithMany(x => x.UsersAchievements)
+            .HasForeignKey(x => new { x.AchievementId, x.NextLevelId })
+            .OnDelete(DeleteBehavior.SetNull);
     }
 }

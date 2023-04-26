@@ -7,7 +7,8 @@ public class UsersAchievements
 
     public int AchievementId { get; set; }
     public Achievement Achievement { get; set; }
-
-    public int CurrentLevel { get; set; }
+    public int PointsAchieved { get; set; }
+    public int NextLevelId { get; set; }
+    public AchievementLevel NextLevel { get; set; }
     public DateTime AchieveDate { get; set; }
 }

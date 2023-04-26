@@ -11,4 +11,5 @@ public class AchievementLevel
     
     
     public Achievement Achievement { get; set; }
+    public ICollection<UsersAchievements> UsersAchievements { get; set; }
 }
