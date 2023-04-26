@@ -1,5 +1,6 @@
 using Mapster;
 using MassTransit;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.SignalR;
 using Shared.Messages;
@@ -12,7 +13,7 @@ using Words.DataAccess.Models;
 
 namespace Words.WebAPI.SignalR.Hubs;
 
-[Authorize]
+[Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
 public class CollectionHub : Hub
 {
     private readonly IConfiguration _configuration;
@@ -79,7 +80,7 @@ public class CollectionHub : Hub
         }
 
         var correctAnswer = test.GetCorrectAnswerOptionValue();
-        var question = new WordCollectionTestQuestion(collectionId, correctAnswer, userAnswer);
+        var question = new WordCollectionTestQuestion(collectionId, correctAnswer, userAnswer, test.Word.Value);
         var testPassInformation = Context.Items.GetTestPassInformation();
         
         testPassInformation.AddAnswerToTestPassInformation(question);
@@ -101,6 +102,12 @@ public class CollectionHub : Hub
         _logger.LogInformation("SignalR | Connection id: {ConnectionId} | Test {TestId} successfully passed by user {UserId}",
             Context.ConnectionId, testPassInformation.Id, userId);
         return null;
+    }
+
+    public async Task<WordCollectionTestPassInformationResponseDto> GetResult()
+    {
+        var testPassInformation = Context.Items.GetTestPassInformation();
+        return testPassInformation is null ? null : Context.Items.GetTestPassInformation().Adapt<WordCollectionTestPassInformationResponseDto>();
     }
 
     private int GetCollectionIdFromHttpContext()

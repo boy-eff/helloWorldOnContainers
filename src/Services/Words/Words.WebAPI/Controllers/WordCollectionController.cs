@@ -87,7 +87,7 @@ public class WordCollectionController : ControllerBase
     [HttpPost]
     [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status401Unauthorized)]
-    public async Task<ActionResult<int>> InsertAsync([FromBody] WordCollectionRequestDto wordCollectionCreateDto)
+    public async Task<ActionResult<int>> InsertAsync([FromForm]WordCollectionRequestDto wordCollectionCreateDto)
     {
         var command = new AddWordCollectionCommand(wordCollectionCreateDto);
         var result = await _mediator.Send(command);
