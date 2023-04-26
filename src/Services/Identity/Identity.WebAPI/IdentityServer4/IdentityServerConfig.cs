@@ -50,7 +50,8 @@ public static class IdentityServerConfig
 
                 // scopes that client has access to
                 AllowedScopes = { WordsApiScopeName, AchievementsApiScopeName, RoleApiScopeName, IdentityServerConstants.LocalApi.ScopeName },
-                AllowOfflineAccess = true
+                AllowOfflineAccess = true,
+                AccessTokenLifetime = 60,
             }
         };
 }

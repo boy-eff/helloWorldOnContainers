@@ -45,9 +45,9 @@ if (!app.Environment.IsProduction())
     app.UseSwaggerUI();
 }
 
+app.UseIdentityServer();
 app.UseAuthentication();
 app.UseAuthorization();
-app.UseIdentityServer();
 app.MapControllers();
 
 app.ApplyMigrations();
