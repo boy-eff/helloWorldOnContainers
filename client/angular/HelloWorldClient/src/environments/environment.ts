@@ -1,27 +1,26 @@
+const authentication = {
+  clientId: 'client',
+  clientSecret: 'secret',
+  grantType: 'password',
+  refreshGrantType: 'refresh_token',
+};
+
+const apiPaths = {
+  tokenEndpoint: 'http://localhost:5001/identity/connect/token',
+  wordCollectionTestEndpoint: (id: number) =>
+    `http://localhost:5001/words/collectionhub/${id}`,
+  achievementsEndpoint: (id: number) =>
+    `http://localhost:5001/achievements/api/users/${id}/achievements`,
+  getUserById: (id: number) => `http://localhost:5001/words/api/user/${id}`,
+  registerUser: 'http://localhost:5001/identity/api/users',
+  wordCollectionEndpoint: 'http://localhost:5001/words/api/wordcollection',
+  getWordCollectionById: (id: number) =>
+    `http://localhost:5001/words/api/wordcollection/${id}`,
+  addWordToDictionary: (wordId: number) =>
+    `http://localhost:5001/words/api/dictionary/words/${wordId}`,
+};
+
 export const environment = {
-  authentication: {
-    client_id: 'client',
-    client_secret: 'secret',
-    grant_type: 'password',
-  },
-  apiPaths: {
-    identity: 'http://localhost:5001/identity/',
-    words: 'http://localhost:5001/words/',
-    achievements: 'http://localhost:5001/achievements/',
-    getUserById: (id: number) => {
-      return `http://localhost:5001/words/api/user/${id}`;
-    },
-    registerUser: () => {
-      return `http://localhost:5001/identity/api/users`;
-    },
-    getWordCollections: () => {
-      return 'http://localhost:5001/words/api/wordcollection';
-    },
-    getWordCollectionById: (id: number) => {
-      return `http://localhost:5001/words/api/wordcollection/${id}`;
-    },
-    addWordToDictionary: (wordId: number) => {
-      return `http://localhost:5001/words/api/dictionary/words/${wordId}`;
-    },
-  },
+  authentication,
+  apiPaths,
 };

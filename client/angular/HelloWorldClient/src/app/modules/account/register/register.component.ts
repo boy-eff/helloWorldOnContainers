@@ -3,7 +3,7 @@ import { Component } from '@angular/core';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
 import { UsersService } from 'src/app/services/users.service';
-import { EnglishLevel } from 'src/app/shared/enums/EnglishLevel';
+import { EnglishLevel } from 'src/app/shared/enums/englishLevel';
 import { MatchValidator } from 'src/app/shared/validators/match.validator';
 
 @Component({

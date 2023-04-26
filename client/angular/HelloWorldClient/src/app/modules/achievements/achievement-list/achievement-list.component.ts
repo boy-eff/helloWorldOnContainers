@@ -2,7 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { AchievementsService } from 'src/app/services/achievements.service';
 import { AuthenticationService } from 'src/app/services/authentication.service';
 import { Achievement } from 'src/app/shared/contracts/achievement';
-import { UsersAchievementsModel } from 'src/app/shared/contracts/usersAchievementsModel';
+import { UsersAchievementsModel } from 'src/app/shared/contracts/usersAchievements';
 
 @Component({
   selector: 'app-achievement-list',

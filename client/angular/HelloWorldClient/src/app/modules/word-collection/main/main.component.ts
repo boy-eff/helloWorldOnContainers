@@ -1,8 +1,8 @@
-import { EnglishLevel } from './../../../shared/enums/EnglishLevel';
+import { EnglishLevel } from '../../../shared/enums/englishLevel';
 import { Component, OnInit } from '@angular/core';
 import { faPlus } from '@fortawesome/free-solid-svg-icons';
 import { WordCollectionsService } from 'src/app/services/word-collections.service';
-import { WordCollectionModel } from 'src/app/shared/contracts/wordCollectionModel';
+import { WordCollectionModel } from 'src/app/shared/contracts/wordCollection';
 
 @Component({
   selector: 'app-main',

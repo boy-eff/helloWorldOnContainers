@@ -10,6 +10,8 @@ import { HTTP_INTERCEPTORS } from '@angular/common/http';
 import { JwtInterceptor } from './shared/interceptors/jwt.interceptor';
 import { WordCollectionModule } from './modules/word-collection/word-collection.module';
 import { AccountModule } from './modules/account/account.module';
+import { AchievementsModule } from './modules/achievements/achievements.module';
+import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
 
 @NgModule({
   declarations: [AppComponent],
@@ -21,7 +23,9 @@ import { AccountModule } from './modules/account/account.module';
     ReactiveFormsModule,
     AccountModule,
     WordCollectionModule,
+    AchievementsModule,
     NgbModule,
+    FontAwesomeModule,
   ],
   providers: [
     { provide: HTTP_INTERCEPTORS, useClass: JwtInterceptor, multi: true },

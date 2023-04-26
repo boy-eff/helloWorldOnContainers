@@ -3,8 +3,8 @@ import { FormArray, FormControl, FormGroup, Validators } from '@angular/forms';
 import { faEdit, faPlus, faTrash } from '@fortawesome/free-solid-svg-icons';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { WordCollectionsService } from 'src/app/services/word-collections.service';
-import { WordModel } from 'src/app/shared/contracts/wordModel';
-import { englishLevelAsArray } from 'src/app/shared/enums/EnglishLevel';
+import { WordModel } from 'src/app/shared/contracts/word';
+import { englishLevelAsArray } from 'src/app/shared/enums/englishLevel';
 import { AddWordModalComponent } from '../add-word-modal/add-word-modal.component';
 
 @Component({

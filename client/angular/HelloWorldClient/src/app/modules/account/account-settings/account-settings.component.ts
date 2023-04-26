@@ -1,8 +1,8 @@
 import { Component, OnInit } from '@angular/core';
 import { FormControl, FormGroup } from '@angular/forms';
 import { AuthenticationService } from 'src/app/services/authentication.service';
-import { UserModel } from 'src/app/shared/contracts/userModel';
-import { EnglishLevel } from 'src/app/shared/enums/EnglishLevel';
+import { UserModel } from 'src/app/shared/contracts/user';
+import { EnglishLevel } from 'src/app/shared/enums/englishLevel';
 
 @Component({
   selector: 'app-account-settings',

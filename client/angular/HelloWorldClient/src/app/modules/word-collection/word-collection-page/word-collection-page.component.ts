@@ -1,6 +1,6 @@
 import { WordCollectionsService } from 'src/app/services/word-collections.service';
 import { Component, OnInit } from '@angular/core';
-import { WordCollectionModel } from 'src/app/shared/contracts/wordCollectionModel';
+import { WordCollectionModel } from 'src/app/shared/contracts/wordCollection';
 import { ActivatedRoute } from '@angular/router';
 import { WordsService } from 'src/app/services/words.service';
 
@@ -10,7 +10,7 @@ import { WordsService } from 'src/app/services/words.service';
   styleUrls: ['./word-collection-page.component.scss'],
 })
 export class WordCollectionPageComponent implements OnInit {
-  idParamName: string = 'id';
+  readonly idParamName: string = 'id';
   wordCollection: WordCollectionModel | null;
 
   constructor(

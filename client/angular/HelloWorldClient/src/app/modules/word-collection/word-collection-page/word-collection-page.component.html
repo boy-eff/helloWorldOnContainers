@@ -1,6 +1,9 @@
-<div class="container">
-    <div class="row">
-        <h2>{{wordCollection?.name}}</h2>
+<div class="container d-flex justify-content-center align-items-center vh-100">
+    <div class="row w-100">
+        <div class="d-flex justify-content-between">
+            <h2>{{wordCollection?.name}}</h2>
+            <button class="btn btn-primary" routerLink="./test">Pass test</button>
+        </div>
         <div class="col-md-6 mb-3" *ngFor="let word of wordCollection?.words" id="{{word.id}}" class="word">
             <div class="card m-1">
                 <div class="card-body d-flex justify-content-between">
