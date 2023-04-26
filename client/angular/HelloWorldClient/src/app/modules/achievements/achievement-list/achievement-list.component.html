@@ -1,0 +1,32 @@
+<div class="container mt-header">
+    <ng-container *ngFor="let userAchievement of usersAchievements">
+        <div class="card mb-2">
+            <div class="card-header">{{ userAchievement.achievement.name }}</div>
+            <div class="card-body">
+                <ul class="list-group">
+                    <li class="list-group-item d-flex justify-content-between">
+                        <div>Level {{userAchievement.nextLevel.level - 1}}</div>
+                        <div>Level {{ userAchievement.nextLevel.level }}</div>
+                    </li>
+                    <li class="list-group-item">
+                        <div class="progress">
+                            <div class="progress-bar" role="progressbar"
+                                [style.width.%]="(userAchievement.pointsAchieved / userAchievement.nextLevel.pointsToAchieve) * 100"
+                                [attr.aria-valuenow]="userAchievement.pointsAchieved" [attr.aria-valuemin]="0"
+                                [attr.aria-valuemax]="userAchievement.nextLevel.pointsToAchieve">
+                                {{ userAchievement.pointsAchieved }}/{{ userAchievement.nextLevel.pointsToAchieve }}
+                                points
+                            </div>
+                        </div>
+                    </li>
+                    <li class="list-group-item">
+                        Reward: {{ userAchievement.nextLevel.reward }}
+                    </li>
+                    <li class="list-group-item">
+                        Experience: {{ userAchievement.nextLevel.experience }}
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </ng-container>
+</div>
