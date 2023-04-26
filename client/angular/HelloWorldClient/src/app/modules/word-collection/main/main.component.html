@@ -1,9 +1,16 @@
-<div class="container" infiniteScroll (scrolled)="onScroll()">
-    <div class="row">
+<div class="container mt-header" infiniteScroll (scrolled)="onScroll()">
+    <div class="row" *ngIf="!loading">
+        <div class="col-sm-6 col-md-4 col-lg-2 mb-3">
+            <a class="card h-100" routerLink="/collections/add">
+                <div class="card-body d-flex align-items-center justify-content-center">
+                    <fa-icon [icon]="faPlus"></fa-icon>
+                </div>
+            </a>
+        </div>
         <div class="col-sm-6 col-md-4 col-lg-2 mb-3" *ngFor="let collection of collections" id="{{collection.id}}">
             <a class="card" routerLink="/collections/{{collection.id}}">
                 <div class="card-header">
-                    {{ collection.englishLevel | enumToString: englishLevel }}
+                    {{ collection.englishLevel }}
                 </div>
                 <img src="{{collection.imageUrl ? collection.imageUrl : 'assets/no-image.png'}}" class="card-img-top"
                     alt="{{collection.name}}">

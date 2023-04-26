@@ -1,5 +1,6 @@
 import { EnglishLevel } from './../../../shared/enums/EnglishLevel';
 import { Component, OnInit } from '@angular/core';
+import { faPlus } from '@fortawesome/free-solid-svg-icons';
 import { WordCollectionsService } from 'src/app/services/word-collections.service';
 import { WordCollectionModel } from 'src/app/shared/contracts/wordCollectionModel';
 
@@ -10,6 +11,7 @@ import { WordCollectionModel } from 'src/app/shared/contracts/wordCollectionMode
 })
 export class MainComponent implements OnInit {
   collections: WordCollectionModel[] = [];
+  faPlus = faPlus;
   pageNumber = 1;
   pageSize = 18;
   totalCount = 0;
