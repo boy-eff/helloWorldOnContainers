@@ -3,7 +3,9 @@ using MassTransit;
 using MediatR;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Logging;
+using Shared.Exceptions;
 using Shared.Messages;
+using Words.BusinessAccess.Contracts;
 using Words.BusinessAccess.Dtos.WordCollection;
 using Words.BusinessAccess.Extensions;
 using Words.DataAccess;
@@ -17,16 +19,18 @@ public class AddWordCollectionCommandHandler : IRequestHandler<AddWordCollection
     private readonly IHttpContextAccessor _httpContextAccessor;
     private readonly IPublishEndpoint _publishEndpoint;
     private readonly ILogger<AddWordCollectionCommandHandler> _logger;
+    private readonly ICloudinaryService _cloudinaryService;
 
     public AddWordCollectionCommandHandler(WordsDbContext dbContext, 
         IHttpContextAccessor httpContextAccessor, 
         IPublishEndpoint publishEndpoint, 
-        ILogger<AddWordCollectionCommandHandler> logger)
+        ILogger<AddWordCollectionCommandHandler> logger, ICloudinaryService cloudinaryService)
     {
         _dbContext = dbContext;
         _httpContextAccessor = httpContextAccessor;
         _publishEndpoint = publishEndpoint;
         _logger = logger;
+        _cloudinaryService = cloudinaryService;
     }
 
     public async Task<WordCollectionResponseDto> Handle(AddWordCollectionCommand request, CancellationToken cancellationToken)
@@ -35,6 +39,18 @@ public class AddWordCollectionCommandHandler : IRequestHandler<AddWordCollection
         var userId = _httpContextAccessor?.HttpContext?.User.GetUserId();
 
         wordCollection.UserId = userId!.Value;
+
+        var uploadResult = await _cloudinaryService.AddPhotoAsync(request.WordCollectionCreateDto.Image);
+
+        wordCollection.ImageUrl = uploadResult.SecureUrl.AbsoluteUri;
+        wordCollection.ImagePublicId = uploadResult.PublicId;
+        
+        if (uploadResult.Error is not null)
+        {
+            _logger.LogError("Error while uploading image to Cloudinary: {ErrorMessage}", uploadResult.Error.Message);
+            throw new InternalServerException("Error while uploading image to external data source");
+        }
+        
         await _dbContext.Collections.AddAsync(wordCollection, cancellationToken);
 
         var message = new WordCollectionCreatedMessage()

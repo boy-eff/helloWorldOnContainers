@@ -15,7 +15,5 @@ public class WordCreateDtoValidator : AbstractValidator<WordCreateDto>
             .NotNull()
             .NotEmpty()
             .WithMessage("Provide at least 1 translation of the word");
-        RuleForEach(x => x.Translations)
-            .SetValidator(new WordTranslationCreateDtoValidator());
     }
 }

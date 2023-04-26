@@ -3,5 +3,5 @@
 public class WordCreateDto
 {
     public string Value { get; set; }
-    public List<WordTranslationCreateDto> Translations { get; set; }
+    public List<string> Translations { get; set; }
 }
