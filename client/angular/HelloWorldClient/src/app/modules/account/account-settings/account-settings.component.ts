@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { FormControl, FormGroup } from '@angular/forms';
 import { AuthenticationService } from 'src/app/services/authentication.service';
-import { UserModel } from 'src/app/shared/contracts/user';
+import { User } from 'src/app/shared/contracts/user';
 import { EnglishLevel } from 'src/app/shared/enums/englishLevel';
 
 @Component({
@@ -11,7 +11,7 @@ import { EnglishLevel } from 'src/app/shared/enums/englishLevel';
 })
 export class AccountSettingsComponent implements OnInit {
   englishLevels = EnglishLevel;
-  user: UserModel | null;
+  user: User | null;
 
   constructor(private authService: AuthenticationService) {}
   ngOnInit(): void {
