@@ -45,7 +45,7 @@
       "DownstreamScheme": "ws",
       "DownstreamHostAndPorts": [
         {
-          "Host": "localhost",
+          "Host": "words",
           "Port": 80
         }
       ],
