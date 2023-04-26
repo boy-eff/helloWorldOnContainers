@@ -1,0 +1,53 @@
+<div class="container d-flex justify-content-center align-items-center vh-100">
+    <form [formGroup]="wordCollectionForm">
+        <h1>Add new collection</h1>
+        <div class="form-group">
+            <label for="nameInput">Name</label>
+            <input autocomplete="off" type="text" class="form-control" id="name" formControlName="name" ngModel
+                required>
+        </div>
+        <div class="form-group">
+            <label for="englishLevel">English Level</label>
+            <select class="form-control" id="englishLevel" formControlName="englishLevel">
+                <option *ngFor="let level of englishLevels" [value]="level.value">{{level.label}}</option>
+            </select>
+        </div>
+        <div class="form-group">
+            <label for="fileInput">Image</label>
+            <input class="form-control" type="file" id="image" formControlName="imageName"
+                (change)="onFileChange($event)">
+        </div>
+        <div class="form-control mt-2">
+            <table class="table table-striped">
+                <thead>
+                    <th>
+                        <div class="d-flex justify-content-between">
+                            <div>Words</div>
+                            <button class="btn btn-primary mx-1" (click)="openAddWordModal()">
+                                <fa-icon [icon]="faPlus"></fa-icon>
+                            </button>
+                        </div>
+                    </th>
+                </thead>
+                <tbody>
+                    <ng-container formArrayName="words">
+                        <tr *ngFor="let word of words.controls; let i = index" [formGroupName]="i">
+                            <td class="d-flex justify-content-between   ">
+                                {{ word.get('value')?.value }}
+                                <div>
+                                    <button class="btn btn-sm btn-warning mx-1" (click)="openEditWordModal(i)">
+                                        <fa-icon [icon]="faEdit"></fa-icon>
+                                    </button>
+                                    <button class="btn btn-sm btn-danger">
+                                        <fa-icon [icon]="faTrash"></fa-icon>
+                                    </button>
+                                </div>
+                            </td>
+                        </tr>
+                    </ng-container>
+                </tbody>
+            </table>
+        </div>
+        <button type="submit" class="btn btn-primary mt-3" (click)="createCollection()">Submit</button>
+    </form>
+</div>
