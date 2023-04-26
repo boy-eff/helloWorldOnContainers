@@ -13,5 +13,8 @@ public class WordCollectionTestQuestionConfiguration : IEntityTypeConfiguration<
 
         builder.Property(x => x.UserAnswer)
             .HasMaxLength(50);
+
+        builder.Property(x => x.Word)
+            .HasMaxLength(50);
     }
 }
