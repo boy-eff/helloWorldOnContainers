@@ -22,6 +22,8 @@ public class UsersAchievementsRepository : IUsersAchievementsRepository
     {
         return await _dbContext.UsersAchievements
             .Where(x => x.UserId == userId)
+            .Include(x => x.NextLevel)
+            .Include(x => x.Achievement)
             .AsNoTracking()
             .ToListAsync();
     }
@@ -29,10 +31,12 @@ public class UsersAchievementsRepository : IUsersAchievementsRepository
     public async Task AddAsync(UsersAchievements usersAchievements)
     {
         await _dbContext.UsersAchievements.AddAsync(usersAchievements);
+        _dbContext.Entry(usersAchievements.NextLevel).State = EntityState.Unchanged;
     }
 
     public void Update(UsersAchievements usersAchievement)
     {
         _dbContext.UsersAchievements.Update(usersAchievement);
+        _dbContext.Entry(usersAchievement.NextLevel).State = EntityState.Unchanged;
     }
 }

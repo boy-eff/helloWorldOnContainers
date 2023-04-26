@@ -6,8 +6,6 @@ using Achievements.Domain.Contracts;
 using Achievements.Domain.Models;
 using Mapster;
 using Microsoft.Extensions.Logging;
-using Microsoft.IdentityModel.Tokens;
-using Shared.Exceptions;
 
 namespace Achievements.Application.Services;
 
@@ -22,36 +20,61 @@ public class UsersAchievementsService : IUsersAchievementsService
         _logger = logger;
     }
 
-    public async Task<UsersAchievements?> UpsertUsersAchievementsLevelAsync(User user, int achievementId)
+    public async Task<UsersAchievements?> UpsertUsersAchievementsLevelAsync(int userId, int achievementId)
     {
-        var achievementLevel = SeedData.Achievements.FirstOrDefault(x => x.Id == achievementId)
-            ?.Levels
-            .FirstOrDefault(x => x.PointsToAchieve == user.GetAchievementPoints(achievementId));
-
-        if (achievementLevel is null)
+        await using var transaction = await _unitOfWork.BeginTransactionAsync();
+        try
         {
-            return null;
-        }
+            var usersAchievementsExist = true;
+            var usersAchievements = await _unitOfWork.UsersAchievementsRepository.GetAsync(achievementId, userId);
 
-        var usersAchievements = await _unitOfWork.UsersAchievementsRepository.GetAsync(achievementId, user.Id);
-        
+            if (usersAchievements is null)
+            {
+                usersAchievementsExist = false;
+                usersAchievements = CreateUsersAchievements(userId, achievementId);
+            }
 
-        if (usersAchievements is null)
-        {
-            usersAchievements = await AddUsersAchievementsAsync(user.Id, achievementId, achievementLevel);
-        }
-        else
-        {
+            usersAchievements.PointsAchieved++;
+            await _unitOfWork.SaveChangesAsync();
+
+            var achievementLevel = SeedData.Achievements.FirstOrDefault(x => x.Id == achievementId)
+                ?.Levels
+                .FirstOrDefault(x => x.PointsToAchieve == usersAchievements.PointsAchieved);
+
+            if (achievementLevel is null)
+            {
+                await _unitOfWork.CommitAsync();
+                return null;
+            }
+
             UpdateUsersAchievementsLevel(usersAchievements, achievementLevel);
+            
+            if (usersAchievementsExist)
+            {
+                _unitOfWork.UsersAchievementsRepository.Update(usersAchievements);
+            }
+            else
+            {
+                await _unitOfWork.UsersAchievementsRepository.AddAsync(usersAchievements);
+            }
+
+            var user = await _unitOfWork.UserRepository.GetUserByIdAsync(userId);   
+
+            user.AddBalanceAndExperience(achievementLevel.Reward, achievementLevel.Experience);
+            await _unitOfWork.SaveChangesAsync();
+            await transaction.CommitAsync();
+            _logger.LogInformation("User {UserId} gained {AchievementLevel} level of achievement {AchievementId}",
+                user.Id, achievementLevel.Level, achievementId);
+        
+            return usersAchievements;
+        }
+        catch
+        {
+            await transaction.RollbackAsync();
+            _logger.LogInformation("Error while updating achievements for user {UserId}", userId);
+            throw;
         }
         
-        user.AddBalanceAndExperience(achievementLevel.Reward, achievementLevel.Experience);
-        await _unitOfWork.SaveChangesAsync();
-        
-        _logger.LogInformation("User {UserId} gained {AchievementLevel} level of achievement {AchievementId}",
-            user.Id, achievementLevel.Level, achievementId);
-        
-        return usersAchievements;
     }
 
     public async Task<IEnumerable<UsersAchievementsDto>> GetUserAchievementsByIdAsync(int userId)
@@ -62,21 +85,20 @@ public class UsersAchievementsService : IUsersAchievementsService
 
     private void UpdateUsersAchievementsLevel(UsersAchievements usersAchievements, AchievementLevel achievementLevel)
     {
-        usersAchievements.CurrentLevel = achievementLevel.Level;
+        var nextLevel = SeedData.Achievements.FirstOrDefault(x => x.Id == achievementLevel.AchievementId)
+            .Levels.FirstOrDefault(x => x.Level == achievementLevel.Level + 1);
+        usersAchievements.NextLevel = nextLevel;
         usersAchievements.AchieveDate = DateTime.Now;
-        _unitOfWork.UsersAchievementsRepository.Update(usersAchievements);
     }
 
-    private async Task<UsersAchievements> AddUsersAchievementsAsync(int userId, int achievementId, AchievementLevel achievementLevel)
+    private UsersAchievements CreateUsersAchievements(int userId, int achievementId)
     {
         var usersAchievements = new UsersAchievements()
         {
             AchievementId = achievementId,
             UserId = userId,
-            CurrentLevel = achievementLevel.Level,
             AchieveDate = DateTime.Now
         };
-        await _unitOfWork.UsersAchievementsRepository.AddAsync(usersAchievements);
         return usersAchievements;
     }
 }

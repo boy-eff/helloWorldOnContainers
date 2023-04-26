@@ -6,6 +6,6 @@ namespace Achievements.Application.Contracts;
 
 public interface IUsersAchievementsService
 {
-    Task<UsersAchievements?> UpsertUsersAchievementsLevelAsync(User user, int achievementId);
+    Task<UsersAchievements?> UpsertUsersAchievementsLevelAsync(int userId, int achievementId);
     Task<IEnumerable<UsersAchievementsDto>> GetUserAchievementsByIdAsync(int userId);
 }
