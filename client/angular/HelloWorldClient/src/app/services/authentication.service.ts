@@ -1,5 +1,5 @@
 import { UsersService } from './users.service';
-import { TokenModel } from './../shared/contracts/tokenModel';
+import { Token } from '../shared/contracts/token';
 import { Injectable, OnInit } from '@angular/core';
 import { HttpClient, HttpParams } from '@angular/common/http';
 import { UserCredentials } from '../shared/contracts/userCredentials';
@@ -7,19 +7,18 @@ import { environment } from 'src/environments/environment';
 import { Observable, ReplaySubject, of, switchMap, tap } from 'rxjs';
 import { TokenResponse } from '../shared/contracts/tokenResponse';
 import jwt_decode from 'jwt-decode';
-import { UserModel } from '../shared/contracts/userModel';
+import { User } from '../shared/contracts/user';
 
 @Injectable({
   providedIn: 'root',
 })
 export class AuthenticationService {
-  private tokenEndpoint = 'connect/token';
   private readonly localStorageTokenKey = 'token';
   private readonly localStorageUserKey = 'user';
-  private currentUserSource: ReplaySubject<UserModel | null> =
-    new ReplaySubject<UserModel | null>(1);
-  currentUser$: Observable<UserModel | null> =
-    this.currentUserSource.asObservable();
+
+  private currentUserSource: ReplaySubject<User | null> =
+    new ReplaySubject<User | null>(1);
+  currentUser$: Observable<User | null> = this.currentUserSource.asObservable();
 
   constructor(private http: HttpClient, private usersService: UsersService) {
     let user = this.getUser();
@@ -28,16 +27,13 @@ export class AuthenticationService {
     }
   }
 
-  login(credentials: UserCredentials): Observable<UserModel | null> {
-    let body = this._initializeBody(credentials);
+  login(credentials: UserCredentials): Observable<User | null> {
+    let body = this._initializeAccessTokenParams(credentials);
     return this.http
-      .post<TokenResponse>(
-        environment.apiPaths.identity + this.tokenEndpoint,
-        body
-      )
+      .post<TokenResponse>(environment.apiPaths.tokenEndpoint, body)
       .pipe(
         tap((response) => {
-          this._setToken(response);
+          this._saveTokenInLocalStorage(response);
         }),
         switchMap(() => {
           const userId = this.getToken()?.userId;
@@ -50,7 +46,7 @@ export class AuthenticationService {
         tap((user) => {
           if (user) {
             this.currentUserSource.next(user);
-            this._setUser(user);
+            this._saveUserInLocalStorage(user);
           }
         })
       );
@@ -59,9 +55,25 @@ export class AuthenticationService {
   logout() {
     this.currentUserSource.next(null);
     localStorage.removeItem(this.localStorageTokenKey);
+    localStorage.removeItem(this.localStorageUserKey);
   }
 
-  getToken(): TokenModel | null {
+  refreshAccessToken(): Observable<TokenResponse | null> {
+    let token = this.getToken();
+    if (token) {
+      let params = this._initializeRefreshTokenParams(token.refreshToken);
+      return this.http
+        .post<TokenResponse>(environment.apiPaths.tokenEndpoint, params)
+        .pipe(
+          tap((token) => {
+            this._saveTokenInLocalStorage(token);
+          })
+        );
+    }
+    return of(null);
+  }
+
+  getToken(): Token | null {
     let tokenJson = localStorage.getItem(this.localStorageTokenKey);
     if (tokenJson) {
       return JSON.parse(tokenJson);
@@ -70,7 +82,7 @@ export class AuthenticationService {
     }
   }
 
-  getUser(): UserModel | null {
+  getUser(): User | null {
     let userJson = localStorage.getItem(this.localStorageUserKey);
     if (userJson) {
       return JSON.parse(userJson);
@@ -79,19 +91,28 @@ export class AuthenticationService {
     }
   }
 
-  private _initializeBody(credentials: UserCredentials) {
+  private _initializeAccessTokenParams(credentials: UserCredentials) {
     let body = new HttpParams()
-      .set('client_id', environment.authentication.client_id)
-      .set('client_secret', environment.authentication.client_secret)
-      .set('grant_type', environment.authentication.grant_type)
+      .set('client_id', environment.authentication.clientId)
+      .set('client_secret', environment.authentication.clientSecret)
+      .set('grant_type', environment.authentication.grantType)
       .set('username', credentials.username)
       .set('password', credentials.password);
     return body;
   }
 
-  private _setToken(tokenResponse: TokenResponse) {
+  private _initializeRefreshTokenParams(refreshToken: string) {
+    let body = new HttpParams()
+      .set('client_id', environment.authentication.clientId)
+      .set('client_secret', environment.authentication.clientSecret)
+      .set('grant_type', environment.authentication.refreshGrantType)
+      .set('refresh_token', refreshToken);
+    return body;
+  }
+
+  private _saveTokenInLocalStorage(tokenResponse: TokenResponse) {
     let decodedToken = this._decodeToken(tokenResponse.access_token);
-    let token: TokenModel = {
+    let token: Token = {
       accessToken: tokenResponse.access_token,
       refreshToken: tokenResponse.refresh_token,
       userId: decodedToken.sub,
@@ -99,7 +120,7 @@ export class AuthenticationService {
     localStorage.setItem(this.localStorageTokenKey, JSON.stringify(token));
   }
 
-  private _setUser(user: UserModel) {
+  private _saveUserInLocalStorage(user: User) {
     localStorage.setItem(this.localStorageUserKey, JSON.stringify(user));
   }
 
