@@ -14,7 +14,7 @@ import { TokenResponse } from '../contracts/tokenResponse';
 
 @Injectable()
 export class JwtInterceptor implements HttpInterceptor {
-  constructor(private authService: AuthenticationService) {}
+  constructor(private readonly authService: AuthenticationService) {}
 
   intercept(
     request: HttpRequest<any>,
@@ -58,7 +58,13 @@ export class JwtInterceptor implements HttpInterceptor {
         }
         return of(null);
       }),
-      catchError((error) => throwError(() => error))
+      catchError((error) => {
+        if (error instanceof HttpErrorResponse) {
+          this.authService.logout();
+        }
+
+        return throwError(() => error);
+      })
     );
   }
 

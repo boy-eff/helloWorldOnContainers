@@ -19,22 +19,15 @@ export class SignalrService {
   constructor(private authService: AuthenticationService) {}
 
   public startConnection(wordCollectionId: number) {
-    this.currentWordTestQuestionSource = new ReplaySubject();
-    this.currentWordTestQuestion$ =
-      this.currentWordTestQuestionSource.asObservable();
     this.hubConnection = new signalR.HubConnectionBuilder()
       .withUrl(
         environment.apiPaths.wordCollectionTestEndpoint(wordCollectionId),
         {
-          headers: {
-            Authorization: this.authService.getToken()?.accessToken ?? '',
-          },
           accessTokenFactory: () => {
             return this.authService.getToken()?.accessToken ?? '';
           },
         }
       )
-      .withAutomaticReconnect([30])
       .build();
 
     this.hubConnection.start();

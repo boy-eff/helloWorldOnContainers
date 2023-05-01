@@ -10,8 +10,8 @@ namespace Words.BusinessAccess.Services;
 public class CloudinaryService : ICloudinaryService
 {
     private readonly Cloudinary _cloudinary;
-    private const int _pictureWidth = 500;
-    private const int _pictureHeight = 500;
+    private const int PictureWidth = 500;
+    private const int PictureHeight = 500;
     
     public CloudinaryService(IOptions<CloudinaryConfigurationOptions> config)
     {
@@ -33,7 +33,7 @@ public class CloudinaryService : ICloudinaryService
             var uploadParams = new ImageUploadParams
             {
                 File = new FileDescription(file.FileName, stream),
-                Transformation = new Transformation().Height(_pictureHeight).Width(_pictureWidth)
+                Transformation = new Transformation().Height(PictureHeight).Width(PictureWidth)
             };
             uploadResult = await _cloudinary.UploadAsync(uploadParams);
         }

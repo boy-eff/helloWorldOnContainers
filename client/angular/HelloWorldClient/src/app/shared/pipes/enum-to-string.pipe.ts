@@ -8,7 +8,6 @@ export class EnumToStringPipe implements PipeTransform {
     const enumKey = Object.keys(enumType).find(
       (key) => enumType[key] === value
     );
-    console.log(enumKey);
     return enumKey ? enumKey : '';
   }
 }

@@ -5,9 +5,10 @@ import { HeaderComponent } from './components/header/header.component';
 import { RouterModule } from '@angular/router';
 import { EnumToStringPipe } from './pipes/enum-to-string.pipe';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { ErrorPageComponent } from './components/error-page/error-page.component';
 
 @NgModule({
-  declarations: [HeaderComponent, EnumToStringPipe],
+  declarations: [HeaderComponent, EnumToStringPipe, ErrorPageComponent],
   imports: [
     CommonModule,
     RouterModule,

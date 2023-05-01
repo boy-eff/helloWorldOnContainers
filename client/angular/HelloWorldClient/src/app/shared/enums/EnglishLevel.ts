@@ -1,12 +1,12 @@
 import { EnumArray } from '../contracts/enumArray';
 
 export enum EnglishLevel {
-  Elementary,
-  PreIntermediate,
-  Intermediate,
-  UpperIntermediate,
-  Advanced,
-  Proficient,
+  Elementary = 0,
+  PreIntermediate = 1,
+  Intermediate = 2,
+  UpperIntermediate = 3,
+  Advanced = 4,
+  Proficient = 5,
 }
 
 export function englishLevelAsArray(): EnumArray[] {
