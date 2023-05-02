@@ -17,7 +17,7 @@ public class WordCreateDtoValidator : AbstractValidator<WordCreateDto>
             .NotEmpty()
             .WithMessage("Provide at least 1 translation of the word");
         RuleForEach(x => x.Translations)
-            .MinimumLength(minimumLength)
-            .NotEmpty();
+            .NotEmpty()
+            .WithMessage("Translation cannot be empty");
     }
 }

@@ -3,28 +3,31 @@
         <div class="mb-3 mt-5">
             <label for="username">Username</label>
             <input type="text" class="form-control" id="username" formControlName="username">
-            <div
-                *ngIf="loginForm.get('username')?.errors && (loginForm.get('username')?.touched || loginForm.get('username')?.dirty)">
-                <div class="invalid-feedback" *ngIf="loginForm.get('username')?.hasError('required')">Username is
-                    required</div>
-                <div class="invalid-feedback" *ngIf="loginForm.get('username')?.hasError('minlength')">Username must be
-                    at least 6 characters long</div>
-            </div>
+            <ng-container *ngIf="loginForm.get('username') as usernameControl">
+                <ng-container *ngIf="usernameControl?.errors && (usernameControl?.touched || usernameControl?.dirty)">
+                    <div class="invalid-feedback" *ngIf="usernameControl?.hasError('required')">Username is
+                        required</div>
+                    <div class="invalid-feedback" *ngIf="usernameControl?.hasError('minlength')">Username must
+                        be
+                        at least 6 characters long</div>
+                </ng-container>
+            </ng-container>
         </div>
         <div class="mb-3">
             <label for="password">Password</label>
             <input type="password" class="form-control" id="password" formControlName="password">
-            <div
-                *ngIf="loginForm.get('password')?.errors && (loginForm.get('password')?.touched || loginForm.get('password')?.dirty)">
-                <div class="invalid-feedback" *ngIf="loginForm.get('password')?.hasError('required')">Password is
-                    required</div>
-                <div class="invalid-feedback" *ngIf="loginForm.get('password')?.hasError('minlength')">Password must be
-                    at least 8 characters long</div>
-            </div>
-            <div class="invalid-feedback"
-                *ngIf="invalidCredentials && !loginForm.get('password')?.touched && !loginForm.get('password')?.dirty">
-                Invalid credentials
-            </div>
+            <ng-container *ngIf="loginForm.get('password') as passwordControl">
+                <ng-container *ngIf="passwordControl?.errors && (passwordControl?.touched || passwordControl?.dirty)">
+                    <div class="invalid-feedback" *ngIf="passwordControl?.hasError('required')">Password is
+                        required</div>
+                    <div class="invalid-feedback" *ngIf="passwordControl?.hasError('minlength')">Password must be
+                        at least 8 characters long</div>
+                </ng-container>
+                <div class="invalid-feedback"
+                    *ngIf="invalidCredentials && !passwordControl?.touched && !passwordControl?.dirty">
+                    Invalid credentials
+                </div>
+            </ng-container>
         </div>
         <button [disabled]="!loginForm.valid" type="submit" class="btn btn-primary">Submit</button>
     </form>

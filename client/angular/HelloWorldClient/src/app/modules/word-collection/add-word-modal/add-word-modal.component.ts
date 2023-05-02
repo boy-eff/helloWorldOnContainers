@@ -1,5 +1,5 @@
 import { Component, Input } from '@angular/core';
-import { FormArray, FormControl, FormGroup } from '@angular/forms';
+import { FormArray, FormControl, FormGroup, Validators } from '@angular/forms';
 import { NgbActiveModal } from '@ng-bootstrap/ng-bootstrap';
 
 @Component({
@@ -9,7 +9,7 @@ import { NgbActiveModal } from '@ng-bootstrap/ng-bootstrap';
 })
 export class AddWordModalComponent {
   addWordForm: FormGroup = new FormGroup({
-    value: new FormControl(''),
+    word: new FormControl('', [Validators.required]),
     translations: new FormArray([]),
   });
 
@@ -19,7 +19,12 @@ export class AddWordModalComponent {
     return this.addWordForm.get('translations') as FormArray;
   }
 
+  get addWordFormControl() {
+    return this.addWordForm.controls;
+  }
+
   addTranslation(): void {
+    console.log(this.addWordFormControl?.['word']?.errors?.['required']);
     this.translationControls.push(new FormControl(''));
   }
 

@@ -3,39 +3,46 @@
         <div class="mb-3 mt-5">
             <label for="username">Username</label>
             <input type="text" class="form-control" id="username" formControlName="username">
-            <div
-                *ngIf="registerForm.get('username')?.errors && (registerForm.get('username')?.touched || registerForm.get('username')?.dirty)">
-                <div class="invalid-feedback" *ngIf="registerForm.get('username')?.hasError('required')">Username is
-                    required</div>
-                <div class="invalid-feedback" *ngIf="registerForm.get('username')?.hasError('minlength')">Username must
-                    be
-                    at least 6 characters long</div>
-            </div>
+            <ng-container *ngIf="registerForm.get('username') as usernameControl">
+                <ng-container
+                    *ngIf="registerForm.get('username')?.errors && (registerForm.get('username')?.touched || registerForm.get('username')?.dirty)">
+                    <div class="invalid-feedback" *ngIf="registerForm.get('username')?.hasError('required')">Username is
+                        required</div>
+                    <div class="invalid-feedback" *ngIf="registerForm.get('username')?.hasError('minlength')">Username
+                        must
+                        be
+                        at least 6 characters long</div>
+                </ng-container>
+            </ng-container>
         </div>
         <div class="mb-3">
             <label for="password">Password</label>
             <input type="password" class="form-control" id="password" formControlName="password">
-            <div
-                *ngIf="registerForm.get('password')?.errors && (registerForm.get('password')?.touched || registerForm.get('password')?.dirty)">
-                <div class="invalid-feedback" *ngIf="registerForm.get('password')?.hasError('required')">
-                    Password is required
-                </div>
-                <div class="invalid-feedback" *ngIf="registerForm.get('password')?.hasError('minlength')">
-                    Password must be at least 8 characters long
-                </div>
-                <div class="invalid-feedback" *ngIf="registerForm.get('password')?.hasError('mismatch')">
-                    Passwords mismatch
-                </div>
-            </div>
+            <ng-container *ngIf="registerForm.get('password') as password">
+                <ng-container *ngIf="password.touched || password.dirty">
+                    <div *ngIf="password.hasError('required')" class="invalid-feedback">
+                        Password is required
+                    </div>
+                    <div *ngIf="password.hasError('minlength')" class="invalid-feedback">
+                        Password must be at least 8 characters long
+                    </div>
+                    <div *ngIf="password.hasError('mismatch')" class="invalid-feedback">
+                        Passwords do not match
+                    </div>
+                </ng-container>
+            </ng-container>
         </div>
+
         <div class="mb-3">
             <label for="confirmPassword">Confirm password</label>
             <input type="password" class="form-control" id="confirmPassword" formControlName="confirmPassword">
-            <div
-                *ngIf="registerForm.get('confirmPassword')?.errors && (registerForm.get('confirmPassword')?.touched || registerForm.get('confirmPassword')?.dirty)">
-                <div class="invalid-feedback" *ngIf="registerForm.get('confirmPassword')?.hasError('mismatch')">
-                    Passwords mismatch</div>
-            </div>
+            <ng-container *ngIf="registerForm.get('confirmPassword') as confirmPassword">
+                <ng-container *ngIf="confirmPassword.touched || confirmPassword.dirty">
+                    <div *ngIf="confirmPassword.hasError('mismatch')" class="invalid-feedback">
+                        Passwords do not match
+                    </div>
+                </ng-container>
+            </ng-container>
         </div>
         <div class="form-group">
             <label for="englishLevel">English Level</label>
