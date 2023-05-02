@@ -11,6 +11,7 @@ public class WordCollectionRequestDtoValidator : AbstractValidator<WordCollectio
     {
         const int nameMinLength = WordCollectionConstraints.NameMinLength;
         const int nameMaxLength = WordCollectionConstraints.NameMaxLength;
+        const int wordsMinCount = WordCollectionConstraints.WordsMinCount;
         RuleFor(x => x.Name)
             .MinimumLength(nameMinLength)
             .MaximumLength(nameMaxLength)
@@ -18,6 +19,9 @@ public class WordCollectionRequestDtoValidator : AbstractValidator<WordCollectio
         RuleFor(x => x.EnglishLevel)
             .IsInEnum()
             .WithMessage("Invalid english level");
+        RuleFor(x => x.Words)
+            .Must(x => x.Count() > 3)
+            .WithMessage($"Word collection must have at least {wordsMinCount} words");
         RuleForEach(x => x.Words)
             .SetValidator(new WordCreateDtoValidator());
     }
