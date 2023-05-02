@@ -1,4 +1,4 @@
-import { EnumArray } from '../contracts/enumArray';
+import { CustomEnum } from '../contracts/customEnum';
 
 export enum EnglishLevel {
   Elementary = 0,
@@ -9,7 +9,7 @@ export enum EnglishLevel {
   Proficient = 5,
 }
 
-export function englishLevelAsArray(): EnumArray[] {
+export function englishLevelAsCustomEnum(): CustomEnum[] {
   return Object.keys(EnglishLevel)
     .filter((k) => parseInt(k) >= 0)
     .map((k) => ({ value: Number(k), label: EnglishLevel[Number(k)] }));

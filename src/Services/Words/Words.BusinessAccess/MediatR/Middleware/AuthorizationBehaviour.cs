@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Logging;
 using Shared.Exceptions;
+using Shared.Extensions;
 using Words.BusinessAccess.Extensions;
 
 namespace Words.BusinessAccess.MediatR.Middleware;

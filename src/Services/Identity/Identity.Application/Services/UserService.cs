@@ -4,9 +4,11 @@ using Identity.Domain.Entities;
 using Identity.Domain.Enums;
 using Mapster;
 using MassTransit;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
+using Shared.Extensions;
 using Shared.Messages;
 
 namespace Identity.Application.Services;
@@ -18,14 +20,16 @@ public class UserService : IUserService
     private readonly IPublishEndpoint _publishEndpoint;
     private readonly ILogger<UserService> _logger;
     private readonly IDbContext _dbContext;
+    private readonly IHttpContextAccessor _httpContextAccessor;
 
-    public UserService(UserManager<AppUser> userManager, IPublishEndpoint publishEndpoint, ILogger<UserService> logger, RoleManager<IdentityRole<int>> roleManager, IDbContext dbContext)
+    public UserService(UserManager<AppUser> userManager, IPublishEndpoint publishEndpoint, ILogger<UserService> logger, RoleManager<IdentityRole<int>> roleManager, IDbContext dbContext, IHttpContextAccessor httpContextAccessor)
     {
         _userManager = userManager;
         _publishEndpoint = publishEndpoint;
         _logger = logger;
         _roleManager = roleManager;
         _dbContext = dbContext;
+        _httpContextAccessor = httpContextAccessor;
     }
 
     public async Task<ServiceResult<int>> AddUserAsync(AppUserRegisterDto appUserDto)
@@ -140,6 +144,53 @@ public class UserService : IUserService
         return new ServiceResult<List<AppUserDto>>()
         {
             Value = usersDto
+        };
+    }
+
+    public async Task<ServiceResult<int>> ChangePasswordAsync(string oldPassword, string newPassword)
+    {
+        var userId = _httpContextAccessor?.HttpContext?.User.GetUserId();
+
+        if (userId is null)
+        {
+            return new ServiceResult<int>()
+            {
+                Errors = new List<ServiceError>()
+                {
+                    new(ServiceErrorStatusCode.NotFound, "User not found")
+                }
+            };
+        }
+
+        var user = await _userManager.FindByIdAsync(userId.ToString());
+        
+        if (user is null)
+        {
+            return new ServiceResult<int>()
+            {
+                Errors = new List<ServiceError>()
+                {
+                    new(ServiceErrorStatusCode.NotFound, "User not found")
+                }
+            };
+        }
+        
+        var result = await _userManager.ChangePasswordAsync(user, oldPassword, newPassword);
+
+        if (!result.Succeeded)
+        {
+            return new ServiceResult<int>()
+            {
+                Errors = new List<ServiceError>()
+                {
+                    new(ServiceErrorStatusCode.WrongAction, result.Errors.First().Description)
+                }
+            };
+        }
+
+        return new ServiceResult<int>()
+        {
+            Value = userId.Value
         };
     }
 }

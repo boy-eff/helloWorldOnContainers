@@ -4,6 +4,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Caching.Distributed;
 using Microsoft.Extensions.Logging;
 using Shared.Exceptions;
+using Shared.Extensions;
 using Words.BusinessAccess.Extensions;
 using Words.BusinessAccess.Helpers;
 using Words.DataAccess;

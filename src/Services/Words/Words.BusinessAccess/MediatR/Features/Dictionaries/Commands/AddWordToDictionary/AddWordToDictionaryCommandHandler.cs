@@ -5,6 +5,7 @@ using Microsoft.Extensions.Logging;
 using Serilog;
 using Shared.Messages;
 using Shared.Exceptions;
+using Shared.Extensions;
 using Words.BusinessAccess.Extensions;
 using Words.DataAccess;
 using Words.DataAccess.Models;

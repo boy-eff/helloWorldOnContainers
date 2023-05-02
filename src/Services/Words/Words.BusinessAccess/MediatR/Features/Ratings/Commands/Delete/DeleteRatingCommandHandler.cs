@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using Shared.Exceptions;
+using Shared.Extensions;
 using Words.BusinessAccess.Extensions;
 using Words.DataAccess;
 

@@ -5,6 +5,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using Words.BusinessAccess.Dtos.CollectionRating;
 using Shared.Exceptions;
+using Shared.Extensions;
 using Words.BusinessAccess.Extensions;
 using Words.DataAccess;
 

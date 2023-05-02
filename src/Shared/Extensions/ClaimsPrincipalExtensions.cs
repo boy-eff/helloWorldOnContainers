@@ -1,6 +1,6 @@
 ﻿using System.Security.Claims;
 
-namespace Words.BusinessAccess.Extensions;
+namespace Shared.Extensions;
 
 public static class ClaimsPrincipalExtensions
 {

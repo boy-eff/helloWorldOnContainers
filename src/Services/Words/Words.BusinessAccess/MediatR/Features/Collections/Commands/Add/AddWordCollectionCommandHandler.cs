@@ -4,6 +4,7 @@ using MediatR;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Logging;
 using Shared.Exceptions;
+using Shared.Extensions;
 using Shared.Messages;
 using Words.BusinessAccess.Contracts;
 using Words.BusinessAccess.Dtos.WordCollection;

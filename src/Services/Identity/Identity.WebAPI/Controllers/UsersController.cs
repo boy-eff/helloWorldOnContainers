@@ -88,6 +88,14 @@ public class UsersController : ControllerBase
         return HandleServiceResult(serviceResult);
     }
 
+    [Authorize(IdentityServerConstants.LocalApi.PolicyName)]
+    [HttpPost("password")]
+    public async Task<IActionResult> ChangeUserPasswordAsync([FromBody] ChangePasswordDto changePasswordDto)
+    {
+        var result = await _userService.ChangePasswordAsync(changePasswordDto.OldPassword, changePasswordDto.NewPassword);
+        return HandleServiceResult(result);
+    }
+    
     private IActionResult HandleServiceResult<T>(ServiceResult<T> serviceResult)
     {
         if (serviceResult.Succeeded)

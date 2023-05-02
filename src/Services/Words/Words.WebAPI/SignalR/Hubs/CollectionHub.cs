@@ -3,6 +3,7 @@ using MassTransit;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.SignalR;
+using Shared.Extensions;
 using Shared.Messages;
 using Words.BusinessAccess.Contracts;
 using Words.BusinessAccess.Dtos;

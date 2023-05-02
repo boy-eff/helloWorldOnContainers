@@ -3,6 +3,7 @@ using MediatR;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Logging;
 using Shared.Exceptions;
+using Shared.Extensions;
 using Words.BusinessAccess.Contracts;
 using Words.BusinessAccess.Extensions;
 using Words.DataAccess;

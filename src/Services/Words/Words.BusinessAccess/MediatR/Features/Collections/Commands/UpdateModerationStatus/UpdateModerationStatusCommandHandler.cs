@@ -5,6 +5,7 @@ using Microsoft.Extensions.Caching.Distributed;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using Shared.Exceptions;
+using Shared.Extensions;
 using Words.BusinessAccess.Dtos;
 using Words.BusinessAccess.Extensions;
 using Words.BusinessAccess.Helpers;

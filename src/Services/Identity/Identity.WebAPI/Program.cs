@@ -29,6 +29,7 @@ builder.Services.ConfigureIdentityServer(config);
 builder.Services.ConfigureCors(config);
 builder.Services.ConfigureMassTransit(config);
 builder.Services.AddScoped<IDbContext>(x => x.GetService<AuthDbContext>());
+builder.Services.AddHttpContextAccessor();
 builder.ConfigureLogger();
 
 var app = builder.Build();

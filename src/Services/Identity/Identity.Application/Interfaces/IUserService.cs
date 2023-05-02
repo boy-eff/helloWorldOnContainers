@@ -9,4 +9,5 @@ public interface IUserService
     Task<ServiceResult<List<AppUserDto>>> GetUsersAsync();
     Task<ServiceResult<AppUserDto>> GetUserByIdAsync(int id);
     Task<ServiceResult<int>> AddUserToRoleAsync(int roleId, int userId);
+    Task<ServiceResult<int>> ChangePasswordAsync(string oldPassword, string newPassword);
 }
