@@ -9,15 +9,19 @@ const apiPaths = {
   tokenEndpoint: 'http://localhost:5001/identity/connect/token',
   wordCollectionTestEndpoint: (id: number) =>
     `http://localhost:5001/words/collectionhub/${id}`,
-  achievementsEndpoint: (id: number) =>
+  achievementsEndpoint: `http://localhost:5001/achievements/api/achievements`,
+  usersAchievementsEndpoint: (id: number) =>
     `http://localhost:5001/achievements/api/users/${id}/achievements`,
-  getUserById: (id: number) => `http://localhost:5001/words/api/user/${id}`,
-  registerUser: 'http://localhost:5001/identity/api/users',
+  wordsUserEndpoint: (id: number) =>
+    `http://localhost:5001/words/api/user/${id}`,
+  identityUsersEndpoint: 'http://localhost:5001/identity/api/users',
   wordCollectionEndpoint: 'http://localhost:5001/words/api/wordcollection',
-  getWordCollectionById: (id: number) =>
+  wordCollectionWithIdEndpoint: (id: number) =>
     `http://localhost:5001/words/api/wordcollection/${id}`,
-  addWordToDictionary: (wordId: number) =>
+  addWordToDictionaryEndpoint: (wordId: number) =>
     `http://localhost:5001/words/api/dictionary/words/${wordId}`,
+  changePasswordEndpoint: 'http://localhost:5001/identity/api/users/password',
+  updateUserImageEndpoint: 'http://localhost:5001/words/api/user/image',
 };
 
 export const environment = {
