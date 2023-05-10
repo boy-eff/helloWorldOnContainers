@@ -1,22 +1,18 @@
-<div class="container d-flex justify-content-center align-items-center vh-100">
-    <div class="d-flex flex-column align-items-center">
-        <h2 class="mb-3">{{user?.userName}}</h2>
+<div class="container d-flex justify-content-center align-items-center" style="margin-top: 20%  ">
+    <div class="d-flex flex-row align-items-start">
         <img src="{{user?.imageUrl ?? 'assets/default-avatar.jpg'   }}" alt="" class="rounded-circle account-image">
-        <div class="flex-grow-1 mt-3 mt-md-0">
-            <form [formGroup]="form" (ngSubmit)="onSubmit()">
-                <div class="form-group">
-                    <label for="password">Password</label>
-                    <input type="password" class="form-control" id="password" formControlName="password">
-                </div>
-                <div class="form-group">
-                    <label for="englishLevel">English Level</label>
-                    <select class="form-control" id="englishLevel" formControlName="englishLevel">
-                        <option *ngFor="let level of englishLevels | keyvalue" [value]="level.key">{{level.value}}
-                        </option>
-                    </select>
-                </div>
-                <button type="submit" class="btn btn-primary mt-3">Save Changes</button>
-            </form>
+        <div class="d-flex flex-column mx-3">
+            <h2 class="mb-3">{{user?.userName}}</h2>
+            <div class="d-flex flex-row align-items-center">
+                <button type="button" class="btn btn-primary btn-block" (click)="openChangePasswordModal()">Change
+                    Password</button>
+            </div>
+            <div class="d-flex flex-row align-items-center mt-3">
+                <label for="file-input" class="btn btn-secondary w-100">
+                    <input id="file-input" type="file" (change)="onFileChange($event)" [hidden]="true" ngbFileInput>
+                    Choose image
+                </label>
+            </div>
         </div>
     </div>
 </div>
