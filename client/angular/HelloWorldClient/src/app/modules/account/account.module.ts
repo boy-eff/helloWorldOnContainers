@@ -1,20 +1,18 @@
-import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
-import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { NgModule } from '@angular/core';
-import { CommonModule } from '@angular/common';
 import { LoginComponent } from './login/login.component';
 import { RegisterComponent } from './register/register.component';
 import { HttpClientModule } from '@angular/common/http';
 import { AccountSettingsComponent } from './account-settings/account-settings.component';
+import { ChangePasswordModalComponent } from './account-settings/change-password-modal/change-password-modal.component';
+import { SharedModule } from 'src/app/shared/shared.module';
 
 @NgModule({
-  declarations: [LoginComponent, RegisterComponent, AccountSettingsComponent],
-  imports: [
-    CommonModule,
-    FormsModule,
-    ReactiveFormsModule,
-    NgbModule,
-    HttpClientModule,
+  declarations: [
+    LoginComponent,
+    RegisterComponent,
+    AccountSettingsComponent,
+    ChangePasswordModalComponent,
   ],
+  imports: [HttpClientModule, SharedModule],
 })
 export class AccountModule {}
