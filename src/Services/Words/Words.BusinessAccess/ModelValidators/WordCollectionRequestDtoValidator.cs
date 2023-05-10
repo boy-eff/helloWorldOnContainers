@@ -20,7 +20,7 @@ public class WordCollectionRequestDtoValidator : AbstractValidator<WordCollectio
             .IsInEnum()
             .WithMessage("Invalid english level");
         RuleFor(x => x.Words)
-            .Must(x => x.Count() > 3)
+            .Must(x => x.Count() >= 3)
             .WithMessage($"Word collection must have at least {wordsMinCount} words");
         RuleForEach(x => x.Words)
             .SetValidator(new WordCreateDtoValidator());

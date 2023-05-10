@@ -1,4 +1,4 @@
-﻿namespace Words.BusinessAccess.Pagination;
+﻿namespace Words.BusinessAccess.Models;
 
 public class PaginationParameters
 {

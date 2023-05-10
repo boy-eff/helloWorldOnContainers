@@ -5,6 +5,7 @@ using Microsoft.Extensions.Caching.Distributed;
 using Microsoft.Extensions.Logging;
 using Shared.Exceptions;
 using Shared.Extensions;
+using Words.BusinessAccess.Contracts;
 using Words.BusinessAccess.Extensions;
 using Words.BusinessAccess.Helpers;
 using Words.DataAccess;
@@ -17,15 +18,17 @@ public class DeleteWordCollectionCommandHandler : IRequestHandler<DeleteWordColl
     private readonly WordsDbContext _dbContext;
     private readonly ILogger<DeleteWordCollectionCommandHandler> _logger;
     private readonly IDistributedCache _cache;
+    private readonly ICloudinaryService _cloudinaryService;
 
     public DeleteWordCollectionCommandHandler(IHttpContextAccessor httpContextAccessor,
         WordsDbContext dbContext, 
-        ILogger<DeleteWordCollectionCommandHandler> logger, IDistributedCache cache)
+        ILogger<DeleteWordCollectionCommandHandler> logger, IDistributedCache cache, ICloudinaryService cloudinaryService)
     {
         _httpContextAccessor = httpContextAccessor;
         _dbContext = dbContext;
         _logger = logger;
         _cache = cache;
+        _cloudinaryService = cloudinaryService;
     }
 
     public async Task<int?> Handle(DeleteWordCollectionCommand request, CancellationToken cancellationToken)
@@ -46,6 +49,12 @@ public class DeleteWordCollectionCommandHandler : IRequestHandler<DeleteWordColl
             _logger.LogInformation("Deletion failed: User with id {UserId} has no permission to delete {CollectionId}", userId, request.WordCollectionId);
             throw new ForbiddenException($"Cannot delete collection with id {wordCollection.Id}");
         }
+
+        if (wordCollection.ImagePublicId is not null)
+        {
+            await _cloudinaryService.DeletePhotoAsync(wordCollection.ImagePublicId);
+        }
+        
 
         _dbContext.Collections.Remove(wordCollection);
         await _dbContext.SaveChangesAsync(cancellationToken);

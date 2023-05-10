@@ -41,15 +41,18 @@ public class AddWordCollectionCommandHandler : IRequestHandler<AddWordCollection
 
         wordCollection.UserId = userId!.Value;
 
-        var uploadResult = await _cloudinaryService.AddPhotoAsync(request.WordCollectionCreateDto.Image);
-
-        wordCollection.ImageUrl = uploadResult.SecureUrl.AbsoluteUri;
-        wordCollection.ImagePublicId = uploadResult.PublicId;
-        
-        if (uploadResult.Error is not null)
+        if (request.WordCollectionCreateDto.Image is not null)
         {
-            _logger.LogError("Error while uploading image to Cloudinary: {ErrorMessage}", uploadResult.Error.Message);
-            throw new InternalServerException("Error while uploading image to external data source");
+            var uploadResult = await _cloudinaryService.AddPhotoAsync(request.WordCollectionCreateDto.Image);
+
+            wordCollection.ImageUrl = uploadResult.SecureUrl.AbsoluteUri;
+            wordCollection.ImagePublicId = uploadResult.PublicId;
+        
+            if (uploadResult.Error is not null)
+            {
+                _logger.LogError("Error while uploading image to Cloudinary: {ErrorMessage}", uploadResult.Error.Message);
+                throw new InternalServerException("Error while uploading image to external data source");
+            }
         }
         
         await _dbContext.Collections.AddAsync(wordCollection, cancellationToken);

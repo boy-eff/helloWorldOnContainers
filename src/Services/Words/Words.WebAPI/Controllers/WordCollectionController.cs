@@ -11,7 +11,6 @@ using Words.BusinessAccess.MediatR.Features.Collections.Commands.UpdateModeratio
 using Words.BusinessAccess.MediatR.Features.Collections.Queries.Get;
 using Words.BusinessAccess.MediatR.Features.Collections.Queries.GetById;
 using Words.BusinessAccess.Models;
-using Words.BusinessAccess.Pagination;
 
 namespace Words.WebAPI.Controllers;
 
@@ -35,9 +34,10 @@ public class WordCollectionController : ControllerBase
     [HttpGet]
     [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status401Unauthorized)]
-    public async Task<ActionResult<PaginationResult<WordCollectionResponseDto>>> GetAsync([FromQuery]PaginationParameters paginationParameters)
+    public async Task<ActionResult<PaginationResult<WordCollectionResponseDto>>> GetAsync(
+        [FromQuery]PaginationParameters paginationParameters, [FromQuery]FilteringParameters filteringParameters)
     {
-        var query = new GetWordCollectionsQuery(paginationParameters);
+        var query = new GetWordCollectionsQuery(paginationParameters, filteringParameters);
         var result = await _mediator.Send(query, CancellationToken.None);
         return Ok(result);
     }
@@ -106,7 +106,7 @@ public class WordCollectionController : ControllerBase
     [ProducesResponseType(StatusCodes.Status401Unauthorized)]
     [ProducesResponseType(StatusCodes.Status403Forbidden)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
-    public async Task<ActionResult<int>> UpdateAsync(int id,[FromBody] WordCollectionRequestDto wordCollectionDto)
+    public async Task<ActionResult<int>> UpdateAsync(int id,[FromForm] WordCollectionRequestDto wordCollectionDto)
     {
         var command = new UpdateWordCollectionCommand(id, wordCollectionDto);
         var result = await _mediator.Send(command);

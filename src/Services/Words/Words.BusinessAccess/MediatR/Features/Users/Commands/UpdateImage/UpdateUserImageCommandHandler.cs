@@ -5,20 +5,19 @@ using Microsoft.Extensions.Logging;
 using Shared.Exceptions;
 using Shared.Extensions;
 using Words.BusinessAccess.Contracts;
-using Words.BusinessAccess.Extensions;
 using Words.DataAccess;
 using Words.DataAccess.Models;
 
-namespace Words.BusinessAccess.MediatR.Features.Users.Commands.UpdatePhoto;
+namespace Words.BusinessAccess.MediatR.Features.Users.Commands.UpdateImage;
 
-public class UpdateUserPhotoCommandHandler: IRequestHandler<UpdateUserPhotoCommand, Unit>
+public class UpdateUserImageCommandHandler: IRequestHandler<UpdateUserImageCommand, Unit>
 {
     private readonly WordsDbContext _dbContext;
     private readonly ICloudinaryService _cloudinaryService;
     private readonly IHttpContextAccessor _contextAccessor;
-    private readonly ILogger<UpdateUserPhotoCommandHandler> _logger;
+    private readonly ILogger<UpdateUserImageCommandHandler> _logger;
 
-    public UpdateUserPhotoCommandHandler(WordsDbContext dbContext, ICloudinaryService cloudinaryService, IHttpContextAccessor contextAccessor, ILogger<UpdateUserPhotoCommandHandler> logger)
+    public UpdateUserImageCommandHandler(WordsDbContext dbContext, ICloudinaryService cloudinaryService, IHttpContextAccessor contextAccessor, ILogger<UpdateUserImageCommandHandler> logger)
     {
         _dbContext = dbContext;
         _cloudinaryService = cloudinaryService;
@@ -26,7 +25,7 @@ public class UpdateUserPhotoCommandHandler: IRequestHandler<UpdateUserPhotoComma
         _logger = logger;
     }
 
-    public async Task<Unit> Handle(UpdateUserPhotoCommand request, CancellationToken cancellationToken)
+    public async Task<Unit> Handle(UpdateUserImageCommand request, CancellationToken cancellationToken)
     {
         var userId = _contextAccessor.HttpContext.User.GetUserId();
 
@@ -46,14 +45,14 @@ public class UpdateUserPhotoCommandHandler: IRequestHandler<UpdateUserPhotoComma
             throw new InternalServerException("Error while uploading image to external data source");
         }
 
-        _updateUserPhotoInformation(imageUploadResult, user);
+        _updateUserImageInformation(imageUploadResult, user);
 
         await _dbContext.SaveChangesAsync(cancellationToken);
 
         return Unit.Value;
     }
 
-    private void _updateUserPhotoInformation(UploadResult imageUploadResult, User user)
+    private void _updateUserImageInformation(UploadResult imageUploadResult, User user)
     {
         user.ImageUrl = imageUploadResult.SecureUrl.AbsoluteUri;
         user.ImagePublicId = imageUploadResult.PublicId;

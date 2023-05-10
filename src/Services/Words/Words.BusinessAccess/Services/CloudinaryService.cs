@@ -39,4 +39,18 @@ public class CloudinaryService : ICloudinaryService
         }
         return uploadResult;
     }
+
+    public async Task<DelResResult> DeletePhotoAsync(string publicId)
+    {
+        var deleteParams = new DelResParams()
+        {
+            PublicIds = new List<string> { publicId },
+            ResourceType = ResourceType.Image
+        };
+
+        // Delete the photo from Cloudinary
+        var deletionResult = await _cloudinary.DeleteResourcesAsync(deleteParams);
+
+        return deletionResult;
+    }
 }

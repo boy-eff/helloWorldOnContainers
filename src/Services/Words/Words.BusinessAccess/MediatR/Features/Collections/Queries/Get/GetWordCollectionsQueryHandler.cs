@@ -21,9 +21,12 @@ public class GetWordCollectionsQueryHandler : IRequestHandler<GetWordCollections
     {
         var paginationParams = request.PaginationParameters;
 
-        var totalCount = await _dbContext.Collections.CountAsync(cancellationToken: cancellationToken);
+        var totalCount = await _dbContext.Collections
+            .ApplyFilters(request.FilteringParameters)
+            .CountAsync(cancellationToken: cancellationToken);
         
         var wordCollections = await _dbContext.Collections
+            .ApplyFilters(request.FilteringParameters)
             .GetPage(paginationParams)
             .ToListAsync(cancellationToken: cancellationToken);
 

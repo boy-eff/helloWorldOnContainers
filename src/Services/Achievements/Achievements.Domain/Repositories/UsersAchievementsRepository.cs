@@ -20,12 +20,30 @@ public class UsersAchievementsRepository : IUsersAchievementsRepository
 
     public async Task<IEnumerable<UsersAchievements>> GetByUserAsync(int userId)
     {
-        return await _dbContext.UsersAchievements
+        var usersAchievements = await _dbContext.UsersAchievements
             .Where(x => x.UserId == userId)
             .Include(x => x.NextLevel)
             .Include(x => x.Achievement)
             .AsNoTracking()
             .ToListAsync();
+
+        var achievements = SeedData.Achievements;
+        foreach (var achievement in achievements)
+        {
+            if (usersAchievements.All(x => x.Achievement.Id != achievement.Id))
+            {
+                var userAchievement = new UsersAchievements()
+                {
+                    Achievement = achievement,
+                    NextLevel = achievement.Levels.First(),
+                    PointsAchieved = 0,
+                    UserId = userId
+                };
+                usersAchievements.Add(userAchievement);
+            }
+        }
+
+        return usersAchievements;
     }
 
     public async Task AddAsync(UsersAchievements usersAchievements)

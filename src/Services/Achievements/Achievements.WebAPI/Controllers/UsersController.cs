@@ -25,7 +25,7 @@ public class UsersController: ControllerBase
     [HttpGet("{id:int}/achievements")]
     [ProducesResponseType(StatusCodes.Status200OK)] 
     [ProducesResponseType(StatusCodes.Status401Unauthorized)]
-    public async Task<ActionResult<IEnumerable<UsersAchievementsDto>>> GetByCollectionIdAsync(int id)
+    public async Task<ActionResult<IEnumerable<UsersAchievementsDto>>> GetCollectionsByUserIdAsync(int id)
     {
         var achievements = await _usersAchievementsService.GetUserAchievementsByIdAsync(id);
         return Ok(achievements);

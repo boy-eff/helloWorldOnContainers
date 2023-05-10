@@ -7,6 +7,7 @@ using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using Shared.Exceptions;
 using Shared.Extensions;
+using Words.BusinessAccess.Contracts;
 using Words.BusinessAccess.Dtos.WordCollection;
 using Words.BusinessAccess.Extensions;
 using Words.BusinessAccess.Helpers;
@@ -23,18 +24,21 @@ public class UpdateWordCollectionCommandHandler : IRequestHandler<UpdateWordColl
     private readonly IDistributedCache _cache;
     private readonly IOptions<WordsRedisCacheOptions> _wordsRedisCacheOptions;
     private readonly ILogger<UpdateWordCollectionCommandHandler> _logger;
+    private readonly ICloudinaryService _cloudinaryService;
 
     public UpdateWordCollectionCommandHandler(IHttpContextAccessor httpContextAccessor,
         WordsDbContext dbContext, 
         IDistributedCache cache, 
         IOptions<WordsRedisCacheOptions> wordsRedisCacheOptions, 
-        ILogger<UpdateWordCollectionCommandHandler> logger)
+        ILogger<UpdateWordCollectionCommandHandler> logger,
+        ICloudinaryService cloudinaryService)
     {
         _httpContextAccessor = httpContextAccessor;
         _dbContext = dbContext;
         _cache = cache;
         _wordsRedisCacheOptions = wordsRedisCacheOptions;
         _logger = logger;
+        _cloudinaryService = cloudinaryService;
     }
 
     public async Task<WordCollectionResponseDto> Handle(UpdateWordCollectionCommand request, CancellationToken cancellationToken)
@@ -67,6 +71,23 @@ public class UpdateWordCollectionCommandHandler : IRequestHandler<UpdateWordColl
         _dbContext.Words.RemoveRange(existingWordCollection.Words);
 
         var wordCollection = request.WordCollectionDto.Adapt(existingWordCollection);
+
+        if (request.WordCollectionDto.Image is not null)
+        {
+            var uploadResult = await _cloudinaryService.AddPhotoAsync(request.WordCollectionDto.Image);
+            var previousPublicId = wordCollection.ImagePublicId;
+            wordCollection.ImageUrl = uploadResult.SecureUrl.AbsoluteUri;
+            wordCollection.ImagePublicId = uploadResult.PublicId;
+        
+            if (uploadResult.Error is not null)
+            {
+                _logger.LogError("Error while uploading image to Cloudinary: {ErrorMessage}", uploadResult.Error.Message);
+                throw new InternalServerException("Error while uploading image to external data source");
+            }
+
+            await _cloudinaryService.DeletePhotoAsync(previousPublicId);
+        }
+        
         _dbContext.Collections.Update(wordCollection);
         await _dbContext.SaveChangesAsync(cancellationToken);
         
