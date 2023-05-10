@@ -1,0 +1,54 @@
+<div class="container" infiniteScroll (scrolled)="onScroll()" [infiniteScrollDistance]="1">
+    <div class="row mb-3">
+        <div class="col-md-3">
+            <div class="form-group">
+                <label for="englishLevelFilter">Filter by English level:</label>
+                <select id="englishLevelFilter" class="form-control" (change)="onEnglishLevelChange($event)">
+                    <option value="{{filteringAllValue}}">All</option>
+                    <option *ngFor="let level of englishLevels" [value]="level.value">{{level.displayValue}}</option>
+                </select>
+            </div>
+        </div>
+    </div>
+    <div class="row" *ngIf="!loading && collections.length > 0">
+        <div class="col-sm-6 col-md-4 col-lg-2 mb-3">
+            <a class="card h-100" routerLink="/collections/add">
+                <div class="card-body d-flex align-items-center justify-content-center">
+                    <fa-icon [icon]="faPlus"></fa-icon>
+                </div>
+            </a>
+        </div>
+        <div class="col-sm-6 col-md-4 col-lg-2 mb-3" *ngFor="let collection of collections" id="{{collection.id}}">
+            <div class="card h-100">
+                <div class="card-header d-flex align-items-center justify-content-between">
+                    {{ englishLevels[+englishLevelsEnum[collection.englishLevel]].displayValue }}
+                    <div *ngIf="collection.userId === userId" class="d-flex">
+                        <a class="btn btn-primary" routerLink="/collections/{{collection.id}}/edit">
+                            <fa-icon [icon]="faEdit"></fa-icon>
+                        </a>
+                        <button class="btn btn-secondary mx-1" (click)="deleteWordCollection(collection.id)">
+                            <fa-icon [icon]="faTrash"></fa-icon>
+                        </button>
+                    </div>
+                </div>
+                <a routerLink="/collections/{{collection.id}}">
+                    <img src="{{collection.imageUrl ? collection.imageUrl : 'assets/no-image.png'}}"
+                        class="card-img-top" alt="{{collection.name}}">
+                    <div class="card-body">
+                        <h5 class="card-title">{{collection.name}}</h5>
+                    </div>
+                </a>
+            </div>
+        </div>
+    </div>
+    <div *ngIf="collections.length === 0" class="d-flex align-items-center justify-content-center">
+        <a routerLink="/collections/add" class="btn btn-primary">Add a new collection</a>
+    </div>
+
+    <div class=" row" *ngIf="loading">
+        <div class="col-md-12 text-center">
+            <i class="fa fa-spinner fa-spin fa-2x"></i>
+            <p>Loading more...</p>
+        </div>
+    </div>
+</div>
