@@ -3,6 +3,7 @@ import { Component, OnInit } from '@angular/core';
 import { WordCollection } from 'src/app/shared/contracts/wordCollection';
 import { ActivatedRoute } from '@angular/router';
 import { WordsService } from 'src/app/services/words.service';
+import { Word } from 'src/app/shared/contracts/word';
 
 @Component({
   selector: 'app-word-collection-page',
@@ -16,7 +17,7 @@ export class WordCollectionPageComponent implements OnInit {
   constructor(
     private wordCollectionsService: WordCollectionsService,
     private wordsService: WordsService,
-    private activateRoute: ActivatedRoute
+    public activateRoute: ActivatedRoute
   ) {}
 
   ngOnInit(): void {
@@ -28,6 +29,10 @@ export class WordCollectionPageComponent implements OnInit {
     this.wordCollectionsService
       .getWordCollectionById(+id)
       .subscribe((response) => (this.wordCollection = response));
+  }
+
+  getTranslationsAsString(word: Word) {
+    return word.translations.map((x) => x.translation).join(', ');
   }
 
   addWordToDictionary(id: number) {
