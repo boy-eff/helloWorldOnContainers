@@ -1,4 +1,5 @@
 import { Component, OnInit } from '@angular/core';
+import { Observable } from 'rxjs';
 import { AchievementsService } from 'src/app/services/achievements.service';
 import { AuthenticationService } from 'src/app/services/authentication.service';
 import { UsersAchievements } from 'src/app/shared/contracts/usersAchievements';
@@ -9,7 +10,7 @@ import { UsersAchievements } from 'src/app/shared/contracts/usersAchievements';
   styleUrls: ['./achievement-list.component.scss'],
 })
 export class AchievementListComponent implements OnInit {
-  usersAchievements: UsersAchievements[];
+  usersAchievements$: Observable<UsersAchievements[]>;
 
   constructor(
     private achievementsService: AchievementsService,
@@ -17,11 +18,10 @@ export class AchievementListComponent implements OnInit {
   ) {}
 
   ngOnInit(): void {
-    let userId = this.authService.getUser()?.id;
+    let userId = this.authService.getToken()?.userId;
     if (userId) {
-      this.achievementsService
-        .getUserAchievements(userId)
-        .subscribe((achievements) => (this.usersAchievements = achievements));
+      this.usersAchievements$ =
+        this.achievementsService.getUserAchievements(userId);
     }
   }
 }
