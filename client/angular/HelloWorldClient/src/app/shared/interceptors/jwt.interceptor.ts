@@ -59,7 +59,10 @@ export class JwtInterceptor implements HttpInterceptor {
         return of(null);
       }),
       catchError((error) => {
-        if (error instanceof HttpErrorResponse) {
+        if (
+          error instanceof HttpErrorResponse &&
+          error.status == HttpStatusCode.Unauthorized
+        ) {
           this.authService.logout();
         }
 
