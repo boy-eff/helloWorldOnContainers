@@ -1,4 +1,4 @@
-<div class="container d-flex justify-content-center align-items-center vh-100">
+<div class="container d-flex justify-content-center align-items-center">
     <ng-container *ngIf="!testPassResult; else resultBlock">
         <div class="container">
             <ngb-progressbar [value]="currentWordIndex" [max]="wordsCount"></ngb-progressbar>
@@ -41,7 +41,7 @@
                     </tbody>
                 </table>
             </div>
-            <button class="btn btn-primary" routerLink="/collections">Back to collections</button>
+            <button class="btn btn-primary" routerLink="">Back to collections</button>
         </div>
 
     </ng-template>
