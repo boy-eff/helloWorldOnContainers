@@ -11,7 +11,7 @@ export class WordsService {
 
   addWordToDictionary(wordId: number): Observable<number> {
     return this.http.post<number>(
-      environment.apiPaths.addWordToDictionary(wordId),
+      environment.apiPaths.addWordToDictionaryEndpoint(wordId),
       null
     );
   }

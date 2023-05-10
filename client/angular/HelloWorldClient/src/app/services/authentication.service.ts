@@ -4,7 +4,7 @@ import { Injectable } from '@angular/core';
 import { HttpClient, HttpParams } from '@angular/common/http';
 import { UserCredentials } from '../shared/contracts/userCredentials';
 import { environment } from 'src/environments/environment';
-import { Observable, ReplaySubject, of, switchMap, tap } from 'rxjs';
+import { BehaviorSubject, Observable, of, switchMap, tap } from 'rxjs';
 import { TokenResponse } from '../shared/contracts/tokenResponse';
 import jwt_decode from 'jwt-decode';
 import { User } from '../shared/contracts/user';
@@ -16,8 +16,8 @@ export class AuthenticationService {
   private readonly localStorageTokenKey = 'token';
   private readonly localStorageUserKey = 'user';
 
-  private currentUserSource: ReplaySubject<User | null> =
-    new ReplaySubject<User | null>(1);
+  private currentUserSource: BehaviorSubject<User | null> =
+    new BehaviorSubject<User | null>(null);
   currentUser$: Observable<User | null> = this.currentUserSource.asObservable();
 
   constructor(private http: HttpClient, private usersService: UsersService) {
@@ -71,6 +71,20 @@ export class AuthenticationService {
         );
     }
     return of(null);
+  }
+
+  refreshUser(): Observable<User | null> {
+    const userId = this.getToken()?.userId;
+    if (userId) {
+      return this.usersService.getUserById(userId).pipe(
+        tap((user) => {
+          this.currentUserSource.next(user);
+          this._saveUserInLocalStorage(user);
+        })
+      );
+    } else {
+      return of(null);
+    }
   }
 
   getToken(): Token | null {

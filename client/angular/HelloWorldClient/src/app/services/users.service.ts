@@ -9,15 +9,16 @@ import { RegisterUser } from '../shared/contracts/registerUser';
   providedIn: 'root',
 })
 export class UsersService {
-  private usersEndpoint = 'api/users';
-
   constructor(private http: HttpClient) {}
 
   getUserById(id: number): Observable<User> {
-    return this.http.get<User>(environment.apiPaths.getUserById(id));
+    return this.http.get<User>(environment.apiPaths.wordsUserEndpoint(id));
   }
 
   registerUser(user: RegisterUser): Observable<User> {
-    return this.http.post<User>(environment.apiPaths.registerUser, user);
+    return this.http.post<User>(
+      environment.apiPaths.identityUsersEndpoint,
+      user
+    );
   }
 }
