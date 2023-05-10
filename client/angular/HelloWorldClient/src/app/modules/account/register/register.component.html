@@ -1,4 +1,4 @@
-<div class="container d-flex justify-content-center align-items-center vh-100">
+<div class="container d-flex justify-content-center align-items-center">
     <form [formGroup]="registerForm" (ngSubmit)="onSubmit()" class="w-100">
         <div class="mb-3 mt-5">
             <label for="username">Username</label>
@@ -47,7 +47,7 @@
         <div class="form-group">
             <label for="englishLevel">English Level</label>
             <select class="form-control" id="englishLevel" formControlName="englishLevel">
-                <option *ngFor="let level of levels" [value]="level.value">{{level.label}}</option>
+                <option *ngFor="let level of levels" [value]="level.value">{{level.displayValue}}</option>
             </select>
         </div>
         <div class="invalid-feedback" *ngIf="conflictResponse">

@@ -3,7 +3,11 @@ import { Component } from '@angular/core';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
 import { UsersService } from 'src/app/services/users.service';
-import { EnglishLevel } from 'src/app/shared/enums/englishLevel';
+import {
+  EnglishLevelOption,
+  englishLevels,
+} from 'src/app/shared/contracts/englishLevelOption';
+import { RegisterUser } from 'src/app/shared/contracts/registerUser';
 import { MatchValidator } from 'src/app/shared/validators/match.validator';
 
 @Component({
@@ -15,14 +19,10 @@ export class RegisterComponent {
   passwordControlName = 'password';
   confirmPasswordControlName = 'confirmPassword';
   selectedLevel: number;
-  levels: { value: number; label: string }[];
+  levels: EnglishLevelOption[] = englishLevels;
   conflictResponse: boolean = false;
 
-  constructor(private usersService: UsersService, private router: Router) {
-    this.levels = Object.keys(EnglishLevel)
-      .filter((k) => parseInt(k) >= 0)
-      .map((k) => ({ value: Number(k), label: EnglishLevel[Number(k)] }));
-  }
+  constructor(private usersService: UsersService, private router: Router) {}
 
   registerForm: FormGroup = new FormGroup({
     username: new FormControl('', [
@@ -40,7 +40,13 @@ export class RegisterComponent {
   });
 
   onSubmit() {
-    this.usersService.registerUser(this.registerForm.value).subscribe({
+    let value = this.registerForm.value;
+    let user: RegisterUser = {
+      username: value.username,
+      password: value.password,
+      englishLevel: value.englishLevel,
+    };
+    this.usersService.registerUser(user).subscribe({
       next: () => {
         this.router.navigateByUrl('/login');
       },
