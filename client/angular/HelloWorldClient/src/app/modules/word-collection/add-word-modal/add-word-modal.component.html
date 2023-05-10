@@ -9,10 +9,11 @@
         <div class="form-group">
             <label for="word">Word:</label>
             <input type="text" formControlName="word" class="form-control">
-            <div *ngIf="addWordFormControl['word'].invalid && (addWordFormControl['word'].dirty || addWordFormControl['word'].touched)"
-                class="invalid-feedback">
-                <div *ngIf="addWordFormControl?.['word']?.errors?.['required']">Word is required.</div>
-            </div>
+            <ng-container *ngIf="addWordForm.get('word') as wordControl">
+                <div *ngIf="wordControl.invalid && (wordControl.dirty || wordControl.touched)">
+                    <div class="invalid-feedback" *ngIf="wordControl.errors?.['required']">Word is required.</div>
+                </div>
+            </ng-container>
         </div>
 
         <div formArrayName="translations">
@@ -21,8 +22,8 @@
                 <div class="input-group">
                     <input type="text" id="translation{{i}}" [formControlName]="i" class="form-control">
                     <div class="input-group-append">
-                        <button type="button" class="btn btn-outline-danger"
-                            (click)="removeTranslation(i)">Remove</button>
+                        <button type="button" class="btn btn-outline-danger mx-2" (click)="removeTranslation(i)"
+                            [disabled]="translationControls.length < 2">Remove</button>
                     </div>
                 </div>
             </div>
@@ -32,7 +33,7 @@
 
         <div class="modal-footer">
             <button type="button" class="btn btn-secondary" (click)="activeModal.dismiss()">Close</button>
-            <button type="submit" class="btn btn-primary">Add Word</button>
+            <button type="submit" [disabled]="!addWordForm.valid" class="btn btn-primary">Add Word</button>
         </div>
     </form>
 </div>

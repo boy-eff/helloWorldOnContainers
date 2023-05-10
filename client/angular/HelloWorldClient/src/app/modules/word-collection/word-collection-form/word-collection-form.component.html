@@ -1,0 +1,62 @@
+<form [formGroup]="wordCollectionForm">
+    <div class="form-group">
+        <label for="nameInput">Name</label>
+        <input autocomplete="off" type="text" class="form-control" id="name" formControlName="name">
+        <ng-container *ngIf="wordCollectionForm.get('name') as nameControl">
+            <div *ngIf="nameControl.invalid && (nameControl.dirty || nameControl.touched)">
+                <div class="invalid-feedback" *ngIf="nameControl.errors?.['required']">Name is required.</div>
+            </div>
+        </ng-container>
+    </div>
+    <div class="form-group">
+        <label for="englishLevel">English Level</label>
+        <select class="form-control" id="englishLevel" formControlName="englishLevel">
+            <option *ngFor="let level of englishLevels" [value]="level.value">{{level.displayValue}}</option>
+        </select>
+        <ng-container *ngIf="wordCollectionForm.get('englishLevel') as englishLevelControl">
+            <div *ngIf="englishLevelControl.invalid && (englishLevelControl.dirty || englishLevelControl.touched)">
+                <div class="invalid-feedback" *ngIf="englishLevelControl.errors?.['required']">English level is
+                    required.
+                </div>
+            </div>
+        </ng-container>
+    </div>
+    <div class="form-group">
+        <label for="fileInput">Image</label>
+        <input class="form-control" type="file" id="image" formControlName="imageName" (change)="onFileChange($event)"
+            accept="image/png, image/jpeg">
+    </div>
+    <div class="form-control mt-2">
+        <table class="table table-striped mb-0">
+            <thead>
+                <th>
+                    <div class="d-flex justify-content-between align-items-center">
+                        <div>Words</div>
+                        <button class=" btn btn-primary mx-1" (click)="openAddWordModal()">
+                            <fa-icon [icon]="faPlus"></fa-icon>
+                        </button>
+                    </div>
+                </th>
+            </thead>
+            <tbody>
+                <ng-container formArrayName="words">
+                    <tr *ngFor="let word of words.controls; let i = index" [formGroupName]="i">
+                        <td class="d-flex justify-content-between">
+                            {{ word.get('word')?.value }}
+                            <div>
+                                <button class="btn btn-sm mx-1" (click)="openEditWordModal(i)">
+                                    <fa-icon [icon]="faEdit"></fa-icon>
+                                </button>
+                                <button class="btn btn-sm btn-danger" (click)="removeWord(i)">
+                                    <fa-icon [icon]="faTrash"></fa-icon>
+                                </button>
+                            </div>
+                        </td>
+                    </tr>
+                </ng-container>
+            </tbody>
+        </table>
+    </div>
+    <button type="submit" [disabled]="!this.wordCollectionForm.valid" class="btn btn-primary mt-3"
+        (click)="onSubmit()">Submit</button>
+</form>

@@ -1,0 +1,6 @@
+<div *ngIf="wordCollection$ | async as wordCollection"
+    class="container d-flex flex-column justify-content-center align-items-center">
+    <h1>Edit word collection</h1>
+    <app-word-collection-form (submitEvent)="updateCollection($event)"
+        [wordCollection]="wordCollection"></app-word-collection-form>
+</div>

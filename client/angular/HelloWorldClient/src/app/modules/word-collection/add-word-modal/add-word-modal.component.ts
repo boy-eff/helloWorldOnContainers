@@ -10,7 +10,7 @@ import { NgbActiveModal } from '@ng-bootstrap/ng-bootstrap';
 export class AddWordModalComponent {
   addWordForm: FormGroup = new FormGroup({
     word: new FormControl('', [Validators.required]),
-    translations: new FormArray([]),
+    translations: new FormArray([new FormControl('', Validators.required)]),
   });
 
   constructor(public activeModal: NgbActiveModal) {}
@@ -19,13 +19,8 @@ export class AddWordModalComponent {
     return this.addWordForm.get('translations') as FormArray;
   }
 
-  get addWordFormControl() {
-    return this.addWordForm.controls;
-  }
-
   addTranslation(): void {
-    console.log(this.addWordFormControl?.['word']?.errors?.['required']);
-    this.translationControls.push(new FormControl(''));
+    this.translationControls.push(new FormControl('', [Validators.required]));
   }
 
   removeTranslation(index: number): void {
